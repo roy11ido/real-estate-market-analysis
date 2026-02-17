@@ -1,0 +1,76 @@
+limits:
+  max_properties_per_run: 5
+  max_total_posts_per_day: 20
+
+delays:
+  between_groups_min: 45
+  between_groups_max: 120
+  between_properties_min: 120
+  between_properties_max: 300
+  typing_delay_min: 30
+  typing_delay_max: 100
+  page_load_wait_min: 3
+  page_load_wait_max: 7
+  image_upload_wait: 5
+
+browser:
+  headless: true
+  slow_mo: 50
+  viewport_width: 1280
+  viewport_height: 800
+
+content:
+  default_template: "standard"
+  max_description_length: 500
+  include_hashtags: true
+  include_agent_signature: true
+
+# Notion field mapping (Hebrew column names from the database)
+notion_fields:
+  address: "כתובת הנכס"
+  price: "מחיר שיווק 🏷️"
+  property_type: "סוג נכס"
+  status: "Status"
+  deal_status: "סטטוס עסקה"
+  rooms: "חדרים"
+  size_sqm: "שטח במ\"ר"
+  floor: "קומה"
+  description: "תיאור נכס"
+  images: "תמונות"
+  property_url: "קישור לנכס"
+  fb_status: "סטטוס פרסום FB"
+  fb_date: "תאריך פרסום FB"
+  fb_groups: "קבוצות שפורסמו"
+
+status_values:
+  marketing: "בשיווק 👨‍💻"
+  ready_to_post: "מוכן לפרסום"
+  posted: "פורסם"
+  failed: "נכשל"
+
+ramp_up:
+  enabled: true
+  start_date: "2026-02-15"
+  week1_max_groups: 4
+  week2_max_groups: 8
+  week3_max_groups: 12
+  week4_max_groups: 99
+
+# Market Analysis settings
+market_analysis:
+  # nadlan.gov.il settings
+  nadlan_max_pages_street: 5
+  nadlan_max_pages_neighborhood: 3
+  nadlan_max_pages_city: 2
+  nadlan_request_delay: 2.0
+
+  # Yad2 settings
+  yad2_max_pages: 2
+  yad2_request_delay: 3.0
+
+  # Analysis settings
+  max_transactions_display: 30
+  include_ai_summary: true
+
+  # AI model for summary
+  ai_model: "claude-sonnet-4-5-20250929"

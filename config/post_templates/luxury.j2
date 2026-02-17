@@ -1,0 +1,18 @@
+✨ {{ property_type_emoji }} *{{ listing_label }}* | {{ property.address }}
+
+━━━━━━━━━━━━━━━
+
+💎 מחיר: {{ property.formatted_price }}
+{% if property.rooms %}🛏 חדרים: {{ property.rooms }}
+{% endif %}{% if property.size_sqm %}📐 שטח: {{ property.size_sqm }} מ"ר
+{% endif %}{% if property.floor is not none %}🏢 קומה: {{ property.floor }}
+{% endif %}
+━━━━━━━━━━━━━━━
+
+{{ property.description }}
+
+{% if property.property_url %}🔗 לפרטים נוספים: {{ property.property_url }}
+
+{% endif %}━━━━━━━━━━━━━━━
+📞 {{ agent_name }} | {{ agent_company }} | {{ agent_phone }}
+{% if hashtags %}{{ hashtags }}{% endif %}

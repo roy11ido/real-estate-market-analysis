@@ -1,0 +1,21 @@
+# Facebook Groups for posting
+# Add your groups here with their URLs
+# template: which post template to use (standard / luxury)
+# max_images: maximum number of images to upload per post
+# enabled: set to false to temporarily disable a group
+
+groups:
+  # --- הוסף את הקבוצות שלך כאן ---
+  # דוגמה:
+  # - name: "דירות למכירה בתל אביב"
+  #   url: "https://www.facebook.com/groups/123456789"
+  #   template: "standard"
+  #   max_images: 4
+  #   enabled: true
+  #
+  # - name: "נדל\"ן יוקרה מרכז"
+  #   url: "https://www.facebook.com/groups/987654321"
+  #   template: "luxury"
+  #   max_images: 6
+  #   enabled: true
+  []

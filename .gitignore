@@ -1,0 +1,21 @@
+# Environment
+.env
+.env.local
+.venv/
+__pycache__/
+*.pyc
+*.py[cod]
+
+# Data (sensitive/runtime)
+data/cookies/
+data/images_cache/
+data/logs/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# Streamlit secrets (for cloud deployment)
+.streamlit/secrets.toml
