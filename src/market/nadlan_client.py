@@ -36,7 +36,13 @@ def _build_scraper_url(target_url: str) -> str:
     key = _get_scraper_key()
     if key:
         encoded = urllib.parse.quote(target_url, safe="")
-        return f"{SCRAPERAPI_BASE}?api_key={key}&url={encoded}&render=false"
+        return (
+            f"{SCRAPERAPI_BASE}?api_key={key}"
+            f"&url={encoded}"
+            f"&render=false"
+            f"&country_code=il"
+            f"&device_type=desktop"
+        )
     return target_url
 
 HEADERS = {
@@ -114,8 +120,8 @@ async def resolve_address(query: str) -> Optional[NadlanQueryParams]:
     try:
         async with httpx.AsyncClient(timeout=60, headers=HEADERS) as client:
             resp = await client.get(url)
-            logger.info(f"resolve_address status={resp.status_code} url={url[:80]}")
-            logger.info(f"resolve_address response_text={resp.text[:300]}")
+            logger.info(f"resolve_address status={resp.status_code}")
+            logger.info(f"resolve_address body={resp.text[:500]!r}")
             resp.raise_for_status()
             data = resp.json()
 
