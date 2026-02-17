@@ -120,8 +120,10 @@ async def resolve_address(query: str) -> Optional[NadlanQueryParams]:
     try:
         async with httpx.AsyncClient(timeout=60, headers=HEADERS) as client:
             resp = await client.get(url)
+            # Debug: print to stdout so Streamlit Cloud logs show it
+            print(f"[NADLAN DEBUG] status={resp.status_code}", flush=True)
+            print(f"[NADLAN DEBUG] body={resp.text[:500]!r}", flush=True)
             logger.info(f"resolve_address status={resp.status_code}")
-            logger.info(f"resolve_address body={resp.text[:500]!r}")
             resp.raise_for_status()
             data = resp.json()
 
