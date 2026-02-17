@@ -114,6 +114,8 @@ async def resolve_address(query: str) -> Optional[NadlanQueryParams]:
     try:
         async with httpx.AsyncClient(timeout=60, headers=HEADERS) as client:
             resp = await client.get(url)
+            logger.info(f"resolve_address status={resp.status_code} url={url[:80]}")
+            logger.info(f"resolve_address response_text={resp.text[:300]}")
             resp.raise_for_status()
             data = resp.json()
 
