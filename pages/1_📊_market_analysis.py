@@ -162,7 +162,11 @@ def _run_analysis(
         status_text.info(message)
 
     try:
-        report = asyncio.run(
+        import nest_asyncio
+        nest_asyncio.apply()
+        loop = asyncio.new_event_loop()
+        asyncio.set_event_loop(loop)
+        report = loop.run_until_complete(
             run_market_analysis(
                 address=address,
                 property_type=property_type,
