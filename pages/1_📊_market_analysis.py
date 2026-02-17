@@ -172,9 +172,20 @@ def _run_analysis(
         st.session_state["report"] = report
 
         if report.errors:
-            with st.expander("⚠️ שגיאות שנתקלנו בהן", expanded=False):
+            with st.expander("⚠️ שגיאות שנתקלנו בהן", expanded=True):
                 for err in report.errors:
                     st.warning(err)
+
+        if report.total_transactions == 0 and report.total_listings == 0:
+            st.error("""
+**לא נמצאו נתונים לכתובת זו.**
+
+ייתכן שאתר nadlan.gov.il חסם את הבקשה מהשרת. נסה:
+- לוודא שהכתובת נכונה (לדוגמה: **ארלוזורוב 16 תל אביב**)
+- לנסות שוב בעוד כמה שניות
+- לוודא שהעיר קיימת בכתובת
+""")
+            return
 
         _display_report(report)
 

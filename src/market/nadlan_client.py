@@ -18,14 +18,22 @@ BASE_URL = "https://www.nadlan.gov.il/Nadlan.REST/Main"
 HEADERS = {
     "Accept": "application/json, text/plain, */*",
     "Accept-Language": "he-IL,he;q=0.9,en-US;q=0.8,en;q=0.7",
+    "Accept-Encoding": "gzip, deflate, br",
     "Content-Type": "application/json;charset=UTF-8",
     "Origin": "https://www.nadlan.gov.il",
     "Referer": "https://www.nadlan.gov.il/",
     "User-Agent": (
-        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
         "AppleWebKit/537.36 (KHTML, like Gecko) "
-        "Chrome/120.0.0.0 Safari/537.36"
+        "Chrome/122.0.0.0 Safari/537.36"
     ),
+    "sec-ch-ua": '"Chromium";v="122", "Not(A:Brand";v="24", "Google Chrome";v="122"',
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": '"Windows"',
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+    "Connection": "keep-alive",
 }
 
 # Delay between API requests (seconds) to avoid rate limiting
