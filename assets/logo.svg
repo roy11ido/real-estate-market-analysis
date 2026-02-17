@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 60" width="200" height="60">
+  <!-- Logo mark: Navy square with R -->
+  <rect x="0" y="4" width="52" height="52" rx="8" fill="#0B1F3B"/>
+  <rect x="2" y="6" width="48" height="48" rx="6" fill="none" stroke="#C9A84C" stroke-width="1.5"/>
+  <!-- Letter R -->
+  <text x="26" y="38" text-anchor="middle" font-family="Georgia, serif" font-size="30" font-weight="700" fill="#FFFFFF">R</text>
+  <!-- Company name -->
+  <text x="68" y="28" font-family="Heebo, Arial, sans-serif" font-size="16" font-weight="800" fill="#0B1F3B">Real</text>
+  <text x="68" y="48" font-family="Heebo, Arial, sans-serif" font-size="16" font-weight="300" fill="#0B1F3B" letter-spacing="1">Capital</text>
+</svg>
