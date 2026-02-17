@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 import logging
+import os
 from datetime import datetime
 from typing import Optional
 
@@ -14,6 +15,17 @@ from src.market.models import NadlanQueryParams, NadlanTransaction
 logger = logging.getLogger("realestate")
 
 BASE_URL = "https://www.nadlan.gov.il/Nadlan.REST/Main"
+SCRAPERAPI_BASE = "http://api.scraperapi.com"
+
+# Load ScraperAPI key from environment (set in Streamlit Secrets)
+SCRAPERAPI_KEY = os.environ.get("SCRAPERAPI_KEY", "")
+
+
+def _build_scraper_url(target_url: str) -> str:
+    """Wrap a URL through ScraperAPI if key is available."""
+    if SCRAPERAPI_KEY:
+        return f"{SCRAPERAPI_BASE}?api_key={SCRAPERAPI_KEY}&url={target_url}&render=false"
+    return target_url
 
 HEADERS = {
     "Accept": "application/json, text/plain, */*",
@@ -84,12 +96,13 @@ async def resolve_address(query: str) -> Optional[NadlanQueryParams]:
     Takes a Hebrew address/city/neighborhood string and returns parameters
     that can be used with get_transactions().
     """
-    url = f"{BASE_URL}/GetDataByQuery"
-    params = {"query": query}
+    import urllib.parse
+    target_url = f"{BASE_URL}/GetDataByQuery?query={urllib.parse.quote(query)}"
+    url = _build_scraper_url(target_url)
 
     try:
-        async with httpx.AsyncClient(timeout=30, headers=HEADERS) as client:
-            resp = await client.get(url, params=params)
+        async with httpx.AsyncClient(timeout=60, headers=HEADERS) as client:
+            resp = await client.get(url)
             resp.raise_for_status()
             data = resp.json()
 
@@ -144,7 +157,7 @@ async def get_transactions(
     transactions: list[NadlanTransaction] = []
     url = f"{BASE_URL}/GetAssestAndDeals"
 
-    async with httpx.AsyncClient(timeout=30, headers=HEADERS) as client:
+    async with httpx.AsyncClient(timeout=60, headers=HEADERS) as client:
         for page in range(1, max_pages + 1):
             payload = {
                 "ObjectID": params.object_id,
