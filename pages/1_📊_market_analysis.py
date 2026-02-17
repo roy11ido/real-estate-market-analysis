@@ -13,6 +13,7 @@ import pandas as pd
 
 from src.market.orchestrator import run_market_analysis
 from src.market.pdf_report import generate_pdf
+from src.market.places_autocomplete import address_input_with_autocomplete
 
 st.set_page_config(
     page_title="ניתוח שוק | Real Capital",
@@ -139,6 +140,110 @@ div[data-testid="stMetricValue"] { color: #0B1F3B; font-weight: 700; }
 
 /* Dataframe RTL */
 .dataframe { direction: rtl; }
+
+/* ── תיקון צבע טקסט: טקסט כהה על רקע בהיר בכל שדות הקלט ─────────────────
+   בעיה: ה-wildcard של הסיידבר הדליק color:white גם על אלמנטים ראשיים.
+   פתרון: הגדרת overrides מפורשים לכל שדות הקלט מחוץ לסיידבר.
+──────────────────────────────────────────────────────────────────────── */
+
+/* Main content – inputs, selects, textareas */
+[data-testid="stAppViewContainer"] .stTextInput input,
+[data-testid="stAppViewContainer"] .stNumberInput input,
+[data-testid="stAppViewContainer"] .stTextArea textarea,
+[data-testid="stAppViewContainer"] .stSelectbox div[data-baseweb="select"] > div,
+[data-testid="stAppViewContainer"] .stMultiSelect div[data-baseweb="select"] > div {
+    color: #0B1F3B !important;
+    background-color: #FFFFFF !important;
+    border: 1px solid #D1D9E0 !important;
+    border-radius: 8px !important;
+}
+
+/* Placeholder text */
+[data-testid="stAppViewContainer"] .stTextInput input::placeholder,
+[data-testid="stAppViewContainer"] .stNumberInput input::placeholder,
+[data-testid="stAppViewContainer"] .stTextArea textarea::placeholder {
+    color: #9AABBF !important;
+    opacity: 1 !important;
+}
+
+/* Focus ring */
+[data-testid="stAppViewContainer"] .stTextInput input:focus,
+[data-testid="stAppViewContainer"] .stNumberInput input:focus,
+[data-testid="stAppViewContainer"] .stTextArea textarea:focus {
+    border-color: #1C3F94 !important;
+    box-shadow: 0 0 0 3px rgba(28,63,148,0.15) !important;
+    outline: none !important;
+}
+
+/* Select dropdown options */
+[data-baseweb="popover"] li,
+[data-baseweb="menu"] li,
+[data-baseweb="select"] [role="option"] {
+    color: #0B1F3B !important;
+    background: #FFFFFF !important;
+    direction: rtl;
+}
+[data-baseweb="popover"] li:hover,
+[data-baseweb="menu"] li:hover {
+    background: #EEF2F8 !important;
+}
+
+/* Sidebar inputs stay white text on dark bg */
+[data-testid="stSidebar"] .stTextInput input,
+[data-testid="stSidebar"] .stNumberInput input,
+[data-testid="stSidebar"] .stSelectbox div[data-baseweb="select"] > div {
+    color: #FFFFFF !important;
+    background-color: rgba(255,255,255,0.1) !important;
+    border-color: rgba(255,255,255,0.2) !important;
+}
+[data-testid="stSidebar"] .stTextInput input::placeholder,
+[data-testid="stSidebar"] .stNumberInput input::placeholder {
+    color: rgba(255,255,255,0.45) !important;
+}
+
+/* Labels outside sidebar – dark text */
+[data-testid="stAppViewContainer"] .stTextInput label,
+[data-testid="stAppViewContainer"] .stNumberInput label,
+[data-testid="stAppViewContainer"] .stSelectbox label,
+[data-testid="stAppViewContainer"] .stTextArea label,
+[data-testid="stAppViewContainer"] .stRadio label,
+[data-testid="stAppViewContainer"] .stCheckbox label,
+[data-testid="stAppViewContainer"] .stSlider label {
+    color: #0B1F3B !important;
+    font-weight: 500;
+}
+
+/* Error / validation state */
+[data-testid="stAppViewContainer"] .stTextInput [data-baseweb="input"][aria-invalid="true"],
+[data-testid="stAppViewContainer"] .stTextInput input:invalid {
+    border-color: #D32F2F !important;
+    background-color: #FFF5F5 !important;
+    color: #0B1F3B !important;
+}
+
+/* Disabled state */
+[data-testid="stAppViewContainer"] .stTextInput input:disabled,
+[data-testid="stAppViewContainer"] .stNumberInput input:disabled {
+    background-color: #F5F7FA !important;
+    color: #9AABBF !important;
+    border-color: #E8ECF0 !important;
+}
+
+/* Upload widget + info boxes */
+[data-testid="stFileUploader"],
+[data-testid="stInfo"],
+[data-testid="stSuccess"],
+[data-testid="stWarning"],
+[data-testid="stError"] {
+    direction: rtl;
+    color: #0B1F3B !important;
+}
+
+/* Metric labels in main area */
+[data-testid="stAppViewContainer"] [data-testid="stMetricLabel"] p,
+[data-testid="stAppViewContainer"] [data-testid="stMetricDelta"] {
+    color: #6B7A8D !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -208,12 +313,19 @@ def main():
         """, unsafe_allow_html=True)
 
         st.markdown('<div class="sidebar-section">📍 כתובת הנכס</div>', unsafe_allow_html=True)
-        address = st.text_input(
-            "כתובת מלאה",
-            placeholder="לדוגמה: הרצל 15, תל אביב",
-            label_visibility="collapsed",
-            help="הכנס כתובת מלאה כולל עיר לקבלת תוצאות מדויקות",
-        )
+
+        # ── Google Places Autocomplete ──────────────────────────────────────
+        place_result = address_input_with_autocomplete(key_prefix="cma_addr")
+
+        # שדה fallback גלוי רק כשאין מפתח API (הwidget מציג fallback פנימי)
+        if place_result:
+            address = place_result.get("formatted_address", "")
+            # שמור קואורדינטות ב-session_state לשימוש עתידי (מפה, סינון רדיוס)
+            st.session_state["subject_lat"] = place_result.get("lat")
+            st.session_state["subject_lng"] = place_result.get("lng")
+            st.session_state["subject_city"] = place_result.get("city", "")
+        else:
+            address = ""
 
         st.markdown('<div class="sidebar-section">🏠 פרטי הנכס</div>', unsafe_allow_html=True)
         property_type = st.selectbox("סוג נכס", options=PROPERTY_TYPES, index=0)
@@ -249,14 +361,14 @@ def main():
             "🔍 הפק דו\"ח ניתוח",
             type="primary",
             use_container_width=True,
-            disabled=not address.strip(),
+            disabled=not bool(address),
         )
 
-        if not address.strip():
+        if not address:
             st.caption("💡 הכנס כתובת כדי להתחיל")
 
     # ─── Main Content ──────────────────────────────────────────────────────
-    if not address.strip():
+    if not address:
         _show_welcome()
         return
 
@@ -268,7 +380,7 @@ def main():
 
     if analyze_btn:
         _run_analysis(
-            address=address.strip(),
+            address=address,
             property_type=property_type,
             rooms=rooms,
             floor=floor,

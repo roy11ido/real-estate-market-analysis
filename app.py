@@ -235,6 +235,18 @@ st.markdown("""
             </ul>
             <a href="/market_analysis" class="btn-primary">פתח ניתוח שוק ←</a>
         </div>
+        <div class="tool-card">
+            <span class="tool-icon">📋</span>
+            <h3>עסקאות נדל"ן (Comps)</h3>
+            <p>ייבא, חפש ונתח עסקאות השוואתיות מרשות המיסים ו-GovMap. בחר Comps לניתוח CMA מדויק.</p>
+            <ul class="tool-features">
+                <li>ייבוא מ-nadlan.gov.il ו-GovMap (Excel/CSV)</li>
+                <li>סינון לפי עיר, רחוב, שטח, מחיר, תאריך</li>
+                <li>ניתוח Comps עם מחיר/מ"ר ואמינות</li>
+                <li>שיגור עסקאות ישירות לדו"ח CMA</li>
+            </ul>
+            <a href="/transactions" class="btn-primary">פתח עסקאות ←</a>
+        </div>
         <div class="tool-card secondary">
             <span class="tool-icon">📱</span>
             <h3>פרסום אוטומטי לפייסבוק</h3>
