@@ -144,6 +144,16 @@ def _run_analysis(
     price,
     include_ai,
 ):
+    # Debug: show ScraperAPI status
+    import os as _os
+    _scraper_key = _os.environ.get("SCRAPERAPI_KEY", "")
+    if not _scraper_key:
+        try:
+            _scraper_key = st.secrets.get("SCRAPERAPI_KEY", "")
+        except Exception:
+            pass
+    st.caption(f"🔑 ScraperAPI: {'✅ פעיל' if _scraper_key else '❌ לא מוגדר'}")
+
     progress_bar = st.progress(0, text="מתחיל ניתוח שוק...")
     status_text = st.empty()
 

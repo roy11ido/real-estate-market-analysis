@@ -5,6 +5,7 @@ from __future__ import annotations
 import asyncio
 import logging
 import os
+import urllib.parse
 from datetime import datetime
 from typing import Optional
 
@@ -17,14 +18,25 @@ logger = logging.getLogger("realestate")
 BASE_URL = "https://www.nadlan.gov.il/Nadlan.REST/Main"
 SCRAPERAPI_BASE = "http://api.scraperapi.com"
 
-# Load ScraperAPI key from environment (set in Streamlit Secrets)
-SCRAPERAPI_KEY = os.environ.get("SCRAPERAPI_KEY", "")
+
+def _get_scraper_key() -> str:
+    """Get ScraperAPI key at runtime - checks os.environ and Streamlit secrets."""
+    key = os.environ.get("SCRAPERAPI_KEY", "")
+    if not key:
+        try:
+            import streamlit as st
+            key = st.secrets.get("SCRAPERAPI_KEY", "")
+        except Exception:
+            pass
+    return key
 
 
 def _build_scraper_url(target_url: str) -> str:
     """Wrap a URL through ScraperAPI if key is available."""
-    if SCRAPERAPI_KEY:
-        return f"{SCRAPERAPI_BASE}?api_key={SCRAPERAPI_KEY}&url={target_url}&render=false"
+    key = _get_scraper_key()
+    if key:
+        encoded = urllib.parse.quote(target_url, safe="")
+        return f"{SCRAPERAPI_BASE}?api_key={key}&url={encoded}&render=false"
     return target_url
 
 HEADERS = {
@@ -96,7 +108,6 @@ async def resolve_address(query: str) -> Optional[NadlanQueryParams]:
     Takes a Hebrew address/city/neighborhood string and returns parameters
     that can be used with get_transactions().
     """
-    import urllib.parse
     target_url = f"{BASE_URL}/GetDataByQuery?query={urllib.parse.quote(query)}"
     url = _build_scraper_url(target_url)
 
