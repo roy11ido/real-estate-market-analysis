@@ -70,7 +70,7 @@ def main():
             floor = st.number_input("קומה", min_value=-1, max_value=50, step=1, value=0)
         with col2:
             size_sqm = st.number_input("שטח (מ\"ר)", min_value=0.0, max_value=2000.0, step=5.0, value=0.0)
-            building_year = st.number_input("שנת בנייה", min_value=1900, max_value=2030, step=1, value=0)
+            building_year = st.number_input("שנת בנייה", min_value=1900, max_value=2030, step=1, value=1900)
 
         price = st.number_input(
             "מחיר ידוע/מבוקש (ש\"ח)",
