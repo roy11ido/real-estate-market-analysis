@@ -93,7 +93,7 @@ html, body, [data-testid="stAppViewContainer"], [data-testid="stMain"] {
 .section-title { color: #0B1F3B; font-size: 1.8rem; font-weight: 800; margin-bottom: 0.5rem; text-align: right; }
 .section-sub { color: #6B7A8D; font-size: 0.95rem; margin-bottom: 2.5rem; text-align: right; }
 
-.tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
+.tool-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; max-width: 860px; }
 .tool-card {
     background: #FFFFFF;
     border-radius: 16px;
@@ -234,18 +234,6 @@ st.markdown("""
                 <li>ייצוא PDF מקצועי</li>
             </ul>
             <a href="/market_analysis" class="btn-primary">פתח ניתוח שוק ←</a>
-        </div>
-        <div class="tool-card">
-            <span class="tool-icon">📋</span>
-            <h3>עסקאות נדל"ן (Comps)</h3>
-            <p>ייבא, חפש ונתח עסקאות השוואתיות מרשות המיסים ו-GovMap. בחר Comps לניתוח CMA מדויק.</p>
-            <ul class="tool-features">
-                <li>ייבוא מ-nadlan.gov.il ו-GovMap (Excel/CSV)</li>
-                <li>סינון לפי עיר, רחוב, שטח, מחיר, תאריך</li>
-                <li>ניתוח Comps עם מחיר/מ"ר ואמינות</li>
-                <li>שיגור עסקאות ישירות לדו"ח CMA</li>
-            </ul>
-            <a href="/transactions" class="btn-primary">פתח עסקאות ←</a>
         </div>
         <div class="tool-card secondary">
             <span class="tool-icon">📱</span>
