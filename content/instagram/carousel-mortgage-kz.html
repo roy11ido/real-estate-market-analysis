@@ -49,10 +49,10 @@
   .slide .inner{position:absolute;inset:0;padding:7cqw;display:flex;flex-direction:column}
   .chrome{display:flex;justify-content:space-between;align-items:center;
     font-family:var(--data);font-size:2.35cqw;letter-spacing:.18em;color:var(--muted);flex:none}
-  .chrome b{color:var(--paper);font-weight:700;letter-spacing:.32em}
+  .chrome b{color:var(--paper);font-weight:700;letter-spacing:.06em;font-size:2.7cqw}
   .content{flex:1;display:flex;flex-direction:column;justify-content:center;gap:3.2cqw;
     padding:4cqw 0 1cqw}
-  .content.top{justify-content:flex-start;padding-top:5.5cqw}
+  .content.top{justify-content:center;padding:2cqw 0;gap:4cqw}
 
   h2.big{font-family:var(--display);font-weight:900;line-height:1.08;margin:0;
     font-size:8.4cqw;text-wrap:balance}
@@ -73,17 +73,17 @@
   [data-tone=i]{--tone:var(--index)}
 
   /* bullet lists */
-  ul.pts{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2.6cqw}
+  ul.pts{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:3.6cqw}
   ul.pts li{display:grid;grid-template-columns:auto 1fr;gap:2.6cqw;align-items:start}
   ul.pts .dot{width:2.4cqw;height:2.4cqw;margin-top:1.3cqw;background:var(--tone);flex:none;
     transform:rotate(45deg)}
-  ul.pts .tx{font-size:3.35cqw;line-height:1.45;font-weight:300;color:#CBD8D7}
+  ul.pts .tx{font-size:3.55cqw;line-height:1.5;font-weight:300;color:#CBD8D7}
   ul.pts .tx b{font-weight:700;color:var(--paper)}
 
   /* numbers / equation */
   .eq{direction:ltr;display:flex;align-items:baseline;justify-content:center;gap:2.2cqw;
     font-family:var(--data);font-variant-numeric:tabular-nums;background:var(--ink2);
-    padding:5cqw 3cqw;border-inline-start:.6cqw solid var(--index)}
+    padding:5cqw 3cqw;border-right:.6cqw solid var(--index)}
   .eq span{font-size:5.4cqw;font-weight:500;color:#B9C8C7}
   .eq .op{font-size:4cqw;color:var(--muted)}
   .eq .res{font-size:7.2cqw;font-weight:700;color:var(--index)}
@@ -95,7 +95,7 @@
   .cmp{display:grid;grid-template-columns:1fr 1fr;gap:0 3cqw}
   .cmp .h{font-family:var(--display);font-weight:900;font-size:5.4cqw;padding-bottom:2.4cqw;
     border-bottom:.4cqw solid var(--tone);color:var(--tone)}
-  .cmp .r{font-size:3.2cqw;line-height:1.45;font-weight:300;color:#C6D3D2;padding:3cqw 0;
+  .cmp .r{font-size:3.5cqw;line-height:1.45;font-weight:300;color:#C6D3D2;padding:4.6cqw 0;
     border-bottom:1px solid var(--line)}
   .cmp .r b{font-weight:700;color:var(--paper)}
 
@@ -107,7 +107,8 @@
   .risk .cap{font-family:var(--data);font-size:2.5cqw;letter-spacing:.1em;color:var(--muted)}
 
   /* cover art: index step-line */
-  .art{position:absolute;inset:auto 0 0 0;height:34cqw;opacity:.9;pointer-events:none}
+  .art{position:absolute;inset:0;width:100%;height:100%;opacity:.95;pointer-events:none}
+  .slide.cover .content{padding-bottom:30cqw}
 
   .cta{display:flex;flex-direction:column;gap:2.4cqw;background:var(--ink2);padding:5cqw}
   .cta .q{font-family:var(--display);font-weight:700;font-size:4.4cqw;line-height:1.25}
@@ -149,26 +150,26 @@
   <div class="strip" role="list" aria-label="שקופיות הקרוסלה">
 
     <!-- 01 · hook -->
-    <article class="slide" role="listitem" data-tone="i">
+    <article class="slide cover" role="listitem" data-tone="i">
       <div class="inner">
-        <div class="chrome"><b>ק״צ</b><span>01 / 09</span></div>
+        <div class="chrome"><b>ק״צ</b><span dir="ltr">01 / 09</span></div>
         <div class="content">
           <p class="eyebrow i">קבועה צמודה למדד</p>
           <h2 class="big">הריבית קבועה.<br>המשכנתא לא.</h2>
           <p class="lede">ריבית של 3% תישאר 3%. יתרת החוב שלכם — לא בהכרח.</p>
         </div>
       </div>
-      <svg class="art" viewBox="0 0 400 120" preserveAspectRatio="none" aria-hidden="true">
-        <path d="M0 108 H50 V96 H100 V99 H150 V80 H200 V72 H250 V52 H300 V44 H350 V20 H400"
-              fill="none" stroke="#E8B03E" stroke-width="2.5"/>
-        <path d="M0 112 H400" fill="none" stroke="#74B9AC" stroke-width="2.5"/>
+      <svg class="art" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+        <path d="M0 86 H12 V82.5 H24 V83.5 H36 V76 H48 V72.5 H60 V65.5 H72 V61.5 H86 V53 H100"
+              fill="none" stroke="#E8B03E" stroke-width="0.72"/>
+        <path d="M0 92.5 H100" fill="none" stroke="#74B9AC" stroke-width="0.72"/>
       </svg>
     </article>
 
     <!-- 02 · what it is -->
     <article class="slide" role="listitem">
       <div class="inner">
-        <div class="chrome"><b>ק״צ</b><span>02 / 09</span></div>
+        <div class="chrome"><b>ק״צ</b><span dir="ltr">02 / 09</span></div>
         <div class="content">
           <h2 class="mid">שני דברים שחייבים להפריד</h2>
           <div class="forces">
@@ -191,7 +192,7 @@
     <!-- 03 · pros -->
     <article class="slide" role="listitem" data-tone="s">
       <div class="inner">
-        <div class="chrome"><b>ק״צ</b><span>03 / 09</span></div>
+        <div class="chrome"><b>ק״צ</b><span dir="ltr">03 / 09</span></div>
         <div class="content top">
           <p class="eyebrow s">היתרונות</p>
           <h2 class="mid">למה זה מפתה</h2>
@@ -207,7 +208,7 @@
     <!-- 04 · cons -->
     <article class="slide" role="listitem" data-tone="i">
       <div class="inner">
-        <div class="chrome"><b>ק״צ</b><span>04 / 09</span></div>
+        <div class="chrome"><b>ק״צ</b><span dir="ltr">04 / 09</span></div>
         <div class="content top">
           <p class="eyebrow i">החסרונות</p>
           <h2 class="mid">מה המחיר</h2>
@@ -224,7 +225,7 @@
     <!-- 05 · the number -->
     <article class="slide" role="listitem">
       <div class="inner">
-        <div class="chrome"><b>ק״צ</b><span>05 / 09</span></div>
+        <div class="chrome"><b>ק״צ</b><span dir="ltr">05 / 09</span></div>
         <div class="content">
           <p class="eyebrow i">דוגמה להמחשה</p>
           <h2 class="mid">מה עושה 0.3% במדד</h2>
@@ -240,7 +241,7 @@
     <!-- 06 · the caveat -->
     <article class="slide" role="listitem">
       <div class="inner">
-        <div class="chrome"><b>ק״צ</b><span>06 / 09</span></div>
+        <div class="chrome"><b>ק״צ</b><span dir="ltr">06 / 09</span></div>
         <div class="content">
           <p class="eyebrow s">אבל רגע</p>
           <h2 class="mid">זו רק המחשה</h2>
@@ -253,7 +254,7 @@
     <!-- 07 · why cheaper -->
     <article class="slide" role="listitem">
       <div class="inner">
-        <div class="chrome"><b>ק״צ</b><span>07 / 09</span></div>
+        <div class="chrome"><b>ק״צ</b><span dir="ltr">07 / 09</span></div>
         <div class="content">
           <h2 class="mid">למה הריבית בק״צ נמוכה יותר?</h2>
           <p class="lede" style="font-size:3.2cqw">כי בכל מסלול אתם לוקחים על עצמכם סיכון אחר. הריבית הנמוכה היא התשלום שאתם מקבלים על נשיאת סיכון המדד.</p>
@@ -272,7 +273,7 @@
     <!-- 08 · compare -->
     <article class="slide" role="listitem">
       <div class="inner">
-        <div class="chrome"><b>ק״צ</b><span>08 / 09</span></div>
+        <div class="chrome"><b>ק״צ</b><span dir="ltr">08 / 09</span></div>
         <div class="content top">
           <h2 class="mid">איך זוכרים את זה</h2>
           <div class="cmp">
@@ -292,7 +293,7 @@
     <!-- 09 · bottom line + CTA -->
     <article class="slide" role="listitem" data-tone="i">
       <div class="inner">
-        <div class="chrome"><b>ק״צ</b><span>09 / 09</span></div>
+        <div class="chrome"><b>ק״צ</b><span dir="ltr">09 / 09</span></div>
         <div class="content">
           <p class="eyebrow i">בשורה התחתונה</p>
           <h2 class="mid">ריבית קבועה ≠ משכנתא קבועה</h2>
