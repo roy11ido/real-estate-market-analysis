@@ -1,136 +1,100 @@
 <title>הריבית קבועה, המשכנתא לא</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Frank+Ruhl+Libre:wght@500;700;900&family=Assistant:wght@300;400;600;700&family=Heebo:wght@400;500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;900&family=Assistant:wght@300;400;600;700&display=swap">
 <style>
   :root{
-    --ink:#0C181E;
-    --ink2:#12242C;
-    --ink3:#183038;
-    --line:rgba(233,239,238,.11);
-    --paper:#E9EFEE;
-    --muted:#8CA4A3;
-    --stable:#74B9AC;
-    --index:#E8B03E;
-    --display:"Frank Ruhl Libre",Georgia,serif;
+    --g-top:#22B85F;
+    --g-bot:#0B8038;
+    --white:#FFFFFF;
+    --soft:rgba(255,255,255,.86);
+    --dim:rgba(255,255,255,.68);
+    --hair:rgba(255,255,255,.34);
+    --veil:rgba(255,255,255,.10);
+    --gold:#FFD34E;
+    --display:"Rubik","Segoe UI",system-ui,sans-serif;
     --body:"Assistant","Segoe UI",system-ui,sans-serif;
-    --data:"Heebo","Assistant",system-ui,sans-serif;
   }
   *{box-sizing:border-box}
-  body{background:var(--ink);color:var(--paper);font-family:var(--body);margin:0}
-  .page{direction:rtl;max-width:1180px;margin:0 auto;padding:48px 20px 90px}
+  body{margin:0;background:#0F9247;color:var(--white);font-family:var(--body)}
+  .page{direction:rtl;max-width:1180px;margin:0 auto;padding:44px 20px 90px}
 
   /* ---------- page chrome ---------- */
-  .masthead{display:flex;flex-wrap:wrap;align-items:baseline;gap:14px 20px;
-    border-bottom:1px solid var(--line);padding-bottom:22px;margin-bottom:14px}
-  .masthead h1{font-family:var(--display);font-weight:900;font-size:clamp(28px,4.4vw,44px);
-    margin:0;line-height:1.15;text-wrap:balance}
-  .masthead h1 em{font-style:normal;color:var(--index)}
-  .masthead p{margin:0;color:var(--muted);font-size:15px;font-weight:300}
-  .kicker{font-family:var(--data);font-size:11.5px;letter-spacing:.24em;color:var(--stable);
-    font-weight:500;width:100%;margin:0 0 10px}
-  .hint{display:flex;align-items:center;gap:9px;color:var(--muted);
-    font-family:var(--data);font-size:12.5px;letter-spacing:.05em;margin:18px 0 12px}
-  .hint svg{flex:none}
+  .masthead{border-bottom:1px solid var(--hair);padding-bottom:20px}
+  .kicker{font-family:var(--display);font-size:12px;letter-spacing:.22em;font-weight:500;
+    color:var(--dim);margin:0 0 12px}
+  .masthead h1{font-family:var(--display);font-weight:900;margin:0;line-height:1.12;
+    font-size:clamp(28px,4.6vw,46px);text-wrap:balance}
+  .masthead p{margin:10px 0 0;color:var(--soft);font-size:15px;font-weight:300}
+  .hint{display:flex;align-items:center;gap:9px;color:var(--dim);font-family:var(--display);
+    font-size:12.5px;letter-spacing:.06em;margin:20px 0 10px;font-weight:500}
 
   /* ---------- carousel strip ---------- */
-  .strip{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;
-    padding:4px 0 22px;scrollbar-color:var(--ink3) transparent}
+  .strip{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 0 22px}
   .strip::-webkit-scrollbar{height:8px}
-  .strip::-webkit-scrollbar-thumb{background:var(--ink3);border-radius:99px}
+  .strip::-webkit-scrollbar-thumb{background:rgba(255,255,255,.28);border-radius:99px}
 
   .slide{flex:none;scroll-snap-align:center;width:min(560px,84vw);aspect-ratio:1/1;
     container-type:inline-size;position:relative;overflow:hidden;
     background:
-      linear-gradient(#0000 0 0),
-      repeating-linear-gradient(to left,var(--line) 0 1px,#0000 1px 72px),
-      repeating-linear-gradient(to bottom,var(--line) 0 1px,#0000 1px 72px),
-      var(--ink);
-    background-size:auto,6.6% 100%,100% 6.6%,auto;
-    border:1px solid var(--line)}
-  .slide .inner{position:absolute;inset:0;padding:7cqw;display:flex;flex-direction:column}
-  .chrome{display:flex;justify-content:space-between;align-items:center;
-    font-family:var(--data);font-size:2.35cqw;letter-spacing:.18em;color:var(--muted);flex:none}
-  .chrome b{color:var(--paper);font-weight:700;letter-spacing:.06em;font-size:2.7cqw}
-  .content{flex:1;display:flex;flex-direction:column;justify-content:center;gap:3.2cqw;
-    padding:4cqw 0 1cqw}
-  .content.top{justify-content:center;padding:2cqw 0;gap:4cqw}
+      radial-gradient(78% 58% at 50% 30%,rgba(255,255,255,.16),transparent 70%),
+      radial-gradient(46% 34% at 12% 88%,rgba(255,255,255,.09),transparent 70%),
+      radial-gradient(40% 30% at 92% 10%,rgba(255,255,255,.08),transparent 70%),
+      linear-gradient(170deg,var(--g-top),var(--g-bot))}
 
-  h2.big{font-family:var(--display);font-weight:900;line-height:1.08;margin:0;
-    font-size:8.4cqw;text-wrap:balance}
-  h2.mid{font-family:var(--display);font-weight:900;line-height:1.12;margin:0;
-    font-size:6.6cqw;text-wrap:balance}
-  .lede{font-size:3.5cqw;line-height:1.55;color:#C6D3D2;font-weight:300;margin:0;max-width:88%}
-  .eyebrow{font-family:var(--data);font-size:2.5cqw;letter-spacing:.22em;font-weight:500;margin:0}
-  .eyebrow.s{color:var(--stable)}
-  .eyebrow.i{color:var(--index)}
+  /* the framed board — one shape, every slide, echoing a classroom board */
+  .frame{position:absolute;inset:7cqw;border:0.62cqw solid var(--hair);border-radius:2.6cqw;
+    background:var(--veil);display:flex;flex-direction:column;padding:7cqw 6.4cqw;
+    text-align:center;align-items:center;justify-content:center;gap:3.4cqw}
+  .num{position:absolute;left:0;right:0;bottom:2.4cqw;text-align:center;font-family:var(--display);
+    font-size:2.3cqw;font-weight:500;letter-spacing:.26em;color:rgba(255,255,255,.62)}
 
-  /* two-force split */
-  .forces{display:grid;grid-template-columns:1fr 1fr;gap:3cqw}
-  .force{background:var(--ink2);padding:4.4cqw;display:flex;flex-direction:column;gap:1.8cqw;
-    border-top:.5cqw solid var(--tone)}
-  .force .t{font-family:var(--display);font-weight:700;font-size:4.6cqw;line-height:1.15;color:var(--tone)}
-  .force .d{font-size:3.1cqw;line-height:1.5;color:#BCCBCA;font-weight:300}
-  [data-tone=s]{--tone:var(--stable)}
-  [data-tone=i]{--tone:var(--index)}
+  .label{font-family:var(--display);font-weight:700;font-size:2.9cqw;letter-spacing:.22em;
+    color:var(--gold);margin:0}
+  .say{font-family:var(--body);font-weight:300;font-size:4.8cqw;line-height:1.5;
+    color:var(--soft);margin:0;text-wrap:balance}
+  .hit{font-family:var(--display);font-weight:900;font-size:8cqw;line-height:1.18;
+    margin:0;text-wrap:balance;letter-spacing:-.01em}
+  .hit.xl{font-size:10.2cqw;line-height:1.12}
+  .foot{font-family:var(--body);font-weight:300;font-size:3.45cqw;line-height:1.5;
+    color:var(--dim);margin:0;text-wrap:balance}
+  .rule{width:22%;height:.4cqw;background:var(--gold);border-radius:99px;flex:none}
 
-  /* bullet lists */
-  ul.pts{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:3.6cqw}
-  ul.pts li{display:grid;grid-template-columns:auto 1fr;gap:2.6cqw;align-items:start}
-  ul.pts .dot{width:2.4cqw;height:2.4cqw;margin-top:1.3cqw;background:var(--tone);flex:none;
-    transform:rotate(45deg)}
-  ul.pts .tx{font-size:3.55cqw;line-height:1.5;font-weight:300;color:#CBD8D7}
-  ul.pts .tx b{font-weight:700;color:var(--paper)}
+  /* simple stacked list — no bullets, just breathing room and a hairline */
+  .rows{width:100%;display:flex;flex-direction:column;gap:0}
+  .rows p{margin:0;font-family:var(--body);font-weight:400;font-size:4.35cqw;line-height:1.4;
+    padding:3.6cqw 0;border-bottom:1px solid var(--hair);text-wrap:balance}
+  .rows p:last-child{border-bottom:0}
+  .rows p b{font-family:var(--display);font-weight:900}
 
-  /* numbers / equation */
-  .eq{direction:ltr;display:flex;align-items:baseline;justify-content:center;gap:2.2cqw;
-    font-family:var(--data);font-variant-numeric:tabular-nums;background:var(--ink2);
-    padding:5cqw 3cqw;border-right:.6cqw solid var(--index)}
-  .eq span{font-size:5.4cqw;font-weight:500;color:#B9C8C7}
-  .eq .op{font-size:4cqw;color:var(--muted)}
-  .eq .res{font-size:7.2cqw;font-weight:700;color:var(--index)}
-  .note{font-size:2.75cqw;line-height:1.5;color:var(--muted);font-weight:300;
-    border-top:1px solid var(--line);padding-top:2.6cqw}
-  .note b{color:#C6D3D2;font-weight:600}
+  /* the one number that matters */
+  .big{font-family:var(--display);font-weight:900;font-size:14.5cqw;line-height:1;color:var(--gold);
+    margin:0;font-variant-numeric:tabular-nums}
+  .calc{font-family:var(--display);font-weight:500;font-size:4.2cqw;color:var(--soft);
+    direction:ltr;margin:0;font-variant-numeric:tabular-nums;letter-spacing:.02em}
 
-  /* compare table */
-  .cmp{display:grid;grid-template-columns:1fr 1fr;gap:0 3cqw}
-  .cmp .h{font-family:var(--display);font-weight:900;font-size:5.4cqw;padding-bottom:2.4cqw;
-    border-bottom:.4cqw solid var(--tone);color:var(--tone)}
-  .cmp .r{font-size:3.5cqw;line-height:1.45;font-weight:300;color:#C6D3D2;padding:4.6cqw 0;
-    border-bottom:1px solid var(--line)}
-  .cmp .r b{font-weight:700;color:var(--paper)}
-
-  /* risk bar */
-  .risk{display:flex;flex-direction:column;gap:1.6cqw}
-  .risk .bar{height:2.6cqw;display:flex;gap:.8cqw}
-  .risk .bar i{flex:1;background:var(--ink3)}
-  .risk .bar i.on{background:var(--tone)}
-  .risk .cap{font-family:var(--data);font-size:2.5cqw;letter-spacing:.1em;color:var(--muted)}
-
-  /* cover art: index step-line */
-  .art{position:absolute;inset:0;width:100%;height:100%;opacity:.95;pointer-events:none}
-  .slide.cover .content{padding-bottom:30cqw}
-
-  .cta{display:flex;flex-direction:column;gap:2.4cqw;background:var(--ink2);padding:5cqw}
-  .cta .q{font-family:var(--display);font-weight:700;font-size:4.4cqw;line-height:1.25}
-  .cta .a{font-size:3.2cqw;line-height:1.5;font-weight:300;color:#BCCBCA}
+  /* two-track comparison */
+  .track{width:100%;display:flex;flex-direction:column;gap:1.2cqw;padding:3.4cqw 0;
+    border-bottom:1px solid var(--hair)}
+  .track:last-of-type{border-bottom:0}
+  .track .k{font-family:var(--display);font-weight:900;font-size:6.6cqw;line-height:1;
+    color:var(--gold)}
+  .track .v{font-family:var(--body);font-weight:300;font-size:4.2cqw;line-height:1.4;color:var(--soft)}
 
   /* ---------- caption panel ---------- */
-  .caption{margin-top:38px;border:1px solid var(--line);background:var(--ink2)}
+  .caption{margin-top:36px;border:1px solid var(--hair);border-radius:14px;background:var(--veil)}
   .cap-head{display:flex;justify-content:space-between;align-items:center;gap:16px;
-    padding:16px 22px;border-bottom:1px solid var(--line)}
-  .cap-head h3{margin:0;font-family:var(--data);font-size:12px;letter-spacing:.2em;
-    font-weight:500;color:var(--stable)}
-  button.copy{font-family:var(--data);font-size:12.5px;letter-spacing:.08em;color:var(--ink);
-    background:var(--stable);border:0;padding:9px 18px;cursor:pointer;font-weight:700}
-  button.copy:hover{background:#8AC9BD}
-  button.copy:focus-visible{outline:2px solid var(--index);outline-offset:2px}
-  pre.cap-body{margin:0;padding:22px;white-space:pre-wrap;font-family:var(--body);
-    font-size:15.5px;line-height:1.72;font-weight:300;color:#CBD8D7;direction:rtl;
-    max-height:none;overflow-x:auto}
-  .tags{padding:0 22px 22px;color:var(--stable);font-family:var(--data);font-size:14px;
-    line-height:1.9;word-break:break-word}
-  .disclaimer{margin-top:26px;color:var(--muted);font-size:13px;line-height:1.7;font-weight:300;
-    border-top:1px solid var(--line);padding-top:18px}
+    padding:15px 22px;border-bottom:1px solid var(--hair)}
+  .cap-head h3{margin:0;font-family:var(--display);font-size:12px;letter-spacing:.2em;
+    font-weight:700;color:var(--gold)}
+  button.copy{font-family:var(--display);font-size:12.5px;letter-spacing:.06em;color:#0B7A35;
+    background:var(--white);border:0;border-radius:8px;padding:9px 18px;cursor:pointer;font-weight:700}
+  button.copy:hover{background:#EAFBF0}
+  button.copy:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  pre.cap-body{margin:0;padding:22px;white-space:pre-wrap;font-family:var(--body);font-size:15.5px;
+    line-height:1.72;font-weight:300;color:var(--soft);direction:rtl;overflow-x:auto}
+  .tags{padding:0 22px 22px;color:var(--gold);font-family:var(--display);font-size:14px;
+    font-weight:500;line-height:1.9;word-break:break-word}
+  .disclaimer{margin-top:24px;color:var(--dim);font-size:13px;line-height:1.7;font-weight:300;
+    border-top:1px solid var(--hair);padding-top:18px}
   @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
 </style>
 
@@ -138,172 +102,122 @@
 
   <header class="masthead">
     <p class="kicker">קרוסלה · 9 שקופיות · מסלולי משכנתא</p>
-    <h1>הריבית קבועה. <em>המשכנתא לא.</em></h1>
+    <h1>הריבית קבועה. המשכנתא לא.</h1>
     <p>מסלול ק״צ — קבועה צמודה למדד</p>
   </header>
 
   <p class="hint">
-    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3L5 8l5 5" stroke="#8CA4A3" stroke-width="1.6"/></svg>
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3L5 8l5 5" stroke="rgba(255,255,255,.68)" stroke-width="1.7"/></svg>
     גללו לצדדים כדי לעבור בין השקופיות
   </p>
 
   <div class="strip" role="list" aria-label="שקופיות הקרוסלה">
 
-    <!-- 01 · hook -->
-    <article class="slide cover" role="listitem" data-tone="i">
-      <div class="inner">
-        <div class="chrome"><b>ק״צ</b><span dir="ltr">01 / 09</span></div>
-        <div class="content">
-          <p class="eyebrow i">קבועה צמודה למדד</p>
-          <h2 class="big">הריבית קבועה.<br>המשכנתא לא.</h2>
-          <p class="lede">ריבית של 3% תישאר 3%. יתרת החוב שלכם — לא בהכרח.</p>
-        </div>
-      </div>
-      <svg class="art" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
-        <path d="M0 86 H12 V82.5 H24 V83.5 H36 V76 H48 V72.5 H60 V65.5 H72 V61.5 H86 V53 H100"
-              fill="none" stroke="#E8B03E" stroke-width="0.72"/>
-        <path d="M0 92.5 H100" fill="none" stroke="#74B9AC" stroke-width="0.72"/>
-      </svg>
-    </article>
-
-    <!-- 02 · what it is -->
+    <!-- 01 -->
     <article class="slide" role="listitem">
-      <div class="inner">
-        <div class="chrome"><b>ק״צ</b><span dir="ltr">02 / 09</span></div>
-        <div class="content">
-          <h2 class="mid">שני דברים שחייבים להפריד</h2>
-          <div class="forces">
-            <div class="force" data-tone="s">
-              <div class="t">הריבית<br>לא משתנה</div>
-              <div class="d">לקחתם ב-3%? זה יישאר 3% לאורך כל חיי המסלול.</div>
-            </div>
-            <div class="force" data-tone="i">
-              <div class="t">החוב<br>כן משתנה</div>
-              <div class="d">המדד עולה — ויתרת המשכנתא יכולה לעלות בהתאם.</div>
-            </div>
-          </div>
-          <p class="lede" style="font-size:3.1cqw;max-width:100%">
-            לכן ההחזר החודשי והסכום הסופי שתשלמו <b style="font-weight:700;color:#E9EFEE">אינם בהכרח קבועים</b>.
-          </p>
-        </div>
+      <div class="frame">
+        <p class="label">מסלול משכנתא</p>
+        <h2 class="hit xl">הריבית קבועה.<br>המשכנתא לא.</h2>
+        <div class="rule"></div>
+        <p class="say">כל מה שצריך לדעת על ק״צ</p>
       </div>
+      <div class="num" dir="ltr">01 / 09</div>
     </article>
 
-    <!-- 03 · pros -->
-    <article class="slide" role="listitem" data-tone="s">
-      <div class="inner">
-        <div class="chrome"><b>ק״צ</b><span dir="ltr">03 / 09</span></div>
-        <div class="content top">
-          <p class="eyebrow s">היתרונות</p>
-          <h2 class="mid">למה זה מפתה</h2>
-          <ul class="pts">
-            <li><span class="dot"></span><span class="tx"><b>ריבית קבועה.</b> אם הריבית במשק תעלה — שלכם לא.</span></li>
-            <li><span class="dot"></span><span class="tx"><b>ריבית התחלתית נמוכה.</b> בדרך כלל נמוכה מזו של קל״צ.</span></li>
-            <li><span class="dot"></span><span class="tx"><b>החזר התחלתי נוח.</b> בתחילת הדרך המספר החודשי קטן יותר.</span></li>
-          </ul>
-        </div>
-      </div>
-    </article>
-
-    <!-- 04 · cons -->
-    <article class="slide" role="listitem" data-tone="i">
-      <div class="inner">
-        <div class="chrome"><b>ק״צ</b><span dir="ltr">04 / 09</span></div>
-        <div class="content top">
-          <p class="eyebrow i">החסרונות</p>
-          <h2 class="mid">מה המחיר</h2>
-          <ul class="pts">
-            <li><span class="dot"></span><span class="tx"><b>צמוד למדד.</b> המדד עולה — יתרת החוב גדלה.</span></li>
-            <li><span class="dot"></span><span class="tx"><b>ההחזר יכול לעלות.</b> עלייה במדד מגלגלת גם את ההחזר.</span></li>
-            <li><span class="dot"></span><span class="tx"><b>מתייקר עם השנים.</b> לאורך תקופת משכנתא ההצמדה מצטברת.</span></li>
-            <li><span class="dot"></span><span class="tx"><b>עמלת פירעון מוקדם.</b> במחזור או פירעון — ייתכן קנס, תלוי בתנאים ובריביות בשוק.</span></li>
-          </ul>
-        </div>
-      </div>
-    </article>
-
-    <!-- 05 · the number -->
+    <!-- 02 -->
     <article class="slide" role="listitem">
-      <div class="inner">
-        <div class="chrome"><b>ק״צ</b><span dir="ltr">05 / 09</span></div>
-        <div class="content">
-          <p class="eyebrow i">דוגמה להמחשה</p>
-          <h2 class="mid">מה עושה 0.3% במדד</h2>
-          <p class="lede" style="font-size:3.2cqw">לקחתם 500,000 ₪ בק״צ. המדד עלה ב-0.3%:</p>
-          <div class="eq">
-            <span>500,000</span><span class="op">×</span><span>0.3%</span>
-            <span class="op">=</span><span class="res">1,500 ₪</span>
-          </div>
-        </div>
+      <div class="frame">
+        <p class="label">מה זה ק״צ?</p>
+        <p class="say">מסלול שבו הריבית שלכם קבועה,<br>אבל החוב צמוד</p>
+        <h2 class="hit">למדד המחירים לצרכן</h2>
       </div>
+      <div class="num" dir="ltr">02 / 09</div>
     </article>
 
-    <!-- 06 · the caveat -->
+    <!-- 03 -->
     <article class="slide" role="listitem">
-      <div class="inner">
-        <div class="chrome"><b>ק״צ</b><span dir="ltr">06 / 09</span></div>
-        <div class="content">
-          <p class="eyebrow s">אבל רגע</p>
-          <h2 class="mid">זו רק המחשה</h2>
-          <p class="lede">בפועל אתם מחזירים כל חודש חלק מהקרן. ההצמדה מחושבת על <b style="font-weight:700;color:#E9EFEE">יתרת החוב שנשארה</b> — לא תמיד על 500,000 ₪.</p>
-          <p class="note">כלל אצבע: ככל שמתקדמים בלוח הסילוקין, הבסיס להצמדה קטן. בשנים הראשונות הוא הכי גדול — ושם ההשפעה הכי מורגשת.</p>
-        </div>
+      <div class="frame">
+        <p class="say">לקחתם משכנתא בריבית של 3%?</p>
+        <h2 class="hit">היא תישאר 3%<br>לאורך כל חיי המסלול.</h2>
+        <p class="foot">זה החלק הקבוע — והוא באמת קבוע.</p>
       </div>
+      <div class="num" dir="ltr">03 / 09</div>
     </article>
 
-    <!-- 07 · why cheaper -->
+    <!-- 04 -->
     <article class="slide" role="listitem">
-      <div class="inner">
-        <div class="chrome"><b>ק״צ</b><span dir="ltr">07 / 09</span></div>
-        <div class="content">
-          <h2 class="mid">למה הריבית בק״צ נמוכה יותר?</h2>
-          <p class="lede" style="font-size:3.2cqw">כי בכל מסלול אתם לוקחים על עצמכם סיכון אחר. הריבית הנמוכה היא התשלום שאתם מקבלים על נשיאת סיכון המדד.</p>
-          <div class="risk" data-tone="s">
-            <div class="cap">קל״צ · הסיכון שלכם</div>
-            <div class="bar"><i class="on"></i><i></i><i></i><i></i><i></i><i></i></div>
-          </div>
-          <div class="risk" data-tone="i">
-            <div class="cap">ק״צ · הסיכון שלכם</div>
-            <div class="bar"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i><i></i><i></i></div>
-          </div>
-        </div>
+      <div class="frame">
+        <p class="say">אבל אם המדד עולה —</p>
+        <h2 class="hit">גם יתרת המשכנתא<br>עולה איתו.</h2>
+        <p class="foot">ולכן גם ההחזר החודשי שלכם יכול לעלות.</p>
       </div>
+      <div class="num" dir="ltr">04 / 09</div>
     </article>
 
-    <!-- 08 · compare -->
+    <!-- 05 -->
     <article class="slide" role="listitem">
-      <div class="inner">
-        <div class="chrome"><b>ק״צ</b><span dir="ltr">08 / 09</span></div>
-        <div class="content top">
-          <h2 class="mid">איך זוכרים את זה</h2>
-          <div class="cmp">
-            <div class="h" style="--tone:var(--stable)">קל״צ</div>
-            <div class="h" style="--tone:var(--index)">ק״צ</div>
-            <div class="r">ריבית <b>גבוהה יותר</b></div>
-            <div class="r">ריבית <b>נמוכה יותר</b></div>
-            <div class="r"><b>אין</b> הצמדה למדד</div>
-            <div class="r"><b>יש</b> הצמדה למדד</div>
-            <div class="r">הרבה יותר <b>ודאות</b></div>
-            <div class="r">הרבה יותר <b>סיכון</b></div>
-          </div>
+      <div class="frame">
+        <p class="label">היתרונות</p>
+        <div class="rows">
+          <p>הריבית <b>לא תעלה</b> גם אם הריבית במשק תעלה</p>
+          <p>ריבית התחלתית <b>נמוכה יותר</b> מקל״צ</p>
+          <p>ההחזר החודשי <b>נוח יותר</b> בהתחלה</p>
         </div>
       </div>
+      <div class="num" dir="ltr">05 / 09</div>
     </article>
 
-    <!-- 09 · bottom line + CTA -->
-    <article class="slide" role="listitem" data-tone="i">
-      <div class="inner">
-        <div class="chrome"><b>ק״צ</b><span dir="ltr">09 / 09</span></div>
-        <div class="content">
-          <p class="eyebrow i">בשורה התחתונה</p>
-          <h2 class="mid">ריבית קבועה ≠ משכנתא קבועה</h2>
-          <p class="lede" style="font-size:3.2cqw">הריבית קבועה. הקרן וההחזר יכולים להשתנות בגלל המדד. לפני שבוחרים ק״צ — אל תסתכלו רק על הריבית שהבנק מציע.</p>
-          <div class="cta">
-            <div class="q">שאלו את עצמכם: מה קורה לתמהיל שלי אם המדד יעלה 2% בשנה במשך 20 שנה?</div>
-            <div class="a">אם אין לכם תשובה — שמרו את הפוסט ושלחו אותו למי שלוקח משכנתא החודש.</div>
-          </div>
+    <!-- 06 -->
+    <article class="slide" role="listitem">
+      <div class="frame">
+        <p class="label">החסרונות</p>
+        <div class="rows">
+          <p>המדד עולה — <b>החוב גדל</b></p>
+          <p>ההחזר החודשי <b>יכול לעלות</b></p>
+          <p>המשכנתא <b>מתייקרת</b> לאורך השנים</p>
+          <p>ייתכן <b>קנס</b> בפירעון או מחזור מוקדם</p>
         </div>
       </div>
+      <div class="num" dir="ltr">06 / 09</div>
+    </article>
+
+    <!-- 07 -->
+    <article class="slide" role="listitem">
+      <div class="frame">
+        <p class="label">דוגמה</p>
+        <p class="say">לקחתם 500,000 ₪.<br>המדד עלה ב-0.3%.</p>
+        <p class="big">1,500 ₪</p>
+        <p class="foot">כך יכולה לגדול יתרת החוב שלכם.</p>
+      </div>
+      <div class="num" dir="ltr">07 / 09</div>
+    </article>
+
+    <!-- 08 -->
+    <article class="slide" role="listitem">
+      <div class="frame">
+        <p class="label">איך זוכרים את זה</p>
+        <div class="track">
+          <span class="k">קל״צ</span>
+          <span class="v">ריבית גבוהה יותר — אין מדד</span>
+        </div>
+        <div class="track">
+          <span class="k">ק״צ</span>
+          <span class="v">ריבית נמוכה יותר — יש מדד</span>
+        </div>
+        <p class="foot">הריבית הנמוכה היא התשלום שאתם מקבלים על סיכון המדד.</p>
+      </div>
+      <div class="num" dir="ltr">08 / 09</div>
+    </article>
+
+    <!-- 09 -->
+    <article class="slide" role="listitem">
+      <div class="frame">
+        <p class="label">בשורה התחתונה</p>
+        <h2 class="hit">ריבית קבועה<br>לא אומרת<br>משכנתא קבועה.</h2>
+        <div class="rule"></div>
+        <p class="say">שמרו את הפוסט ושלחו<br>למי שלוקח משכנתא החודש.</p>
+      </div>
+      <div class="num" dir="ltr">09 / 09</div>
     </article>
 
   </div>
@@ -337,8 +251,8 @@
   </section>
 
   <p class="disclaimer">
-    מפרט טכני: 9 שקופיות ביחס 1:1 (1080×1080). מומלץ להעלות את שקופית 01 כתמונת השער.
-    השקופיות בנויות על שני צבעים בעלי משמעות — טורקיז = מה שקבוע, זהב = מה שצמוד למדד. שמרו על הקוד הזה גם בפוסטים הבאים בסדרה.
+    9 שקופיות ביחס 1:1 (1080×1080). שקופית 01 היא השער.
+    אין על השקופיות שם משתמש — תגידו לי את ההאשטג שלכם ואוסיף אותו לאורך הקצה השמאלי, כמו בדוגמה.
   </p>
 
 </div>
@@ -350,14 +264,12 @@
     btn.addEventListener('click',function(){
       var txt=src.textContent+"\n\n"+tags.textContent.trim();
       var done=function(){btn.textContent='הועתק ✓';setTimeout(function(){btn.textContent='העתק טקסט';},1800);};
-      try{
-        navigator.clipboard.writeText(txt).then(done,select);
-      }catch(e){select();}
       function select(){
         var r=document.createRange();r.selectNodeContents(src);
         var s=window.getSelection();s.removeAllRanges();s.addRange(r);
         btn.textContent='סמנו והעתיקו';setTimeout(function(){btn.textContent='העתק טקסט';},2400);
       }
+      try{ navigator.clipboard.writeText(txt).then(done,select); }catch(e){ select(); }
     });
   })();
 </script>
