@@ -1,0 +1,275 @@
+<title>הריבית קבועה, המשכנתא לא</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik:wght@400;500;700;900&family=Assistant:wght@300;400;600;700&display=swap">
+<style>
+  :root{
+    --g-top:#22B85F;
+    --g-bot:#0B8038;
+    --white:#FFFFFF;
+    --soft:rgba(255,255,255,.86);
+    --dim:rgba(255,255,255,.68);
+    --hair:rgba(255,255,255,.34);
+    --veil:rgba(255,255,255,.10);
+    --gold:#FFD34E;
+    --display:"Rubik","Segoe UI",system-ui,sans-serif;
+    --body:"Assistant","Segoe UI",system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#0F9247;color:var(--white);font-family:var(--body)}
+  .page{direction:rtl;max-width:1180px;margin:0 auto;padding:44px 20px 90px}
+
+  /* ---------- page chrome ---------- */
+  .masthead{border-bottom:1px solid var(--hair);padding-bottom:20px}
+  .kicker{font-family:var(--display);font-size:12px;letter-spacing:.22em;font-weight:500;
+    color:var(--dim);margin:0 0 12px}
+  .masthead h1{font-family:var(--display);font-weight:900;margin:0;line-height:1.12;
+    font-size:clamp(28px,4.6vw,46px);text-wrap:balance}
+  .masthead p{margin:10px 0 0;color:var(--soft);font-size:15px;font-weight:300}
+  .hint{display:flex;align-items:center;gap:9px;color:var(--dim);font-family:var(--display);
+    font-size:12.5px;letter-spacing:.06em;margin:20px 0 10px;font-weight:500}
+
+  /* ---------- carousel strip ---------- */
+  .strip{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x mandatory;padding:4px 0 22px}
+  .strip::-webkit-scrollbar{height:8px}
+  .strip::-webkit-scrollbar-thumb{background:rgba(255,255,255,.28);border-radius:99px}
+
+  .slide{flex:none;scroll-snap-align:center;width:min(560px,84vw);aspect-ratio:1/1;
+    container-type:inline-size;position:relative;overflow:hidden;
+    background:
+      radial-gradient(78% 58% at 50% 30%,rgba(255,255,255,.16),transparent 70%),
+      radial-gradient(46% 34% at 12% 88%,rgba(255,255,255,.09),transparent 70%),
+      radial-gradient(40% 30% at 92% 10%,rgba(255,255,255,.08),transparent 70%),
+      linear-gradient(170deg,var(--g-top),var(--g-bot))}
+
+  /* the framed board — one shape, every slide, echoing a classroom board */
+  .frame{position:absolute;inset:7cqw;border:0.62cqw solid var(--hair);border-radius:2.6cqw;
+    background:var(--veil);display:flex;flex-direction:column;padding:7cqw 6.4cqw;
+    text-align:center;align-items:center;justify-content:center;gap:3.4cqw}
+  .num{position:absolute;left:0;right:0;bottom:2.4cqw;text-align:center;font-family:var(--display);
+    font-size:2.3cqw;font-weight:500;letter-spacing:.26em;color:rgba(255,255,255,.62)}
+
+  .label{font-family:var(--display);font-weight:700;font-size:2.9cqw;letter-spacing:.22em;
+    color:var(--gold);margin:0}
+  .say{font-family:var(--body);font-weight:300;font-size:4.8cqw;line-height:1.5;
+    color:var(--soft);margin:0;text-wrap:balance}
+  .hit{font-family:var(--display);font-weight:900;font-size:8cqw;line-height:1.18;
+    margin:0;text-wrap:balance;letter-spacing:-.01em}
+  .hit.xl{font-size:10.2cqw;line-height:1.12}
+  .foot{font-family:var(--body);font-weight:300;font-size:3.45cqw;line-height:1.5;
+    color:var(--dim);margin:0;text-wrap:balance}
+  .rule{width:22%;height:.4cqw;background:var(--gold);border-radius:99px;flex:none}
+
+  /* simple stacked list — no bullets, just breathing room and a hairline */
+  .rows{width:100%;display:flex;flex-direction:column;gap:0}
+  .rows p{margin:0;font-family:var(--body);font-weight:400;font-size:4.35cqw;line-height:1.4;
+    padding:3.6cqw 0;border-bottom:1px solid var(--hair);text-wrap:balance}
+  .rows p:last-child{border-bottom:0}
+  .rows p b{font-family:var(--display);font-weight:900}
+
+  /* the one number that matters */
+  .big{font-family:var(--display);font-weight:900;font-size:14.5cqw;line-height:1;color:var(--gold);
+    margin:0;font-variant-numeric:tabular-nums}
+  .calc{font-family:var(--display);font-weight:500;font-size:4.2cqw;color:var(--soft);
+    direction:ltr;margin:0;font-variant-numeric:tabular-nums;letter-spacing:.02em}
+
+  /* two-track comparison */
+  .track{width:100%;display:flex;flex-direction:column;gap:1.2cqw;padding:3.4cqw 0;
+    border-bottom:1px solid var(--hair)}
+  .track:last-of-type{border-bottom:0}
+  .track .k{font-family:var(--display);font-weight:900;font-size:6.6cqw;line-height:1;
+    color:var(--gold)}
+  .track .v{font-family:var(--body);font-weight:300;font-size:4.2cqw;line-height:1.4;color:var(--soft)}
+
+  /* ---------- caption panel ---------- */
+  .caption{margin-top:36px;border:1px solid var(--hair);border-radius:14px;background:var(--veil)}
+  .cap-head{display:flex;justify-content:space-between;align-items:center;gap:16px;
+    padding:15px 22px;border-bottom:1px solid var(--hair)}
+  .cap-head h3{margin:0;font-family:var(--display);font-size:12px;letter-spacing:.2em;
+    font-weight:700;color:var(--gold)}
+  button.copy{font-family:var(--display);font-size:12.5px;letter-spacing:.06em;color:#0B7A35;
+    background:var(--white);border:0;border-radius:8px;padding:9px 18px;cursor:pointer;font-weight:700}
+  button.copy:hover{background:#EAFBF0}
+  button.copy:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+  pre.cap-body{margin:0;padding:22px;white-space:pre-wrap;font-family:var(--body);font-size:15.5px;
+    line-height:1.72;font-weight:300;color:var(--soft);direction:rtl;overflow-x:auto}
+  .tags{padding:0 22px 22px;color:var(--gold);font-family:var(--display);font-size:14px;
+    font-weight:500;line-height:1.9;word-break:break-word}
+  .disclaimer{margin-top:24px;color:var(--dim);font-size:13px;line-height:1.7;font-weight:300;
+    border-top:1px solid var(--hair);padding-top:18px}
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="page">
+
+  <header class="masthead">
+    <p class="kicker">קרוסלה · 9 שקופיות · מסלולי משכנתא</p>
+    <h1>הריבית קבועה. המשכנתא לא.</h1>
+    <p>מסלול ק״צ — קבועה צמודה למדד</p>
+  </header>
+
+  <p class="hint">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M10 3L5 8l5 5" stroke="rgba(255,255,255,.68)" stroke-width="1.7"/></svg>
+    גללו לצדדים כדי לעבור בין השקופיות
+  </p>
+
+  <div class="strip" role="list" aria-label="שקופיות הקרוסלה">
+
+    <!-- 01 -->
+    <article class="slide" role="listitem">
+      <div class="frame">
+        <p class="label">מסלול משכנתא</p>
+        <h2 class="hit xl">הריבית קבועה.<br>המשכנתא לא.</h2>
+        <div class="rule"></div>
+        <p class="say">כל מה שצריך לדעת על ק״צ</p>
+      </div>
+      <div class="num" dir="ltr">01 / 09</div>
+    </article>
+
+    <!-- 02 -->
+    <article class="slide" role="listitem">
+      <div class="frame">
+        <p class="label">מה זה ק״צ?</p>
+        <p class="say">מסלול שבו הריבית שלכם קבועה,<br>אבל החוב צמוד</p>
+        <h2 class="hit">למדד המחירים לצרכן</h2>
+      </div>
+      <div class="num" dir="ltr">02 / 09</div>
+    </article>
+
+    <!-- 03 -->
+    <article class="slide" role="listitem">
+      <div class="frame">
+        <p class="say">לקחתם משכנתא בריבית של 3%?</p>
+        <h2 class="hit">היא תישאר 3%<br>לאורך כל חיי המסלול.</h2>
+        <p class="foot">זה החלק הקבוע — והוא באמת קבוע.</p>
+      </div>
+      <div class="num" dir="ltr">03 / 09</div>
+    </article>
+
+    <!-- 04 -->
+    <article class="slide" role="listitem">
+      <div class="frame">
+        <p class="say">אבל אם המדד עולה —</p>
+        <h2 class="hit">גם יתרת המשכנתא<br>עולה איתו.</h2>
+        <p class="foot">ולכן גם ההחזר החודשי שלכם יכול לעלות.</p>
+      </div>
+      <div class="num" dir="ltr">04 / 09</div>
+    </article>
+
+    <!-- 05 -->
+    <article class="slide" role="listitem">
+      <div class="frame">
+        <p class="label">היתרונות</p>
+        <div class="rows">
+          <p>הריבית <b>לא תעלה</b> גם אם הריבית במשק תעלה</p>
+          <p>ריבית התחלתית <b>נמוכה יותר</b> מקל״צ</p>
+          <p>ההחזר החודשי <b>נוח יותר</b> בהתחלה</p>
+        </div>
+      </div>
+      <div class="num" dir="ltr">05 / 09</div>
+    </article>
+
+    <!-- 06 -->
+    <article class="slide" role="listitem">
+      <div class="frame">
+        <p class="label">החסרונות</p>
+        <div class="rows">
+          <p>המדד עולה — <b>החוב גדל</b></p>
+          <p>ההחזר החודשי <b>יכול לעלות</b></p>
+          <p>המשכנתא <b>מתייקרת</b> לאורך השנים</p>
+          <p>ייתכן <b>קנס</b> בפירעון או מחזור מוקדם</p>
+        </div>
+      </div>
+      <div class="num" dir="ltr">06 / 09</div>
+    </article>
+
+    <!-- 07 -->
+    <article class="slide" role="listitem">
+      <div class="frame">
+        <p class="label">דוגמה</p>
+        <p class="say">לקחתם 500,000 ₪.<br>המדד עלה ב-0.3%.</p>
+        <p class="big">1,500 ₪</p>
+        <p class="foot">כך יכולה לגדול יתרת החוב שלכם.</p>
+      </div>
+      <div class="num" dir="ltr">07 / 09</div>
+    </article>
+
+    <!-- 08 -->
+    <article class="slide" role="listitem">
+      <div class="frame">
+        <p class="label">איך זוכרים את זה</p>
+        <div class="track">
+          <span class="k">קל״צ</span>
+          <span class="v">ריבית גבוהה יותר — אין מדד</span>
+        </div>
+        <div class="track">
+          <span class="k">ק״צ</span>
+          <span class="v">ריבית נמוכה יותר — יש מדד</span>
+        </div>
+        <p class="foot">הריבית הנמוכה היא התשלום שאתם מקבלים על סיכון המדד.</p>
+      </div>
+      <div class="num" dir="ltr">08 / 09</div>
+    </article>
+
+    <!-- 09 -->
+    <article class="slide" role="listitem">
+      <div class="frame">
+        <p class="label">בשורה התחתונה</p>
+        <h2 class="hit">ריבית קבועה<br>לא אומרת<br>משכנתא קבועה.</h2>
+        <div class="rule"></div>
+        <p class="say">שמרו את הפוסט ושלחו<br>למי שלוקח משכנתא החודש.</p>
+      </div>
+      <div class="num" dir="ltr">09 / 09</div>
+    </article>
+
+  </div>
+
+  <section class="caption">
+    <div class="cap-head">
+      <h3>טקסט לפוסט</h3>
+      <button class="copy" id="copyBtn" type="button">העתק טקסט</button>
+    </div>
+    <pre class="cap-body" id="capText">ק״צ: הריבית קבועה — המשכנתא לא.
+
+זה המסלול שנראה הכי אטרקטיבי בסניף, ובצדק: הריבית נמוכה יותר מקל״צ וההחזר ההתחלתי נוח יותר. אבל יש כאן שני דברים שחייבים להפריד ביניהם:
+
+הריבית לא משתנה. לקחתם ב-3%? זה יישאר 3%.
+החוב כן משתנה. המדד עולה — ויתרת המשכנתא עולה איתו.
+
+לכן "קבועה" לא אומרת שההחזר החודשי קבוע, ובטח לא שהסכום הסופי קבוע.
+
+למה הריבית בק״צ נמוכה יותר מקל״צ? כי אתם לוקחים על עצמכם סיכון אחר. בקל״צ אתם משלמים יותר ריבית וקונים ודאות. בק״צ אתם משלמים פחות ריבית ולוקחים את סיכון המדד.
+
+קל״צ = ריבית גבוהה, אין מדד.
+ק״צ = ריבית נמוכה, יש מדד.
+
+לפני שבוחרים ק״צ, אל תסתכלו רק על הריבית שהבנק מציע — תבינו גם את עלות ההצמדה לאורך כל חיי המשכנתא.
+
+גללו לצדדים לפירוט המלא, כולל הדוגמה במספרים 👈
+שמרו לעצמכם ושלחו למי שלוקח משכנתא החודש.
+
+* אין באמור ייעוץ או המלצה. כל תמהיל נבנה לפי הנתונים האישיים שלכם.</pre>
+    <div class="tags">#משכנתא #ק״צ #קלצ #משכנתאות #מדדהמחיריםלצרכן #נדלן #רכישתדירה #דירהראשונה #תמהילמשכנתא #פיננסים #כסף #יועץמשכנתאות</div>
+  </section>
+
+  <p class="disclaimer">
+    9 שקופיות ביחס 1:1 (1080×1080). שקופית 01 היא השער.
+    אין על השקופיות שם משתמש — תגידו לי את ההאשטג שלכם ואוסיף אותו לאורך הקצה השמאלי, כמו בדוגמה.
+  </p>
+
+</div>
+
+<script>
+  (function(){
+    var btn=document.getElementById('copyBtn'), src=document.getElementById('capText');
+    var tags=document.querySelector('.tags');
+    btn.addEventListener('click',function(){
+      var txt=src.textContent+"\n\n"+tags.textContent.trim();
+      var done=function(){btn.textContent='הועתק ✓';setTimeout(function(){btn.textContent='העתק טקסט';},1800);};
+      function select(){
+        var r=document.createRange();r.selectNodeContents(src);
+        var s=window.getSelection();s.removeAllRanges();s.addRange(r);
+        btn.textContent='סמנו והעתיקו';setTimeout(function(){btn.textContent='העתק טקסט';},2400);
+      }
+      try{ navigator.clipboard.writeText(txt).then(done,select); }catch(e){ select(); }
+    });
+  })();
+</script>
