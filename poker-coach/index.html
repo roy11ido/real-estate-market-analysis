@@ -1,0 +1,626 @@
+<title>מאמן הפוקר של רועי</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Secular+One&family=Assistant:wght@400;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
+<style>
+/* Layout: one-column RTL app, sticky tab rail on top, each tab is a working tool. Felt-ink ground, chip-red accent, card-white tiles. */
+:root{
+  --bg:#f3f5f2; --surface:#ffffff; --surface-2:#e8ece7; --fg:#18231e; --muted:#5b6b62; --line:#d3dad4;
+  --felt:#1f5a45; --felt-soft:#d9e9e1; --chip:#c2373a; --chip-soft:#f6dcdc; --call:#3f8a4f; --call-soft:#dcefdf;
+  --raise:#9a3d6b; --raise-soft:#f1dce7; --gold:#b98a1b;
+  --display:"Secular One","Assistant",system-ui,sans-serif; --body:"Assistant",system-ui,sans-serif; --mono:"IBM Plex Mono",ui-monospace,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0f1714; --surface:#17221d; --surface-2:#1f2c26; --fg:#e7eee9; --muted:#9aaba1; --line:#2c3b34;
+  --felt:#5fbf97; --felt-soft:#1d3a2f; --chip:#f0686a; --chip-soft:#3d1d1f; --call:#6cc27d; --call-soft:#1c3522;
+  --raise:#d77fab; --raise-soft:#3a1f2d; --gold:#e0b44a; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0f1714; --surface:#17221d; --surface-2:#1f2c26; --fg:#e7eee9; --muted:#9aaba1; --line:#2c3b34;
+  --felt:#5fbf97; --felt-soft:#1d3a2f; --chip:#f0686a; --chip-soft:#3d1d1f; --call:#6cc27d; --call-soft:#1c3522;
+  --raise:#d77fab; --raise-soft:#3a1f2d; --gold:#e0b44a; color-scheme:dark}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:16px;line-height:1.55;direction:rtl}
+.wrap{max-width:980px;margin:0 auto;padding-inline:16px;padding-block:20px 60px}
+header.top{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;padding-block:6px 14px}
+h1{font-family:var(--display);font-weight:400;font-size:clamp(1.7rem,4vw,2.4rem);margin:0;line-height:1.1;text-wrap:balance}
+h1 .suit{color:var(--chip)}
+.sub{color:var(--muted);margin:4px 0 0}
+.stats{display:flex;gap:16px;font-family:var(--mono);font-size:.82rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.stats b{color:var(--fg);font-size:1rem}
+nav.tabs{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);display:flex;gap:4px;overflow-x:auto;border-bottom:1px solid var(--line);padding-block:6px;scrollbar-width:none}
+nav.tabs button{flex:0 0 auto;font:600 .95rem var(--body);background:none;border:0;color:var(--muted);padding:8px 12px;border-radius:8px;cursor:pointer}
+nav.tabs button[aria-selected="true"]{background:var(--felt);color:var(--bg)}
+nav.tabs button:focus-visible,button:focus-visible,select:focus-visible,textarea:focus-visible,input:focus-visible{outline:2px solid var(--chip);outline-offset:2px}
+section.tab{padding-top:20px;display:grid;gap:18px}
+h2{font-family:var(--display);font-weight:400;font-size:1.45rem;margin:0;text-wrap:balance}
+h3{font-size:1.08rem;margin:0}
+p{margin:0}
+.lead{color:var(--muted);max-width:65ch}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:grid;gap:12px;min-width:0}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:14px}
+label.ctl{display:grid;gap:4px;font-size:.85rem;color:var(--muted);font-weight:600}
+select,input[type=number],input[type=text],textarea{font:inherit;color:var(--fg);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;min-width:0}
+textarea{width:100%;resize:vertical;min-height:90px}
+.btn{font:700 .95rem var(--body);border:1px solid var(--line);background:var(--surface-2);color:var(--fg);padding:9px 16px;border-radius:999px;cursor:pointer}
+.btn:hover{border-color:var(--muted)}
+.btn.primary{background:var(--felt);color:var(--bg);border-color:var(--felt)}
+.btn.act-R{background:var(--raise);color:#fff;border-color:var(--raise)}
+.btn.act-C{background:var(--call);color:#fff;border-color:var(--call)}
+.btn.act-F{background:var(--surface-2)}
+.btn:disabled{opacity:.5;cursor:default}
+.pill{display:inline-block;font:600 .75rem var(--body);padding:2px 9px;border-radius:999px;background:var(--surface-2);color:var(--muted);letter-spacing:.02em}
+.pill.ok{background:var(--call-soft);color:var(--call)}
+.pill.bad{background:var(--chip-soft);color:var(--chip)}
+/* drill table */
+.table-felt{background:radial-gradient(ellipse at center,var(--felt) 0%,color-mix(in srgb,var(--felt) 70%,#000) 100%);border-radius:120px/80px;padding:26px 16px;display:grid;justify-items:center;gap:10px;color:#fff;text-align:center}
+.spot-name{font-family:var(--display);font-size:1.15rem}
+.cards{display:flex;gap:10px;direction:ltr}
+.card{width:64px;height:90px;background:#fdfdfb;border-radius:8px;box-shadow:0 3px 0 rgba(0,0,0,.25);display:grid;place-items:center;font:700 1.7rem var(--mono);line-height:1;color:#18231e}
+.card.red{color:#c2373a}
+.card small{display:block;font-size:1.3rem}
+.feedback{min-height:1.5em}
+/* range grid */
+.rgrid{display:grid;grid-template-columns:repeat(13,1fr);gap:2px;direction:ltr;font:500 clamp(.5rem,1.6vw,.72rem) var(--mono);max-width:520px;width:100%}
+.rgrid div{aspect-ratio:1;display:grid;place-items:center;border-radius:3px;background:var(--surface-2);color:var(--muted);position:relative;overflow:hidden}
+.rgrid div.R{background:var(--raise);color:#fff}
+.rgrid div.C{background:var(--call);color:#fff}
+.rgrid div.RC{background:linear-gradient(90deg,var(--raise) 50%,var(--call) 50%);color:#fff}
+.rgrid div.RF{background:linear-gradient(90deg,var(--raise) 50%,var(--surface-2) 50%);color:var(--fg)}
+.rgrid div.CF{background:linear-gradient(90deg,var(--call) 50%,var(--surface-2) 50%);color:var(--fg)}
+.rgrid div.hl{outline:3px solid var(--gold);outline-offset:-1px;z-index:1}
+.legend{display:flex;gap:12px;flex-wrap:wrap;font-size:.82rem;color:var(--muted)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-inline-end:4px}
+/* plan */
+.week{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;padding-block:12px;border-top:1px solid var(--line)}
+.week:first-of-type{border-top:0}
+.week .wk{font:500 .8rem var(--mono);color:var(--chip);padding-top:3px;white-space:nowrap}
+.week ul{margin:4px 0 0;padding-inline-start:0;list-style:none;display:grid;gap:4px}
+.week li label{display:flex;gap:8px;align-items:flex-start;cursor:pointer}
+.week input{margin-top:5px;accent-color:var(--felt)}
+.week li.done span{color:var(--muted);text-decoration:line-through}
+.progress{height:8px;background:var(--surface-2);border-radius:99px;overflow:hidden}
+.progress i{display:block;height:100%;background:var(--felt);width:0;transition:width .3s}
+table.kpi{border-collapse:collapse;width:100%;font-size:.92rem}
+table.kpi td,table.kpi th{text-align:right;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+table.kpi th{font-size:.78rem;color:var(--muted);letter-spacing:.03em}
+.scroll-x{overflow-x:auto}
+/* quiz */
+.q-opts{display:grid;gap:8px}
+.q-opts button{text-align:right;font:600 .95rem var(--body);padding:10px 14px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--fg);cursor:pointer}
+.q-opts button.right{background:var(--call-soft);border-color:var(--call)}
+.q-opts button.wrong{background:var(--chip-soft);border-color:var(--chip)}
+.explain{background:var(--surface-2);border-radius:8px;padding:10px 12px;font-size:.95rem}
+details.lesson{border-top:1px solid var(--line);padding-block:10px}
+details.lesson summary{cursor:pointer;font-weight:700}
+details.lesson div{padding-top:8px;display:grid;gap:8px;max-width:68ch}
+details.lesson ul{margin:0;padding-inline-start:20px}
+/* chat */
+.chat{display:grid;gap:10px;max-height:60vh;overflow-y:auto;padding:4px}
+.msg{padding:10px 14px;border-radius:12px;max-width:88%;white-space:pre-wrap;min-width:0;overflow-wrap:anywhere}
+.msg.me{background:var(--felt);color:var(--bg);justify-self:start}
+.msg.coach{background:var(--surface-2);justify-self:end}
+.msg.sys{background:none;color:var(--muted);font-size:.85rem;justify-self:center;text-align:center}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chips button{font:600 .82rem var(--body);border:1px dashed var(--line);background:none;color:var(--fg);padding:6px 10px;border-radius:999px;cursor:pointer}
+.note{font-size:.82rem;color:var(--muted)}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <h1>מאמן הפוקר <span class="suit">♠</span> של רועי</h1>
+      <p class="sub">טבלאות פתיחה <bdi>9-max</bdi>, תרגול, תיאוריה, שפת גוף ומאמן AI בשיחה</p>
+    </div>
+    <div class="stats" aria-label="סטטיסטיקה">
+      <div>דיוק פריפלופ<br><b id="st-acc">—</b></div>
+      <div>ידיים<br><b id="st-n">0</b></div>
+      <div>רצף<br><b id="st-streak">0</b></div>
+    </div>
+  </header>
+
+  <nav class="tabs" role="tablist">
+    <button role="tab" data-tab="plan" aria-selected="true">תכנית 8 שבועות</button>
+    <button role="tab" data-tab="drill" aria-selected="false">תרגול פריפלופ</button>
+    <button role="tab" data-tab="charts" aria-selected="false">טבלאות</button>
+    <button role="tab" data-tab="theory" aria-selected="false">תיאוריה ושאלות</button>
+    <button role="tab" data-tab="math" aria-selected="false">מתמטיקה</button>
+    <button role="tab" data-tab="tells" aria-selected="false">שפת גוף</button>
+    <button role="tab" data-tab="coach" aria-selected="false">מאמן AI</button>
+  </nav>
+
+  <!-- PLAN -->
+  <section class="tab" id="tab-plan">
+    <div class="panel">
+      <div class="row" style="justify-content:space-between">
+        <h2>תכנית אימון: 8 שבועות</h2>
+        <span class="pill mono" id="plan-pct">0%</span>
+      </div>
+      <div class="progress"><i id="plan-bar"></i></div>
+      <p class="lead">כל שבוע בנוי על הקודם. סמן משימה כשסיימת. ההתקדמות נשמרת בדפדפן הזה.</p>
+      <div id="plan-list"></div>
+    </div>
+    <div class="grid2">
+      <div class="panel">
+        <h3>שגרה יומית (30–45 דק׳)</h3>
+        <table class="kpi"><tbody>
+          <tr><td class="mono">10 דק׳</td><td>תרגול פריפלופ: 50 ידיים בטאב "תרגול"</td></tr>
+          <tr><td class="mono">10 דק׳</td><td>שיעור תיאוריה אחד + 5 שאלות</td></tr>
+          <tr><td class="mono">5 דק׳</td><td>מתמטיקה: 10 תרגילי Pot Odds / Outs</td></tr>
+          <tr><td class="mono">10–15 דק׳</td><td>ניתוח יד אחת מהמשחק האחרון עם המאמן AI</td></tr>
+        </tbody></table>
+      </div>
+      <div class="panel">
+        <h3>מדדי הצלחה</h3>
+        <div class="scroll-x"><table class="kpi">
+          <thead><tr><th>מדד</th><th>יעד</th></tr></thead>
+          <tbody>
+            <tr><td>דיוק פתיחות (Open)</td><td class="mono">≥ 95%</td></tr>
+            <tr><td>דיוק מול 3bet והגנת BB</td><td class="mono">≥ 85%</td></tr>
+            <tr><td>Pot Odds בראש, תוך 10 שנ׳</td><td class="mono">9/10</td></tr>
+            <tr><td>ידיים מנותחות בשבוע</td><td class="mono">≥ 5</td></tr>
+            <tr><td>VPIP במשחק אמיתי (9-max)</td><td class="mono">18–24%</td></tr>
+            <tr><td>Stop-loss לסשן</td><td class="mono">3 ביי-אין</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DRILL -->
+  <section class="tab" id="tab-drill" hidden>
+    <div class="row">
+      <label class="ctl">מצב תרגול
+        <select id="drill-mode">
+          <option value="open">פתיחה (Open Raise)</option>
+          <option value="v3">מול 3bet</option>
+          <option value="bb">הגנת BB</option>
+          <option value="all">הכל מעורבב</option>
+          <option value="miss">רק הטעויות שלי</option>
+        </select>
+      </label>
+      <span class="note" id="drill-note"></span>
+    </div>
+    <div class="table-felt">
+      <div class="spot-name" id="d-spot">—</div>
+      <div class="note" style="color:#e9f2ed" id="d-desc"></div>
+      <div class="cards" id="d-cards"></div>
+      <div class="row" id="d-actions" style="justify-content:center"></div>
+    </div>
+    <div class="panel" id="d-result" hidden>
+      <div class="feedback" id="d-feedback"></div>
+      <div class="explain" id="d-explain"></div>
+      <div class="rgrid" id="d-grid"></div>
+      <div class="legend" id="d-legend"></div>
+      <div class="row"><button class="btn primary" id="d-next">יד הבאה (Enter)</button><button class="btn" id="d-ask">שאל את המאמן על היד הזו</button></div>
+    </div>
+  </section>
+
+  <!-- CHARTS -->
+  <section class="tab" id="tab-charts" hidden>
+    <div class="panel">
+      <div class="row">
+        <label class="ctl">מצב
+          <select id="ch-spot"></select>
+        </label>
+        <span class="pill mono" id="ch-pct"></span>
+      </div>
+      <p class="lead" id="ch-desc"></p>
+      <div class="rgrid" id="ch-grid"></div>
+      <div class="legend" id="ch-legend"></div>
+      <p class="note">מקור: 9 max preflop charts (Freebetrange), קאש, פתיחה ל-2.5bb. משבצת חצויה = יד מעורבת (משחקים את שתי הפעולות). הטבלאות הועתקו מהקובץ ידנית; ייתכנו סטיות קטנות בידיים מעורבות.</p>
+    </div>
+  </section>
+
+  <!-- THEORY -->
+  <section class="tab" id="tab-theory" hidden>
+    <div class="grid2">
+      <div class="panel">
+        <h2>שיעורים</h2>
+        <div id="lessons"></div>
+      </div>
+      <div class="panel">
+        <div class="row" style="justify-content:space-between">
+          <h2>שאלה</h2>
+          <span class="pill mono" id="q-score">0/0</span>
+        </div>
+        <label class="ctl">נושא
+          <select id="q-topic"><option value="all">כל הנושאים</option></select>
+        </label>
+        <p id="q-text" style="font-weight:700"></p>
+        <div class="q-opts" id="q-opts"></div>
+        <div class="explain" id="q-explain" hidden></div>
+        <div class="row"><button class="btn primary" id="q-next">שאלה הבאה</button></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MATH -->
+  <section class="tab" id="tab-math" hidden>
+    <div class="grid2">
+      <div class="panel">
+        <h2>Pot Odds</h2>
+        <p class="lead">כמה אקוויטי צריך כדי לקרוא? נוסחה: <span class="mono">קריאה ÷ (קופה + הימור + קריאה)</span></p>
+        <p id="po-q" style="font-weight:700"></p>
+        <div class="row"><input type="number" id="po-in" min="0" max="100" placeholder="%" style="width:90px"><button class="btn primary" id="po-check">בדוק</button><button class="btn" id="po-next">חדש</button></div>
+        <div class="explain" id="po-ex" hidden></div>
+      </div>
+      <div class="panel">
+        <h2>Outs וחוק 2/4</h2>
+        <p class="lead">בפלופ עם שני קלפים לבוא: outs × 4. בטרן: outs × 2. (הערכה; מעל 8 outs מורידים מעט.)</p>
+        <p id="out-q" style="font-weight:700"></p>
+        <div class="row"><input type="number" id="out-in" min="0" max="30" placeholder="outs" style="width:90px"><input type="number" id="out-eq" min="0" max="100" placeholder="%" style="width:90px"><button class="btn primary" id="out-check">בדוק</button><button class="btn" id="out-next">חדש</button></div>
+        <div class="explain" id="out-ex" hidden></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TELLS -->
+  <section class="tab" id="tab-tells" hidden>
+    <div class="grid2">
+      <div class="panel">
+        <h2>עקרונות קריאת שפת גוף</h2>
+        <div id="tell-lessons"></div>
+      </div>
+      <div class="panel">
+        <div class="row" style="justify-content:space-between"><h2>תרחיש</h2><span class="pill mono" id="t-score">0/0</span></div>
+        <p id="t-text" style="font-weight:700"></p>
+        <div class="q-opts" id="t-opts"></div>
+        <div class="explain" id="t-explain" hidden></div>
+        <div class="row"><button class="btn primary" id="t-next">תרחיש הבא</button></div>
+      </div>
+    </div>
+    <div class="panel" id="tell-ai">
+      <h2>ניתוח שחקן עם המאמן</h2>
+      <p class="lead">תאר מה ראית ליד השולחן (תנוחה, ידיים, נשימה, זמן החלטה, גודל הימור, מה הוא הראה בסוף). אפשר לצרף תמונה שלך מתרגול מול מצלמה. לא לצלם שחקנים אחרים בלי רשות; ברוב הקזינו זה אסור.</p>
+      <textarea id="tell-in">שחקן בגיל 50, משחק טייט כל הערב. בריבר על בורד K-9-4-2-7 הוא דחף all-in מהר מאוד, ואז הסתכל עליי ישר בעיניים ושאל "כמה יש לך?". הידיים שלו היו יציבות.</textarea>
+      <div class="row"><input type="file" id="tell-img" accept="image/*" hidden><button class="btn" id="tell-img-btn" hidden>צרף תמונה</button><span class="note" id="tell-img-name"></span><button class="btn primary" id="tell-go">נתח</button></div>
+      <div class="explain" id="tell-out" hidden style="white-space:pre-wrap"></div>
+    </div>
+  </section>
+
+  <!-- COACH -->
+  <section class="tab" id="tab-coach" hidden>
+    <div class="panel">
+      <h2>המאמן האישי</h2>
+      <p class="lead">המאמן מכיר את הטבלאות שלך ואת הטעויות שעשית בתרגול. הוא שואל שאלות לפני שהוא נותן תשובות.</p>
+      <div class="chips" id="chips">
+        <button data-p="תן לי יד לדוגמה מ-CO מול שחקן לוז-פסיבי, ותעצור בכל רחוב לשאול אותי מה אני עושה.">סימולציית יד</button>
+        <button data-p="תשאל אותי 3 שאלות קשות על הטעויות שלי בתרגול הפריפלופ, אחת בכל פעם.">בחן אותי על הטעויות</button>
+        <button data-p="אני רוצה לנתח יד ששיחקתי. תן לי תבנית קצרה למלא (מיקום, סטאקים, פעולות בכל רחוב, תוצאה).">נתח יד שלי</button>
+        <button data-p="תסביר לי מה זה c-bet, מתי עושים ובאיזה גודל, עם דוגמה אחת. אחר כך שאלה אחת לבדיקה.">הסבר מושג: c-bet</button>
+        <button data-p="תבנה לי תכנית אימון להשבוע לפי הסטטיסטיקה שלי.">תכנית לשבוע</button>
+      </div>
+      <div class="chat" id="chat" aria-live="polite"></div>
+      <textarea id="chat-in" placeholder="כתוב למאמן… (Ctrl+Enter לשליחה)"></textarea>
+      <div class="row"><button class="btn primary" id="chat-send">שלח</button><button class="btn" id="chat-stop" hidden>עצור</button><button class="btn" id="chat-clear">שיחה חדשה</button></div>
+      <p class="note" id="coach-status">המאמן משתמש בחשבון Claude שלך. בפעם הראשונה תתבקש לאשר.</p>
+    </div>
+  </section>
+</div>
+
+<script>
+(function(){
+"use strict";
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const store={get(k,d){try{const v=localStorage.getItem("pc_"+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem("pc_"+k,JSON.stringify(v))}catch(e){}}};
+
+/* ---------- hands & ranges ---------- */
+const RK="AKQJT98765432";
+function cellHand(i,j){return i===j?RK[i]+RK[j]:(i<j?RK[i]+RK[j]+"s":RK[j]+RK[i]+"o")}
+const ALL=[];for(let i=0;i<13;i++)for(let j=0;j<13;j++)ALL.push(cellHand(i,j));
+function expand(tok){
+  tok=tok.trim(); if(!tok) return [];
+  if(!tok.endsWith("+")) return [tok];
+  const t=tok.slice(0,-1);
+  if(t.length===2&&t[0]===t[1]){const a=RK.indexOf(t[0]);const r=[];for(let k=0;k<=a;k++)r.push(RK[k]+RK[k]);return r}
+  const hi=RK.indexOf(t[0]), lo=RK.indexOf(t[1]), sfx=t[2]; const r=[];
+  for(let k=hi+1;k<=lo;k++)r.push(t[0]+RK[k]+sfx); return r;
+}
+function build(spec){const m={};for(const code in spec)for(const tok of spec[code].split(/[ ,]+/))for(const h of expand(tok))m[h]=code;return m}
+
+const SPOTS={
+ "open-UTG":{kind:"open",pos:"UTG",title:"UTG פותח",desc:"אף אחד לא נכנס לפניך. 8 שחקנים אחריך.",r:build({R:"77+ AKs AQs AJs ATs A9s A5s KQs KJs KTs AKo AQo"})},
+ "open-UTG1":{kind:"open",pos:"UTG+1",title:"UTG+1 פותח",desc:"כולם פולד אליך. 7 שחקנים אחריך.",r:build({R:"77+ A4s+ KQs KJs KTs QJs AKo AQo"})},
+ "open-UTG2":{kind:"open",pos:"UTG+2",title:"UTG+2 פותח",desc:"כולם פולד אליך. 6 שחקנים אחריך.",r:build({R:"66+ A3s+ K9s+ QTs+ JTs AJo+ KQo"})},
+ "open-MP":{kind:"open",pos:"MP",title:"MP פותח",desc:"כולם פולד אליך. 5 שחקנים אחריך.",r:build({R:"66+ A3s+ K9s+ QTs+ JTs AJo+ KQo"})},
+ "open-HJ":{kind:"open",pos:"HJ",title:"HJ פותח",desc:"כולם פולד אליך. 4 שחקנים אחריך.",r:build({R:"66+ A2s+ K6s+ Q8s+ J9s+ T9s ATo+ KTo+ QJo"})},
+ "open-CO":{kind:"open",pos:"CO",title:"CO פותח",desc:"כולם פולד אליך. נשארו BTN, SB, BB.",r:build({R:"44+ A2s+ K4s+ Q8s+ J8s+ T8s+ 98s 87s 76s A8o+ KTo+ QTo+ JTo"})},
+ "open-BTN":{kind:"open",pos:"BTN",title:"BTN פותח",desc:"כולם פולד אליך. רק הבליינדים אחריך, ויש לך פוזיציה.",r:build({R:"22+ A2s+ K2s+ Q3s+ J5s+ T6s+ 96s+ 86s+ 75s+ 65s 54s A3o+ K8o+ Q9o+ J9o+ T9o"})},
+ "open-SB":{kind:"open",pos:"SB",title:"SB פותח",desc:"כולם פולד אליך. רק ה-BB אחריך.",r:build({R:"22+ A2s+ K2s+ Q2s+ J5s+ T6s+ 96s+ 86s+ 75s+ 64s+ 54s A3o+ K8o+ Q9o+ J9o+ T9o"})},
+ "v3-MP":{kind:"v3",pos:"MP",title:"MP פתח, קיבל 3bet",desc:"פתחת ל-2.5bb מ-MP ושחקן אחריך עשה 3bet.",r:build({R:"AA KK",RC:"AKs AJs ATs KQs",RF:"KJs",C:"AQs AKo QQ JJ TT"})},
+ "v3-HJ":{kind:"v3",pos:"HJ",title:"HJ פתח, קיבל 3bet",desc:"פתחת ל-2.5bb מ-HJ ושחקן אחריך עשה 3bet.",r:build({R:"AA AKs KK AQo",RC:"AKo ATs A5s KJs QQ",RF:"A8s A7s KTs",C:"AQs AJs KQs JJ JTs TT 99 88",CF:"T9s 77"})},
+ "v3-CO":{kind:"v3",pos:"CO",title:"CO פתח, קיבל 3bet",desc:"פתחת ל-2.5bb מ-CO ושחקן אחריך עשה 3bet.",r:build({R:"AA AKs AKo KK QQ A8s A7s A5s A4s A3s KTs K9s",RC:"AQo JJ",RF:"KQo",C:"AQs AJs ATs A9s KQs KJs QJs QTs JTs TT T9s 99 88 77 76s 66"})},
+ "v3-BTN":{kind:"v3",pos:"BTN",title:"BTN פתח, קיבל 3bet",desc:"פתחת ל-2.5bb מה-BTN ואחד הבליינדים עשה 3bet.",r:build({R:"AA AKs AKo KK QQ JJ K8s K7s KJo ATo Q9s",RC:"A7s A6s A3s A2s TT",C:"AQs AJs ATs A9s A8s A5s A4s KQs KJs KTs K9s AQo KQo AJo QJs QTs JTs J9s T9s 99 98s 88 87s 77 76s 66 65s 55 54s 44"})},
+ "v3-SB":{kind:"v3",pos:"SB",title:"SB פתח, קיבל 3bet",desc:"פתחת מה-SB וה-BB עשה 3bet.",r:build({R:"AA AKs AKo KK QQ JJ TT A6s A3s Q9s KJo ATo",RC:"AQs A7s A5s A4s K9s KQo AJo J9s 99",C:"AJs ATs A9s A8s KQs KJs KTs K8s AQo QJs QTs JTs T9s 98s 88 77 76s 66 55 44"})},
+ "bb-CO":{kind:"bb",pos:"BB",vs:"CO",title:"BB מול פתיחה מ-CO",desc:"CO פתח ל-2.5bb, כולם פולד אליך ב-BB.",r:build({R:"AA AKs AKo KK QQ JJ",RC:"AQs A6s A5s A4s A3s K7s K6s K5s K4s K3s K2s Q8s Q7s Q6s Q5s AJo KJo QJo J7s KTo QTo JTo 96s 86s 75s 64s 53s 43s",RF:"Q4s A5o A4o",CF:"85s",C:"AJs ATs A9s A8s A7s A2s KQs KJs KTs K9s K8s AQo KQo QJs QTs Q9s JTs J9s J8s ATo TT T9s T8s T7s A9o 99 98s 97s 88 87s 77 76s 66 65s 55 54s 44 33 22"})},
+ "bb-BTN":{kind:"bb",pos:"BB",vs:"BTN",title:"BB מול פתיחה מ-BTN",desc:"ה-BTN פתח ל-2.5bb, ה-SB פולד.",r:build({R:"AA AKs AQs AKo KK QQ JJ TT",RC:"AJs ATs A6s A5s A4s A3s A2s KQs K7s K6s K5s K4s K3s K2s AQo Q8s Q7s Q6s Q5s Q4s Q3s Q2s AJo J7s J6s J5s J4s ATo KTo QTo JTo T9s T6s K9o T9o 99 98s 96s 86s A7o 75s 66 65s 64s A5o 55 53s A4o 43s",RF:"A6o A3o",C:"A9s A8s A7s KJs KTs K9s K8s KQo QJs QTs Q9s KJo QJo JTs J9s J8s T8s T7s A9o Q9o J9o 97s A8o 88 87s 85s 77 76s 74s 63s 54s 44 33 22"})},
+ "bb-SB":{kind:"bb",pos:"BB",vs:"SB",title:"BB מול פתיחה מ-SB",desc:"כולם פולד, ה-SB פתח ל-2.5bb מולך.",r:build({R:"AA AKs AQs AJs A5s A4s AKo KK AQo QQ JJ TT K7o A3o A2o",RC:"A3s A2s KQs KJs KTs K5s K4s K2s KQo QTs Q9s AJo KJo JTs J7s J2s T5s T4s T3s Q9o 97s K8o T8o 87s 76s A6o 66 65s A5o 55 A4o",RF:"J8o K6o",C:"ATs A9s A8s A7s A6s K9s K8s K7s K6s K3s QJs Q8s Q7s Q6s Q5s Q4s Q3s Q2s QJo J9s J8s J6s J5s J4s J3s ATo KTo QTo JTo T9s T8s T7s T6s A9o K9o J9o T9o 99 98s 96s 95s A8o 98o 88 86s 85s A7o 87o 77 75s 74s 76o 64s 63s 54s 53s 52s 44 43s 42s 33 32s 22"})}
+};
+const LABELS={open:{R:"Raise 2.5bb",F:"Fold"},v3:{R:"4bet",C:"Call",F:"Fold"},bb:{R:"3bet",C:"Call",F:"Fold"}};
+const codeOf=(spot,h)=>SPOTS[spot].r[h]||"F";
+const allowed=code=>code.split("");
+function combos(h){return h.length===2?6:(h[2]==="s"?4:12)}
+function pct(spot){let n=0;for(const h of ALL){const c=codeOf(spot,h);if(c!=="F")n+=combos(h)*(c.length===2?(c.includes("F")?.5:1):1)}return (n/1326*100).toFixed(1)}
+
+function category(h){
+  const a=h[0],b=h[1],s=h[2];const ia=RK.indexOf(a),ib=RK.indexOf(b);const bw="AKQJT";
+  if(a===b) return ia<=2?"זוג חזק":ia<=6?"זוג בינוני":"זוג נמוך";
+  if(s==="s"){ if(a==="A") return "אס מותאם"; if(bw.includes(a)&&bw.includes(b)) return "ברודווי מותאם"; if(ib-ia===1) return "מחברים מותאמים"; if(ib-ia===2) return "מחברים מותאמים עם רווח"; return "יד מותאמת חלשה"}
+  if(bw.includes(a)&&bw.includes(b)) return "ברודווי לא מותאם";
+  if(a==="A") return "אס לא מותאם עם קיקר חלש";
+  if(ib-ia===1) return "מחברים לא מותאמים"; return "זבל לא מותאם";
+}
+
+function renderGrid(el,spot,hl){
+  el.innerHTML="";
+  for(const h of ALL){const d=document.createElement("div");const c=codeOf(spot,h);if(c!=="F")d.className=c;if(h===hl)d.classList.add("hl");d.textContent=h;d.title=h+": "+describeCode(SPOTS[spot].kind,c);el.appendChild(d)}
+}
+function describeCode(kind,c){const L=LABELS[kind];return c.split("").map(x=>L[x]).join(" / ")}
+function renderLegend(el,kind){
+  const L=LABELS[kind];let html=`<span><i style="background:var(--raise)"></i>${L.R}</span>`;
+  if(L.C) html+=`<span><i style="background:var(--call)"></i>${L.C}</span><span><i style="background:linear-gradient(90deg,var(--raise) 50%,var(--call) 50%)"></i>מעורב</span>`;
+  html+=`<span><i style="background:var(--surface-2);border:1px solid var(--line)"></i>${L.F}</span>`;el.innerHTML=html;
+}
+
+/* ---------- tabs ---------- */
+function showTab(name){$$("nav.tabs button").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===name));$$("section.tab").forEach(s=>s.hidden=s.id!=="tab-"+name);store.set("tab",name)}
+$$("nav.tabs button").forEach(b=>b.onclick=()=>showTab(b.dataset.tab));
+const initial=(location.hash||"").slice(1)||store.get("tab","plan"); if($("#tab-"+initial)) showTab(initial);
+
+/* ---------- plan ---------- */
+const PLAN=[
+ ["שבוע 1","יסודות ופוזיציה",["ללמוד את 9 העמדות בשולחן וסדר הפעולה פריפלופ ופוסטפלופ","לשנן את טבלאות הפתיחה UTG עד MP (95% דיוק בתרגול)","שיעורים: פוזיציה, קבוצות ידיים, GTO מול אקספלויט","להגדיר בנקרול: לפחות 20 ביי-אין לרמה שאתה משחק"]],
+ ["שבוע 2","פתיחות מאוחרות",["לשנן פתיחות HJ, CO, BTN, SB (95% דיוק)","להבין למה הטווח מתרחב עם הפוזיציה (לבקש מהמאמן להסביר על 3 ידיים)","מתמטיקה: Pot Odds, 50 תרגילים","סשן ראשון: לשחק רק לפי הטבלאות ולרשום 3 ידיים קשות"]],
+ ["שבוע 3","מול 3bet והגנת BB",["תרגול 'מול 3bet' עד 85% דיוק","תרגול 'הגנת BB' עד 85% דיוק","שיעור: Pot Odds ב-BB ולמה מגינים רחב","לנתח עם המאמן 5 ידיים מה-BB"]],
+ ["שבוע 4","פלופ: c-bet ומרקם בורד",["שיעורים: c-bet, מרקם בורד, יתרון טווח","Outs וחוק 2/4: 50 תרגילים","3 סימולציות יד עם המאמן (פלופ בלבד)","סשן: לרשום כל c-bet ואם הצליח"]],
+ ["שבוע 5","טרן וריבר, גדלי הימור",["שיעורים: גודל הימור, Value מול בלוף, Implied odds, SPR","סימולציית יד מלאה עם המאמן ×3","לנתח 5 ידיים שהגיעו לריבר","לזהות דליפה אחת חוזרת ולכתוב כלל לתיקון"]],
+ ["שבוע 6","קריאת יריבים ואקספלויט",["שיעור: סוגי שחקנים (TAG, LAG, Nit, Calling station, Maniac)","לרשום פרופיל לכל שחקן בשולחן בסשן הבא","התאמות: נגד פסיביים מבודדים רחב, נגד אגרסיביים מצמצמים","5 שאלות 'אקספלויט' מהמאמן"]],
+ ["שבוע 7","שפת גוף ולייב",["כל השיעורים בטאב 'שפת גוף' + כל התרחישים","בסשן לייב: לרשום 3 טלים ומה השחקן הראה בסוף","לנתח טלים עם המאמן ולסנן מה אמין","לעבוד על הטלים שלך: אותה שגרה בכל החלטה"]],
+ ["שבוע 8","מנטלי, טילט ושילוב",["שיעור: טילט, Stop-loss וניהול סשן","מבחן חזרה: 100 ידיים 'הכל מעורבב' (יעד 90%)","לבקש מהמאמן תכנית ל-4 השבועות הבאים לפי הטעויות","סיכום: 3 דליפות שתוקנו + 3 שנשארו"]]
+];
+function renderPlan(){
+  const done=store.get("plan",{});let total=0,got=0;const root=$("#plan-list");root.innerHTML="";
+  PLAN.forEach(([wk,title,items],wi)=>{
+    const div=document.createElement("div");div.className="week";
+    div.innerHTML=`<div class="wk">${wk}</div><div><h3>${title}</h3><ul></ul></div>`;
+    const ul=div.querySelector("ul");
+    items.forEach((t,ti)=>{total++;const id=wi+"-"+ti;const on=!!done[id];if(on)got++;
+      const li=document.createElement("li");if(on)li.className="done";
+      li.innerHTML=`<label><input type="checkbox" id="pl-${id}" ${on?"checked":""}><span>${t}</span></label>`;
+      li.querySelector("input").onchange=e=>{done[id]=e.target.checked;store.set("plan",done);renderPlan()};ul.appendChild(li)});
+    root.appendChild(div)});
+  const p=Math.round(got/total*100);$("#plan-pct").textContent=p+"%";$("#plan-bar").style.width=p+"%";
+}
+renderPlan();
+
+/* ---------- stats ---------- */
+let stats=store.get("stats",{n:0,ok:0,streak:0,byKind:{},miss:{}});
+function renderStats(){$("#st-n").textContent=stats.n;$("#st-acc").textContent=stats.n?Math.round(stats.ok/stats.n*100)+"%":"—";$("#st-streak").textContent=stats.streak}
+renderStats();
+
+/* ---------- drill ---------- */
+const SUITS=[["♠",0],["♥",1],["♦",1],["♣",0]];
+let cur=null;
+function edgeHands(spot){
+  const out=[];for(let i=0;i<13;i++)for(let j=0;j<13;j++){const h=cellHand(i,j),c=codeOf(spot,h);
+    const nb=[[i+1,j],[i-1,j],[i,j+1],[i,j-1]].filter(([a,b])=>a>=0&&b>=0&&a<13&&b<13).map(([a,b])=>codeOf(spot,cellHand(a,b)));
+    if(c.length===2||nb.some(x=>x!==c))out.push(h)}return out;
+}
+function pickSpot(mode){
+  const keys=Object.keys(SPOTS);
+  if(mode==="miss"){const m=Object.keys(stats.miss).filter(k=>stats.miss[k]>0);if(m.length){const k=m[Math.floor(Math.random()*m.length)];const [s,h]=k.split("|");return {spot:s,hand:h}}$("#drill-note").textContent="אין טעויות שמורות. עובר למעורבב.";mode="all"}
+  const pool=keys.filter(k=>mode==="all"||SPOTS[k].kind===mode);const spot=pool[Math.floor(Math.random()*pool.length)];
+  const e=edgeHands(spot);const hand=Math.random()<.65?e[Math.floor(Math.random()*e.length)]:ALL[Math.floor(Math.random()*ALL.length)];
+  return {spot,hand};
+}
+function dealCards(h){
+  const s1=SUITS[Math.floor(Math.random()*4)];let s2;
+  if(h.length===3&&h[2]==="s")s2=s1;else{do{s2=SUITS[Math.floor(Math.random()*4)]}while(s2===s1)}
+  const r=x=>x==="T"?"10":x;
+  return [[r(h[0]),s1],[r(h[1]),s2]].map(([v,[s,red]])=>`<div class="card ${red?"red":""}">${v}<small>${s}</small></div>`).join("");
+}
+function newHand(){
+  if(!$("#drill-mode").value) return;
+  $("#drill-note").textContent="";cur=pickSpot($("#drill-mode").value);const S=SPOTS[cur.spot];
+  $("#d-spot").textContent=S.title;$("#d-desc").textContent=S.desc+" היד שלך: "+cur.hand;
+  $("#d-cards").innerHTML=dealCards(cur.hand);
+  const L=LABELS[S.kind];$("#d-actions").innerHTML="";
+  for(const k of Object.keys(L)){const b=document.createElement("button");b.className="btn act-"+k;b.textContent=L[k];b.onclick=()=>answer(k);$("#d-actions").appendChild(b)}
+  $("#d-result").hidden=true;
+}
+function explainHand(spot,h,code){
+  const S=SPOTS[spot],cat=category(h);const L=LABELS[S.kind];let t=`${h} = ${cat}. הפעולה בטבלה: ${describeCode(S.kind,code)}.`;
+  if(code.length===2) t+=" זו יד מעורבת: שתי הפעולות נכונות. ב-GTO משלבים כדי לא להיות צפוי; מול שחקנים חלשים בחר את האופציה הפשוטה והרווחית יותר.";
+  if(S.kind==="open"){
+    t+=code==="R"?` טווח הפתיחה מ-${S.pos} הוא כ-${pct(spot)}% מהידיים, והיד הזו בתוכו.`:` מ-${S.pos} פותחים רק כ-${pct(spot)}% מהידיים. ${["UTG","UTG+1","UTG+2","MP"].includes(S.pos)?"עם הרבה שחקנים אחריך הסיכוי שמישהו מחזיק יד חזקה גבוה, וידיים כאלה מפסידות כסף.":"גם בפוזיציה מאוחרת, היד הזו לא מרוויחה מספיק."}`;
+  } else if(S.kind==="v3"){
+    t+=code.includes("R")&&!code.includes("C")?" 4bet לערך או כבלוף עם חוסמים (אס/מלך מותאמים חוסמים AA/KK/AK).":code.includes("C")?" יש מספיק אקוויטי ויכולת משחק (זוגות לסט, מותאמות לדרואים) כדי לקרוא בפוזיציה.":" מול 3bet היד הזו נשלטת (dominated) ע״י הטווח של היריב. פולד.";
+  } else {
+    t+=` ה-BB כבר שם 1bb, ולכן צריך רק כ-${S.vs==="SB"?"25":"28"}% אקוויטי כדי לקרוא. לכן מגינים רחב מאוד מול ${S.vs}.`;
+  }
+  return t;
+}
+function answer(k){
+  if(!cur||!$("#d-result").hidden) return;
+  const S=SPOTS[cur.spot],code=codeOf(cur.spot,cur.hand),ok=allowed(code).includes(k);const key=cur.spot+"|"+cur.hand;
+  stats.n++;if(ok){stats.ok++;stats.streak++;if(stats.miss[key])stats.miss[key]--;}else{stats.streak=0;stats.miss[key]=(stats.miss[key]||0)+1}
+  const bk=stats.byKind[S.kind]||{n:0,ok:0};bk.n++;if(ok)bk.ok++;stats.byKind[S.kind]=bk;store.set("stats",stats);renderStats();
+  $("#d-feedback").innerHTML=ok?`<span class="pill ok">נכון</span> ${LABELS[S.kind][k]}`:`<span class="pill bad">טעות</span> בחרת ${LABELS[S.kind][k]}. התשובה: ${describeCode(S.kind,code)}`;
+  $("#d-explain").textContent=explainHand(cur.spot,cur.hand,code);
+  renderGrid($("#d-grid"),cur.spot,cur.hand);renderLegend($("#d-legend"),S.kind);$("#d-result").hidden=false;$("#d-next").focus();
+}
+$("#d-next").onclick=newHand;$("#drill-mode").onchange=newHand;
+$("#d-ask").onclick=()=>{if(!cur)return;const S=SPOTS[cur.spot];showTab("coach");$("#chat-in").value=`תרגלתי את המצב "${S.title}" עם ${cur.hand}. הטבלה אומרת ${describeCode(S.kind,codeOf(cur.spot,cur.hand))}. תסביר לי את ההיגיון, ותשאל אותי שאלה אחת שתבדוק שהבנתי.`;$("#chat-in").focus()};
+document.addEventListener("keydown",e=>{if($("#tab-drill").hidden||e.target.matches("textarea,input,select"))return;
+  if(e.key==="Enter"&&!$("#d-result").hidden){e.preventDefault();newHand()}
+  const map={r:"R",c:"C",f:"F"};const k=map[e.key.toLowerCase()];if(k&&cur&&LABELS[SPOTS[cur.spot].kind][k])answer(k)});
+newHand();
+
+/* ---------- charts ---------- */
+const sel=$("#ch-spot");
+for(const k in SPOTS){const o=document.createElement("option");o.value=k;o.textContent=SPOTS[k].title;sel.appendChild(o)}
+function renderChart(){const k=sel.value,S=SPOTS[k];$("#ch-desc").textContent=S.desc;$("#ch-pct").textContent=pct(k)+"% מהידיים";renderGrid($("#ch-grid"),k);renderLegend($("#ch-legend"),S.kind);store.set("chart",k)}
+sel.value=store.get("chart","open-UTG");if(!SPOTS[sel.value])sel.value="open-UTG";sel.onchange=renderChart;renderChart();
+
+/* ---------- theory ---------- */
+const LESSONS=[
+ ["פוזיציה","<p>מי שפועל אחרון בפלופ, בטרן ובריבר רואה מה כולם עשו לפני שהוא מחליט. זה היתרון הכי גדול במשחק.</p><ul><li>סדר העמדות: UTG, UTG+1, UTG+2, MP, HJ, CO, BTN, SB, BB.</li><li>ככל שיש פחות שחקנים אחריך, אפשר לפתוח יותר ידיים: UTG כ-8%, BTN כ-41%.</li><li>הבליינדים משחקים מחוץ לפוזיציה בכל רחוב אחרי הפלופ.</li></ul>"],
+ ["קבוצות ידיים","<p>מהקובץ: זוגות חזקים (AA–QQ), בינוניים (JJ–88), נמוכים (77–22), אסים מותאמים, ברודווי מותאם, מחברים מותאמים, ברודווי לא מותאם, מחברים עם רווח, מחברים לא מותאמים.</p><ul><li>זוגות נמוכים משחקים בשביל סט (בערך 12% בפלופ). צריך סטאקים עמוקים.</li><li>מותאמות ומחברים מרוויחים מ-implied odds, אבל גם מפסידים לסטרייט או צבע גבוהים יותר.</li><li>ברודווי לא מותאם מסוכן כשהוא נשלט (KJ מול KQ/AK).</li></ul>"],
+ ["GTO מול אקספלויט","<p>GTO היא אסטרטגיה מאוזנת שאי אפשר לנצל. אקספלויט היא סטייה ממנה כדי להרוויח מהטעויות של יריב מסוים.</p><ul><li>בסיס: טבלאות GTO. התאמה: לפי היריבים.</li><li>בסטייקים נמוכים מרוויחים יותר מאקספלויט: מבלפים פחות מול calling stations, ומהמרים לערך דק יותר.</li><li>נגד שולחן פסיבי: לשחק יותר ידיים ולבודד. נגד אגרסיבי: להדק.</li></ul>"],
+ ["3bet ו-4bet","<p>3bet היא הרייז השני פריפלופ. טווח ה-3bet בנוי מידיים לערך ומבלופים עם חוסמים.</p><ul><li>A5s ו-A4s הם בלופים טובים: חוסמים AA/AK ויש להם פוטנציאל לגלגל (wheel).</li><li>מול 3bet מחוץ לפוזיציה מצמצמים את טווח הקריאה.</li><li>גודל 3bet: בערך פי 3 מהפתיחה בפוזיציה, פי 4 מחוץ לפוזיציה.</li></ul>"],
+ ["הגנת ה-BB","<p>ב-BB כבר השקעת 1bb. מול פתיחה ל-2.5bb אתה משלם 1.5 כדי לזכות בקופה של 5.5bb (כולל הקריאה שלך), ולכן צריך כ-27% אקוויטי בלבד.</p><ul><li>מול BTN ו-SB מגינים רחב מאוד (41%–53% מהידיים).</li><li>מול UTG מגינים צר, כי הטווח שלו חזק.</li></ul>"],
+ ["Pot Odds ואקוויטי","<p>Pot odds: היחס בין הסכום שצריך לשלם לקופה הסופית. אקוויטי: אחוז הפעמים שהיד שלך תנצח.</p><ul><li>אם אקוויטי > האחוז הנדרש, הקריאה רווחית לטווח ארוך.</li><li>הימור חצי קופה: צריך 25%. שני שליש: 28.5%. קופה מלאה: 33%.</li></ul>"],
+ ["Implied odds ו-SPR","<p>Implied odds: הכסף שתרוויח ברחובות הבאים אם תשלים את היד. SPR = סטאק אפקטיבי ÷ קופה בפלופ.</p><ul><li>SPR נמוך (מתחת ל-4): זוג עליון מספיק כדי להכניס הכל.</li><li>SPR גבוה (מעל 10): צריך ידיים חזקות יותר כדי לבנות קופה ענקית.</li><li>חוק 5/10 לסט: לקרוא רייז עם זוג קטן כשהסטאקים לפחות פי 15–20 מהקריאה.</li></ul>"],
+ ["C-bet ומרקם בורד","<p>Continuation bet: המהמר האחרון פריפלופ ממשיך להמר בפלופ.</p><ul><li>בורד יבש וגבוה (K-7-2 בצבעים שונים) טוב לפותח: c-bet קטן (25–33%) בתדירות גבוהה.</li><li>בורד רטוב ומחובר (9-8-6 מותאם) טוב למגן: c-bet פחות, וגדול יותר.</li><li>מול כמה יריבים: מקטינים את התדירות.</li></ul>"],
+ ["Value מול בלוף","<p>מהמרים לערך כשידיים גרועות משלך יקראו. מבלפים כשידיים טובות משלך יקפלו.</p><ul><li>בריבר, הימור קופה מלאה מאוזן עם בערך 2 ערך : 1 בלוף.</li><li>בלוף טוב: יד עם חוסמים לידיים החזקות של היריב, וסיפור הגיוני מכל הרחובות.</li><li>מול calling station: כמעט לא מבלפים.</li></ul>"],
+ ["סוגי שחקנים","<ul><li>Nit: משחק מעט, רק חזק. מקפלים מול האגרסיה שלו, גונבים לו בליינדים.</li><li>TAG: טייט-אגרסיבי, השחקן הטוב הנפוץ.</li><li>LAG: הרבה ידיים ואגרסיה. נותנים לו לבלף, מגינים רחב יותר.</li><li>Calling station: קורא הכל. הימורי ערך גדולים, אפס בלופים.</li><li>Maniac: מעלה הכל. מהדקים ונותנים לו להמר לתוכנו.</li></ul>"],
+ ["בנקרול וטילט","<ul><li>קאש: לפחות 20–30 ביי-אין לרמה. טורנירים: 50–100.</li><li>Stop-loss: 3 ביי-אין לסשן, ואז קמים.</li><li>סימני טילט: לשחק יותר ידיים אחרי הפסד, לקרוא \"רק כדי לראות\", לרצות להחזיר מהר.</li><li>שגרה לפני סשן: 5 דק׳ תרגול פריפלופ ומטרה אחת לסשן.</li></ul>"]
+];
+$("#lessons").innerHTML=LESSONS.map(([t,b])=>`<details class="lesson"><summary>${t}</summary><div>${b}</div></details>`).join("");
+
+const QUIZ=[
+ ["פוזיציה","איזו עמדה פותחת את הטווח הרחב ביותר בטבלאות?",["UTG","CO","BTN","BB"],2,"ה-BTN פותח כ-41% כי הוא תמיד פועל אחרון אחרי הפלופ."],
+ ["פוזיציה","למה SB פותח כמעט כמו BTN למרות שהוא מחוץ לפוזיציה?",["כי שם 0.5bb ונשאר רק שחקן אחד אחריו","כי זו העמדה הכי טובה","כי הוא לא יכול לקבל 3bet","כי הבליינד הגדול תמיד מקפל"],0,"רק ה-BB נשאר, וחצי בליינד כבר בקופה. גניבת הבליינדים שווה את זה."],
+ ["פריפלופ","לפי הטבלה, האם פותחים KQo מ-UTG?",["כן","לא"],1,"מ-UTG פותחים רק AKo ו-AQo מבין הלא מותאמים. KQo נשלט ע״י AK/AQ/KK."],
+ ["פריפלופ","למה A5s נפתח מ-UTG ו-A8s לא?",["A5s חזק יותר בשואודאון","A5s יכול לעשות סטרייט 5-A ומשמש בלוף טוב","טעות בטבלה","A8s מותאם פחות"],1,"A5s עושה wheel (A-2-3-4-5) וחוסם AA/AK. A8s נשלט ואין לו סטרייט."],
+ ["פריפלופ","ב-BB מול BTN עם 72o. מה עושים?",["3bet","Call","Fold"],2,"גם עם odds טובים, 72o לא מממש אקוויטי מחוץ לפוזיציה. פולד."],
+ ["פריפלופ","מה גודל פתיחה סטנדרטי בטבלאות שלך?",["2bb","2.5bb","3bb","4bb"],1,"כל הטבלאות בקובץ בנויות על פתיחה ל-2.5bb. בלייב נמוך הרבה פעמים פותחים 3–4bb כי יש הרבה קוראים."],
+ ["פריפלופ","פתחת CO עם AJs וקיבלת 3bet מה-BTN. לפי הטבלה?",["4bet","Call","Fold"],1,"AJs נמצא בטווח הקריאה מ-CO: נשלט מעט מדי ל-4bet, חזק מדי לפולד."],
+ ["מתמטיקה","בקופה 100, יריב מהמר 50. כמה אקוויטי צריך לקריאה?",["20%","25%","33%","50%"],1,"50 ÷ (100+50+50) = 25%."],
+ ["מתמטיקה","דרואו לצבע בפלופ. כמה outs ומה האקוויטי בערך עד הריבר?",["8 outs, 32%","9 outs, 36%","9 outs, 18%","12 outs, 48%"],1,"13 קלפים בצבע פחות 4 שרואים = 9. חוק 4: 36% (האמיתי 35%)."],
+ ["מתמטיקה","Open-ended straight draw בטרן. אקוויטי לריבר בערך?",["8%","16%","32%","50%"],1,"8 outs × 2 = 16% (האמיתי 17.4%)."],
+ ["מתמטיקה","מה הסיכוי לפגוע סט בפלופ עם זוג?",["בערך 6%","בערך 12%","בערך 25%","בערך 33%"],1,"בערך 1 ל-8.5 = 11.8%. לכן צריך implied odds גבוהים."],
+ ["פוסטפלופ","פתחת BTN, BB קרא. פלופ K♠7♦2♣. מה האסטרטגיה הסבירה?",["c-bet קטן בתדירות גבוהה","צ׳ק תמיד","אול-אין","c-bet של 150% קופה"],0,"בורד יבש וגבוה מעדיף את טווח הפותח. הימור קטן משיג את המטרה בזול."],
+ ["פוסטפלופ","פלופ 9♥8♥6♠ אחרי שפתחת UTG ו-BB קרא. מה נכון יותר?",["c-bet קטן תמיד","לבדוק יותר, ולהמר גדול כשמהמרים","אול-אין עם AK","פולד"],1,"הבורד הזה מתחבר לטווח של ה-BB (מחברים, זוגות קטנים). מצמצמים תדירות."],
+ ["פוסטפלופ","מה זה SPR של 2?",["הסטאק פי 2 מהקופה, קל להתחייב עם זוג עליון","היריב שם 2 הימורים","אחוז הזכייה","גודל הבליינד"],0,"SPR נמוך = מעט מקום לתמרון. זוג עליון בדרך כלל מספיק לאול-אין."],
+ ["פוסטפלופ","מתי בלוף בריבר הכי רווחי?",["מול calling station","כשהיד שלך חוסמת את הידיים החזקות של היריב והסיפור הגיוני","כשאתה מתוסכל","תמיד כשהיריב צ׳קים"],1,"חוסמים + סיפור עקבי + יריב שמסוגל לקפל."],
+ ["אקספלויט","יריב קורא כל הימור עד הריבר. מה ההתאמה?",["לבלף יותר","הימורי ערך גדולים יותר ובלופים כמעט אפס","לשחק פסיבי","לא לשחק מולו"],1,"Calling station משלם על ערך ולא מקפל לבלופים."],
+ ["אקספלויט","שולחן עם הרבה שחקנים פסיביים. מה לעשות פריפלופ?",["להדק","לשחק יותר ידיים ולבודד את החלשים","לעשות לימפ","לשחק רק AA"],1,"מהקובץ: נגד פסיביים מרחיבים ומבודדים. נגד אגרסיביים מהדקים."],
+ ["אקספלויט","Nit עושה 3bet פעם ראשונה בשעה. יש לך AQo.",["4bet","Call בפוזיציה","פולד הוא אופציה סבירה","אול-אין"],2,"הטווח של nit ב-3bet הוא בערך QQ+/AK. AQo נשלט מאוד."],
+ ["מנטלי","הפסדת 3 ביי-אין בסשן. מה עושים?",["מגדילים סטייק להחזיר","ממשיכים עוד שעה","קמים לפי ה-stop-loss","משחקים יותר ידיים"],2,"ה-stop-loss קיים בדיוק לרגע הזה. ההחלטות שלך עכשיו פחות טובות."],
+ ["מנטלי","כמה ביי-אין מומלץ להחזיק לקאש?",["5","10","20–30","200"],2,"20–30 ביי-אין מגנים מתנודתיות רגילה."]
+];
+const topics=[...new Set(QUIZ.map(q=>q[0]))];topics.forEach(t=>{const o=document.createElement("option");o.value=t;o.textContent=t;$("#q-topic").appendChild(o)});
+let qs=store.get("qscore",{n:0,ok:0}),qCur=null;
+function nextQ(){
+  const t=$("#q-topic").value;const pool=QUIZ.filter(q=>t==="all"||q[0]===t);let q;do{q=pool[Math.floor(Math.random()*pool.length)]}while(pool.length>1&&q===qCur);qCur=q;
+  $("#q-text").textContent=q[1];$("#q-explain").hidden=true;const box=$("#q-opts");box.innerHTML="";
+  q[2].forEach((o,i)=>{const b=document.createElement("button");b.textContent=o;b.onclick=()=>{if(box.dataset.done)return;box.dataset.done=1;const ok=i===q[3];qs.n++;if(ok)qs.ok++;store.set("qscore",qs);
+    b.classList.add(ok?"right":"wrong");box.children[q[3]].classList.add("right");$("#q-explain").textContent=q[4];$("#q-explain").hidden=false;$("#q-score").textContent=qs.ok+"/"+qs.n};box.appendChild(b)});
+  delete box.dataset.done;$("#q-score").textContent=qs.ok+"/"+qs.n;
+}
+$("#q-next").onclick=nextQ;$("#q-topic").onchange=nextQ;nextQ();
+
+/* ---------- math ---------- */
+let po=null;
+function newPO(){const pot=[20,30,40,50,60,80,100,120,150,200][Math.floor(Math.random()*10)];const fr=[.25,.33,.5,.66,.75,1,1.5][Math.floor(Math.random()*7)];const bet=Math.round(pot*fr);po={pot,bet,need:bet/(pot+2*bet)*100};
+  $("#po-q").textContent=`בקופה ${pot}. היריב מהמר ${bet}. כמה אקוויטי (%) אתה צריך כדי לקרוא?`;$("#po-in").value="";$("#po-ex").hidden=true}
+$("#po-check").onclick=()=>{const v=parseFloat($("#po-in").value);if(isNaN(v))return;const ok=Math.abs(v-po.need)<=3;$("#po-ex").hidden=false;
+  $("#po-ex").innerHTML=`${ok?'<span class="pill ok">נכון</span>':'<span class="pill bad">לא מדויק</span>'} <span class="mono">${po.bet} ÷ (${po.pot} + ${po.bet} + ${po.bet}) = ${po.need.toFixed(1)}%</span>`};
+$("#po-next").onclick=newPO;newPO();
+const DRAWS=[
+ ["דרואו לצבע",9,"9 קלפים מהצבע שנשארו"],["Open-ended straight draw",8,"4 קלפים בכל קצה"],["Gutshot",4,"4 קלפים שמשלימים את האמצע"],
+ ["צבע + OESD",15,"9 לצבע + 6 לסטרייט שלא כפולים"],["צבע + gutshot",12,"9 לצבע + 3 לסטרייט"],["שני אוברקארדים (לזוג עליון)",6,"3 מכל אחד"],
+ ["זוג לסט (בטרן)",2,"2 קלפים שנשארו"],["שני זוגות לפול האוס",4,"2 לכל זוג"]];
+let od=null;
+function newOut(){od=DRAWS[Math.floor(Math.random()*DRAWS.length)];od.street=Math.random()<.5?"flop":"turn";
+  $("#out-q").textContent=`${od[0]}, אתה ב${od.street==="flop"?"פלופ (שני קלפים לבוא)":"טרן (קלף אחד לבוא)"}. כמה outs, ואיזה אחוז בערך?`;$("#out-in").value="";$("#out-eq").value="";$("#out-ex").hidden=true}
+$("#out-check").onclick=()=>{const o=parseInt($("#out-in").value),e=parseFloat($("#out-eq").value);const m=od.street==="flop"?4:2;const eq=od[1]*m;
+  const ok=o===od[1]&&Math.abs(e-eq)<=4;$("#out-ex").hidden=false;$("#out-ex").innerHTML=`${ok?'<span class="pill ok">נכון</span>':'<span class="pill bad">לא מדויק</span>'} ${od[1]} outs (${od[2]}). <span class="mono">${od[1]} × ${m} ≈ ${eq}%</span>`};
+$("#out-next").onclick=newOut;newOut();
+
+/* ---------- tells ---------- */
+const TL=[
+ ["כלל 1: בסיס לפני טל","<p>טל הוא שינוי מההתנהגות הרגילה של השחקן. קודם צופים בו כמה סיבובים כשהוא לא בקופה ובקופות קטנות, ורק אז משווים.</p>"],
+ ["כלל 2: חזק = חלש, חלש = חזק","<p>שחקנים לא מנוסים משחקים תפקיד: מי שמחזיק יד חזקה מנסה להיראות אדיש או מאוכזב, ומי שמבלף מנסה להיראות בטוח (ישיבה זקופה, מבט ישיר, הימור בהפגנה).</p>"],
+ ["טלים אמינים יחסית","<ul><li>ידיים רועדות אחרי הימור גדול: לרוב אדרנלין מיד חזקה, לא פחד.</li><li>הסתכלות מהירה על הצ׳יפים אחרי שהפלופ נפתח: אוהב את הבורד.</li><li>בדיקה מחדש של הקלפים כשהבורד מותאם: לרוב אין לו צבע (בודק אם יש לו קלף מהצבע).</li><li>דיבור רגוע וזורם אחרי הימור: נוטה ליד חזקה. מבלפים נוטים לקפוא ולשתוק.</li></ul>"],
+ ["טלים של זמן וגודל","<ul><li>קריאה מיידית בפלופ: לרוב דרואו או יד בינונית, לא מפלצת.</li><li>הימור גדול מהר בריבר מיריב פסיבי: לרוב ערך.</li><li>היסוס ארוך ואז הימור קטן: לרוב יד בינונית שמחפשת זול.</li><li>שינוי גודל הימור מהדפוס הרגיל שלו: שווה לרשום.</li></ul>"],
+ ["הטלים שלך","<ul><li>אותה שגרה בכל החלטה: מסתכל בקלפים פעם אחת, סופר עד 3, ואז פועל.</li><li>אותו גודל הימור עם בלופים וערך.</li><li>לא לדבר ביד גדולה. כובע/משקפיים אם אתה יודע שהפנים שלך מסגירים.</li></ul>"],
+ ["אזהרה","<p>טלים הם תוספת למידע, לא תחליף. מתמטיקה וטווחים קודמים. טל טוב מזיז החלטה גבולית, לא הופך פולד ברור לקריאה.</p>"]
+];
+$("#tell-lessons").innerHTML=TL.map(([t,b])=>`<details class="lesson"><summary>${t}</summary><div>${b}</div></details>`).join("");
+const TS=[
+ ["יריב שם הימור גדול בריבר, ואז הידיים שלו רועדות כשהוא מניח אותן על השולחן.",["בלוף, הוא מפחד","יד חזקה, אדרנלין","אין מידע"],1,"רעידה אחרי הימור היא בדרך כלל התרגשות מיד חזקה. מבלפים נוטים לקפוא."],
+ ["אחרי הימור שלו, היריב מסתכל עליך ישר בעיניים ומחייך.",["מנסה להפחיד: נוטה לבלוף","בטוח: יד חזקה","תמיד אמין"],0,"\"חזק = חלש\": שחקן לא מנוסה משחק תפקיד של ביטחון כשהוא מבלף. בדוק מול הבסיס שלו."],
+ ["הפלופ נפתח ויריב מעיף מבט מהיר לערימת הצ׳יפים שלו ואז מסיט את המבט.",["פגע בבורד","החטיא","משועמם"],0,"מבט אינסטינקטיבי לצ׳יפים = מתכנן להמר. טל אמין יחסית אצל מתחילים."],
+ ["בורד עם שלושה קלפים מותאמים. היריב מסתכל שוב בקלפים שלו.",["יש לו צבע מוכן","כנראה אין לו צבע מוכן","יש לו סט"],1,"מי שיש לו שני קלפים מהצבע בדרך כלל זוכר. בדיקה חוזרת = בודק אם יש לו קלף אחד מהצבע."],
+ ["יריב קורא מיד את ה-c-bet שלך בפלופ 9♠8♠3♦, בלי לחשוב.",["מפלצת (סט)","דרואו או יד בינונית","אין לו כלום"],1,"קריאה מיידית לרוב אומרת שההחלטה קלה: דרואו או זוג. עם סט רוב השחקנים חושבים על רייז."],
+ ["השחקן הכי פטפטן בשולחן פתאום שותק ומפסיק לזוז אחרי שהימר אול-אין.",["נוטה לבלוף","נוטה ליד חזקה","לא קשור"],0,"שינוי מהבסיס. מבלפים נוטים לקפוא ולהקטין תנועה כדי לא להסגיר."],
+ ["יריב מניח הימור בעדינות ובשקט, בלי להסתכל עליך.",["נוטה לחוזק","נוטה לבלוף","אין מידע"],0,"התנהגות חלשה/שקטה בכוונה = לרוב חוזק (משחק תפקיד הפוך)."],
+ ["יריב מבקש לראות כמה צ׳יפים יש לך לפני שהוא מחליט על קריאה.",["שוקל קריאה אמיתית: יד בינונית-חזקה","בלוף ודאי","פולד ודאי"],0,"מי שמתכוון לקפל בדרך כלל לא טורח לבדוק סכומים. בדיקה מעידה שהוא שוקל ברצינות."]
+];
+let ts=store.get("tscore",{n:0,ok:0}),tCur=null;
+function nextT(){let q;do{q=TS[Math.floor(Math.random()*TS.length)]}while(q===tCur);tCur=q;$("#t-text").textContent=q[0];$("#t-explain").hidden=true;const box=$("#t-opts");box.innerHTML="";delete box.dataset.done;
+  q[1].forEach((o,i)=>{const b=document.createElement("button");b.textContent=o;b.onclick=()=>{if(box.dataset.done)return;box.dataset.done=1;const ok=i===q[2];ts.n++;if(ok)ts.ok++;store.set("tscore",ts);b.classList.add(ok?"right":"wrong");box.children[q[2]].classList.add("right");$("#t-explain").textContent=q[3];$("#t-explain").hidden=false;$("#t-score").textContent=ts.ok+"/"+ts.n};box.appendChild(b)});
+  $("#t-score").textContent=ts.ok+"/"+ts.n}
+$("#t-next").onclick=nextT;nextT();
+
+/* ---------- AI coach ---------- */
+function openRangesText(){return Object.entries(SPOTS).filter(([k,s])=>s.kind==="open").map(([k,s])=>`${s.pos}: ${ALL.filter(h=>s.r[h]).join(" ")}`).join("\n")}
+function statsText(){
+  const bk=Object.entries(stats.byKind).map(([k,v])=>`${k}: ${v.ok}/${v.n}`).join(", ")||"אין עדיין";
+  const miss=Object.entries(stats.miss).filter(([k,v])=>v>0).sort((a,b)=>b[1]-a[1]).slice(0,12).map(([k,v])=>{const [s,h]=k.split("|");return `${SPOTS[s]?SPOTS[s].title:s} עם ${h} (${v}×, נכון: ${describeCode(SPOTS[s].kind,codeOf(s,h))})`}).join("; ")||"אין";
+  return `דיוק בתרגול פריפלופ לפי סוג: ${bk}. טעויות חוזרות: ${miss}. שאלות תיאוריה: ${qs.ok}/${qs.n}. תרחישי שפת גוף: ${ts.ok}/${ts.n}.`;
+}
+function rules(){return `אתה מאמן פוקר אישי של רועי (טקסס הולדם, קאש 9-max, לייב ואונליין). כללים:
+- עברית בלבד. קצר, חד, ישיר. בלי מוטיבציה ובלי פילוסופיה.
+- שיטה סוקרטית: לפני שאתה נותן תשובה, שאל שאלה אחת שמכריחה אותו לחשוב. בסימולציית יד, עצור בכל נקודת החלטה וחכה לתשובה.
+- תקן אותו כשהוא טועה, ואמור בדיוק למה (מתמטיקה, טווחים, פוזיציה).
+- אל תמציא נתונים. אם אינך בטוח, כתוב "לא בטוח" ואיך לבדוק.
+- כשאתה מסביר, תן דוגמה אחת עם קלפים ומספרים, ואז שאלה אחת לבדיקה.
+- טלים ושפת גוף: תמיד להזכיר שצריך בסיס לפני טל, ושטל רק מזיז החלטות גבוליות.
+- סיים כל תשובה בשורה "צעד הבא:" עם פעולה אחת לתרגול.
+טבלאות הפתיחה שהוא לומד (פתיחה ל-2.5bb):
+${openRangesText()}
+מצב התלמיד: ${statsText()}`}
+let sample=null,turns=store.get("chat",[]),ctl=null;
+const chat=$("#chat");
+function addMsg(role,text){const d=document.createElement("div");d.className="msg "+role;d.textContent=text;chat.appendChild(d);chat.scrollTop=chat.scrollHeight;return d}
+function renderChat(){chat.innerHTML="";if(!turns.length)addMsg("sys","בחר נושא למעלה או כתוב שאלה. דוגמה: \"היה לי AQo ב-UTG+1, שלושה קראו, בפלופ Q-8-3...\"");turns.forEach(t=>addMsg(t.role==="user"?"me":"coach",t.content))}
+renderChat();
+function errCopy(c){return ({not_granted:"המאמן לא אושר בדף הזה. אפשר לאשר מתפריט ההרשאות של הדף.",rate_limited:"יותר מדי בקשות. נסה שוב בעוד דקה.",session_expired:"צריך להתחבר מחדש ל-Claude.",refused:"המאמן לא ענה על זה. נסח אחרת.",sampling_disabled:"Claude לא זמין בחשבון הזה."})[c]||"התקשורת נכשלה. נסה שוב."}
+async function send(text){
+  text=(text||"").trim();if(!text||!sample||ctl)return;
+  turns.push({role:"user",content:text});addMsg("me",text);$("#chat-in").value="";
+  const bubble=addMsg("coach","חושב…");ctl=new AbortController();$("#chat-stop").hidden=false;$("#chat-send").disabled=true;
+  const recent=turns.slice(-16);if(recent[0].role!=="user")recent.shift();
+  try{const {text:ans}=await sample([{role:"user",content:rules()},...recent],{cache:false,signal:ctl.signal,onText:({text})=>{bubble.textContent=text;chat.scrollTop=chat.scrollHeight}});
+    turns.push({role:"assistant",content:ans});store.set("chat",turns.slice(-30))}
+  catch(e){if(e.text){bubble.textContent=e.text;turns.push({role:"assistant",content:e.text})}else{bubble.remove()}if(e.code!=="cancelled")addMsg("sys",errCopy(e.code));if(["not_granted","sampling_disabled"].includes(e.code))disableAI()}
+  finally{ctl=null;$("#chat-stop").hidden=true;$("#chat-send").disabled=false;store.set("chat",turns.slice(-30))}
+}
+function disableAI(){$("#chat-send").disabled=true;$("#tell-go").disabled=true;$("#d-ask").hidden=true;$("#coach-status").textContent="המאמן AI לא זמין בתצוגה הזו. שאר הכלים עובדים כרגיל."}
+$("#chat-send").onclick=()=>send($("#chat-in").value);
+$("#chat-in").addEventListener("keydown",e=>{if(e.key==="Enter"&&(e.ctrlKey||e.metaKey)){e.preventDefault();send($("#chat-in").value)}});
+$("#chat-stop").onclick=()=>ctl&&ctl.abort();
+$("#chat-clear").onclick=()=>{turns=[];store.set("chat",[]);renderChat()};
+$$("#chips button").forEach(b=>b.onclick=()=>send(b.dataset.p));
+
+let tellFile=null;
+$("#tell-img-btn").onclick=()=>$("#tell-img").click();
+$("#tell-img").onchange=e=>{tellFile=e.target.files[0]||null;$("#tell-img-name").textContent=tellFile?tellFile.name:""};
+$("#tell-go").onclick=async()=>{
+  if(!sample)return;const out=$("#tell-out");out.hidden=false;out.textContent="מנתח…";$("#tell-go").disabled=true;
+  const p=`אתה מאמן פוקר מומחה לקריאת שפת גוף (בסגנון Joe Navarro ו-Mike Caro). נתח בעברית, קצר:
+1. מה הסימנים שתוארו (או שנראים בתמונה) ומה כל אחד נוטה להעיד.
+2. כמה זה אמין (נמוך/בינוני/גבוה) ולמה, כולל מה חסר (בסיס, היסטוריה).
+3. איך זה משתלב עם הקופה והטווח: האם זה מזיז את ההחלטה.
+4. שאלה אחת שתבדוק את ההבנה שלי.
+אם יש תמונה שלי, נתח את הטלים שאני מסגיר ואיך לתקן.
+התיאור: ${$("#tell-in").value}`;
+  try{const {text}=await sample(p,{images:tellFile||undefined,onText:({text})=>{out.textContent=text}});out.textContent=text}
+  catch(e){out.textContent=(e.text||"")+"\n"+errCopy(e.code);if(["not_granted","sampling_disabled"].includes(e.code))disableAI()}
+  finally{if(sample)$("#tell-go").disabled=false}
+};
+
+(async()=>{
+  try{sample=window.claude&&await window.claude.use("sample")}catch(e){sample=null}
+  if(!sample){disableAI();return}
+  try{const lim=await sample.limits();if(lim&&lim.images){$("#tell-img-btn").hidden=false;$("#tell-img").accept=lim.images.mediaTypes.join(",")}}catch(e){}
+})();
+})();
+</script>
