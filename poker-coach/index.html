@@ -155,6 +155,26 @@ body.focus nav.tabbar{display:none}
 .act-R{background:var(--r-val);color:var(--r-val-fg)} .act-C{background:var(--r-call);color:var(--r-call-fg)} .act-F{background:var(--surface);color:var(--fg);box-shadow:var(--shadow-sm)}
 .after{display:grid;gap:16px}
 .follow{display:grid;gap:12px}
+.term{text-decoration:underline dotted;text-decoration-thickness:1.5px;text-underline-offset:3px;text-decoration-color:var(--accent);cursor:help;border-radius:4px}
+.term:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+button .term,.opt .term,.ans .term,.chip .term,.choice .term{text-decoration:none;cursor:inherit}
+.gl{display:inline-block;font-size:.72em;font-weight:500;line-height:1.5;color:var(--fg-2);background:var(--fill,rgba(127,127,127,.12));border-radius:6px;padding:0 6px;margin-inline-start:4px;vertical-align:.1em}
+.tg{white-space:nowrap}
+button .gl,.ans .gl,.chip .gl,.opt .gl,.choice .gl,h1 .gl,h2 .gl,.score-row .gl{display:none}
+.sheet-bg{position:fixed;inset:0;z-index:30;background:rgba(0,0,0,.35);animation:fade .2s var(--ease) both}
+.sheet{position:fixed;inset-inline:0;bottom:0;z-index:31;max-width:560px;margin:0 auto;padding:14px 24px calc(24px + env(safe-area-inset-bottom,0px));border-radius:28px 28px 0 0;background:var(--glass);-webkit-backdrop-filter:saturate(180%) blur(24px);backdrop-filter:saturate(180%) blur(24px);box-shadow:var(--shadow-lg);display:grid;gap:14px;animation:up .3s var(--ease) both}
+.sheet .grab{width:40px;height:5px;border-radius:9px;background:var(--fill);justify-self:center}
+.gl-he{color:var(--accent);font-weight:700}
+@keyframes up{from{transform:translateY(40px)}to{transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.seats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.seats .choice{display:grid;justify-items:center;gap:0;text-align:center;padding:12px 6px;min-height:72px}
+.seats .choice b{font-size:1.5rem;font-family:var(--display)}
+.seats .choice span{font-size:.75rem;color:var(--muted);font-weight:500}
+.choice .ex{display:block;font-size:.85rem;font-weight:500;color:var(--muted);margin-top:4px}
+.stars{display:flex;gap:8px;justify-content:center}
+.stars i{width:14px;height:14px;border-radius:50%;background:var(--fill)}
+.stars i.on{background:var(--accent)}
 .reply p,.msg.coach p,#tell-out p{margin:0 0 8px}
 .reply p:last-child,.msg.coach p:last-child{margin-bottom:0}
 .md-h{font-weight:700}
@@ -240,16 +260,16 @@ label.fld,.fld{display:grid;gap:6px;font-size:.85rem;color:var(--muted);font-wei
   <section class="view" id="v-home">
     <div class="topbar">
       <div class="brand">poker <span>AI</span></div>
-      <button class="iconbtn" id="h-profile" aria-label="הפרופיל שלי"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg></button>
+      <div class="row" style="gap:8px"><button class="iconbtn" id="h-settings" aria-label="הגדרות"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h10M18 7h2M4 17h4M12 17h8"/><circle cx="16" cy="7" r="2"/><circle cx="10" cy="17" r="2"/></svg></button><button class="iconbtn" id="h-profile" aria-label="הפרופיל שלי"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg></button></div>
     </div>
     <div class="hero">
       <span class="eyebrow" id="h-eyebrow">היום</span>
       <h1 id="h-hello">אימון של 10 דקות.</h1>
     </div>
     <div class="banner accent" id="h-noassess" hidden>
-      <h3>בוא נכיר אותך</h3>
-      <p class="small muted">אבחון של 10 דקות: איך אתה משחק, מבחן קצר, ותכנית אימון שמתאימה לך.</p>
-      <button class="btn primary" id="h-start-assess" style="justify-self:start">התחל אבחון</button>
+      <h3>בדיקת רמה קצרה</h3>
+      <p class="small muted">3 קטגוריות, 5 שאלות בכל אחת, ציון אחרי כל קטגוריה. בסוף: תכנית אימון אישית.</p>
+      <button class="btn primary" id="h-start-assess" style="justify-self:start">לבדיקת הרמה</button>
     </div>
     <button class="cta" id="h-daily"><b>התחל אימון יומי</b><span>15 ידיים · 3 שאלות · 3 תרגילי מתמטיקה</span></button>
     <div class="card-box">
@@ -372,6 +392,16 @@ label.fld,.fld{display:grid;gap:6px;font-size:.85rem;color:var(--muted);font-wei
     <button class="btn ghost" id="e-del" style="justify-self:start">מחק רשומה</button>
   </section>
 
+  <!-- SETTINGS -->
+  <section class="view" id="v-settings" hidden>
+    <button class="back" data-back="home">→ בית</button>
+    <h1>הגדרות</h1>
+    <div class="card-box"><h2>איך לספור</h2><div class="choices" id="st-units"></div></div>
+    <div class="card-box"><h2>רמת שפה</h2><div class="choices" id="st-lang"></div></div>
+    <div class="card-box"><h2>שחקנים בשולחן</h2><div class="seats" id="st-players"></div><p class="small muted" id="st-players-note"></p></div>
+    <p class="small muted">השינויים נשמרים מיד.</p>
+  </section>
+
   <!-- PROFILE -->
   <section class="view" id="v-profile" hidden>
     <button class="back" data-back="home">→ בית</button>
@@ -397,6 +427,15 @@ label.fld,.fld{display:grid;gap:6px;font-size:.85rem;color:var(--muted);font-wei
   </section>
 </div>
 
+<div class="sheet-bg" id="gl-bg" hidden></div>
+<div class="sheet" id="gl-sheet" role="dialog" aria-modal="true" aria-labelledby="gl-t" hidden>
+  <div class="grab" aria-hidden="true"></div>
+  <div style="display:grid;gap:4px"><h2 id="gl-t" dir="ltr" style="text-align:right"></h2><p class="gl-he" id="gl-he"></p></div>
+  <p id="gl-def"></p>
+  <div class="explain" id="gl-ex"></div>
+  <div class="row"><button class="btn primary" id="gl-close">הבנתי</button><button class="btn" id="gl-ask" hidden>שאל את המאמן</button></div>
+</div>
+
 <nav class="tabbar" aria-label="ניווט ראשי"><div class="in">
   <button data-nav="home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M3 11l9-7 9 7v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>בית</button>
   <button data-nav="drill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><rect x="3" y="5" width="11" height="15" rx="2.5"/><path d="M14 7.5l5 1.5a1.5 1.5 0 0 1 1 1.9l-3 9.6"/></svg>תרגול</button>
@@ -413,9 +452,10 @@ const rnd=a=>a[Math.floor(Math.random()*a.length)];
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]);
 /* Wrap every run of Latin words / numbers in <bdi> so English poker terms keep their order inside Hebrew (RTL) text. */
-const LAT=/[A-Za-z0-9♠♥♦♣](?:[A-Za-z0-9♠♥♦♣+\-\/'%–]|\.(?=[0-9]))*(?: [A-Za-z0-9♠♥♦♣](?:[A-Za-z0-9♠♥♦♣+\-\/'%–]|\.(?=[0-9]))*)*/g;
+const LAT=/[A-Za-z0-9♠♥♦♣](?:[A-Za-z0-9♠♥♦♣+\-\/'%–]|[.,](?=[0-9]))*(?: [A-Za-z0-9♠♥♦♣](?:[A-Za-z0-9♠♥♦♣+\-\/'%–]|[.,](?=[0-9]))*)*/g;
 /* [[...]] marks a formula: shown as one left-to-right block so the math reads in order. */
-const bidi=s=>String(s).split(/\[\[(.+?)\]\]/).map((part,i)=>i%2?`<bdi dir="ltr" class="eq">${esc(part)}</bdi>`:esc(part).replace(LAT,m=>'<bdi dir="ltr">'+m+"</bdi>")).join("");
+let glSeen=new Set(),glArm=0;
+const bidi=s=>{if(!glArm){glArm=1;queueMicrotask(()=>{glSeen=new Set();glArm=0})}const seen=glSeen;return u(s).split(/\[\[(.+?)\]\]/).map((part,i)=>i%2?`<bdi dir="ltr" class="eq">${esc(part)}</bdi>`:esc(part).replace(LAT,m=>{const t=termify(m,seen);const bd='<bdi dir="ltr">'+t.html+"</bdi>";return t.gl.length?`<span class="tg">${bd}<span class="gl">${t.gl.join(", ")}</span></span>`:bd})).join("")};
 /* Light markdown for coach replies: **bold**, "- " bullets, "1." numbered lines, "#" headings. */
 const mdInline=t=>bidi(t).replace(/\*\*(.+?)\*\*/g,"<b>$1</b>").replace(/\*\*/g,"");
 function md(text){return String(text).split("\n").map(line=>{const t=line.trim();let m;
@@ -426,6 +466,109 @@ function md(text){return String(text).split("\n").map(line=>{const t=line.trim()
   return `<p>${mdInline(t)}</p>`}).join("")}
 const fmt=n=>String(Math.round(n*10)/10);
 const todayKey=(d=new Date())=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
+
+/* ===== SETTINGS + UNITS ===== */
+const SET_DEFAULT={units:"chips",lang:"easy",players:6};
+let settings=store.get("settings",null);
+if(!settings){const veteran=store.get("profile",null)||store.get("assessments",null);settings=veteran?{units:"bb",lang:"pro",players:9}:{}}
+settings=Object.assign({},SET_DEFAULT,settings);
+const saveSettings=()=>store.set("settings",settings);
+saveSettings();
+/* All amounts are kept in big blinds. Chips mode shows them as blinds 5/10 with 1,000-chip stacks (100bb). */
+const CHIP=10;
+const money=bb=>settings.units==="chips"?Math.round(bb*CHIP).toLocaleString("en-US")+" ג׳יטונים":String(Math.round(bb*10)/10)+"bb";
+const unitName=()=>settings.units==="chips"?"ג׳יטונים":"bb";
+const toUnit=bb=>settings.units==="chips"?Math.round(bb*CHIP):Math.round(bb*10)/10;
+const fromUnit=v=>settings.units==="chips"?v/CHIP:v;
+const u=t=>String(t).replace(/\{bb:([\d.]+)\}/g,(m,n)=>money(+n));
+const stackLine=()=>settings.units==="chips"?"Blinds של 5/10. לכל שחקן יש 1,000 ג׳יטונים.":"לכל שחקן יש 100bb.";
+const tablePos=()=>DATA.positions.slice(DATA.positions.length-Math.min(9,Math.max(3,settings.players)));
+const inTable=sp=>{const P=tablePos();return P.includes(sp.hero)&&(!sp.vill||P.includes(sp.vill))};
+function aiStyle(){return (settings.units==="chips"?"יחידות: ג׳יטונים. Blinds של 5/10, לכל שחקן 1,000 ג׳יטונים (100bb). כתוב כל סכום בג׳יטונים, לא ב-bb.":"יחידות: big blinds (bb).")+" "+(settings.lang==="easy"?"רמת שפה: מתחיל. כתוב פשוט מאוד, ובפעם הראשונה שמופיע מונח באנגלית הסבר אותו בכמה מילים בעברית.":"רמת שפה: מקצוען.")+` שולחן של ${settings.players} שחקנים.`}
+
+/* ===== GLOSSARY: every term in the app is tappable ===== */
+const GLOSS=[
+ [["blinds","blind"],"הימורי חובה","שני הימורים שחייבים לשים לפני שמחלקים קלפים, כדי שתמיד יהיה על מה לשחק.","ה-SB שם {bb:0.5} וה-BB שם {bb:1}."],
+ [["sb","small blind"],"בליינד קטן","השחקן שיושב משמאל לכפתור. שם חצי הימור חובה לפני החלוקה.","ה-SB שם {bb:0.5} לפני שמחלקים קלפים."],
+ [["bb","big blind"],"בליינד גדול","השחקן שיושב משמאל ל-SB. שם הימור חובה מלא לפני החלוקה.","ה-BB שם {bb:1}. מי שרוצה לשחק צריך לשים לפחות את זה."],
+ [["btn","button","dealer"],"הכפתור","העמדה של הדילר. היא פועלת אחרונה אחרי ה-flop, ולכן היא העמדה הכי טובה בשולחן.","ה-BTN רואה מה כולם עשו לפני שהוא מחליט."],
+ [["utg","utg+1","utg+2"],"עמדות ראשונות","השחקנים הראשונים שפועלים לפני ה-flop. אחריהם יש הרבה שחקנים, ולכן משחקים מהן רק ידיים חזקות.","מ-UTG עושים open רק עם כ-10% מהידיים."],
+ [["lj","lojack"],"עמדה אמצעית","העמדה שלפני ה-HJ. בשולחן של 6 שחקנים היא העמדה הראשונה.","מ-LJ משחקים יותר ידיים מאשר מ-UTG."],
+ [["hj","hijack"],"עמדה אמצעית-מאוחרת","העמדה שלפני ה-CO.","מה-HJ עושים open עם כ-21% מהידיים."],
+ [["co","cutoff"],"העמדה שלפני הכפתור","העמדה שמימין ל-BTN. עמדה מאוחרת וטובה.","מה-CO עושים open עם כ-27% מהידיים."],
+ [["position","in position"],"פועל אחרון","להיות in position זה לפעול אחרי היריב בכל סיבוב. זה יתרון גדול: אתה רואה מה הוא עשה לפני שאתה מחליט.","ה-BTN תמיד in position מול ה-blinds."],
+ [["out of position"],"פועל ראשון","לפעול לפני היריב, בלי לדעת מה הוא יעשה. זה חיסרון.","ה-SB וה-BB משחקים out of position אחרי ה-flop."],
+ [["preflop"],"לפני הקלפים המשותפים","הסיבוב הראשון: כל אחד קיבל 2 קלפים, ועוד לא נפתחו קלפים על השולחן.","ההחלטה הכי נפוצה preflop: לשחק את היד או לוותר."],
+ [["flop"],"3 הקלפים הראשונים","3 הקלפים המשותפים הראשונים שנפתחים על השולחן, ואחריהם סיבוב הימורים.","אם ה-flop הוא K-7-2 ויש לך K, פגעת top pair."],
+ [["turn"],"הקלף הרביעי","הקלף המשותף הרביעי, ואחריו עוד סיבוב הימורים.","אחרי ה-flop נפתח ה-turn."],
+ [["river"],"הקלף החמישי","הקלף המשותף האחרון. אחריו יש סיבוב הימורים אחרון, ואז מראים קלפים.","ב-river כבר אין קלפים שיבואו, כל ה-draws נגמרו."],
+ [["showdown"],"הצגת קלפים","הרגע בסוף היד שבו השחקנים שנשארו מראים קלפים, והיד הכי טובה זוכה.","אם אף אחד לא עשה fold עד הסוף, מגיעים ל-showdown."],
+ [["postflop"],"אחרי ה-flop","כל מה שקורה מה-flop ועד סוף היד.","ההחלטות postflop תלויות בקלפים שעל השולחן."],
+ [["pot"],"הקופה","כל הג׳יטונים שהשחקנים שמו באמצע. מי שמנצח ביד לוקח אותם.","אם שניים שמו {bb:2.5} וה-SB שם {bb:0.5}, ב-pot יש {bb:5.5}."],
+ [["stack","stacks"],"הג׳יטונים שלך","כל הג׳יטונים שיש לשחקן מולו.","בהתחלה לכל שחקן יש {bb:100}."],
+ [["fold"],"לוותר","לזרוק את הקלפים ולצאת מהיד. מה ששמת עד עכשיו נשאר ב-pot.","יד חלשה מול raise גדול: fold."],
+ [["check"],"להעביר","להמשיך בלי לשים כסף. מותר רק אם אף אחד לא שם כסף לפניך בסיבוב הזה.","ב-flop, אם כולם לפניך עשו check, גם אתה יכול לעשות check."],
+ [["call"],"להשוות","לשים בדיוק כמו מי ששם לפניך, כדי להישאר ביד.","הנבל עשה bet של {bb:5}. Call זה לשים גם {bb:5}."],
+ [["bet"],"להמר","לשים כסף ראשון בסיבוב, כשאף אחד עוד לא שם.","ב-flop כולם עשו check, ואתה עושה bet של {bb:3}."],
+ [["raise"],"להעלות","לשים יותר ממה שמישהו שם לפניך.","הנבל עשה bet של {bb:3}, ואתה עושה raise ל-{bb:9}."],
+ [["all-in","all in"],"הכל פנימה","לשים את כל הג׳יטונים שיש לך.","עם {bb:20} בלבד, הרבה פעמים עושים all-in במקום raise קטן."],
+ [["limp"],"להשוות את ה-BB","לשים רק את ה-BB לפני ה-flop, בלי להעלות.","מה-SB לפעמים עושים limp כדי לראות flop בזול."],
+ [["open"],"להעלות ראשון","ה-raise הראשון לפני ה-flop, כשכולם לפניך עשו fold.","Open מה-CO ל-{bb:2.5}."],
+ [["3bet","3-bet"],"העלאה שנייה","ה-raise השני לפני ה-flop: מישהו עשה raise, ואתה מעלה שוב.","ה-CO עשה raise ל-{bb:2.5}, וה-BTN עשה 3bet ל-{bb:7.5}."],
+ [["4bet","4-bet"],"העלאה שלישית","raise על 3bet.","עשית raise, קיבלת 3bet, ועכשיו אתה מעלה שוב: 4bet."],
+ [["c-bet","continuation bet"],"הימור המשך","מי שעשה raise לפני ה-flop ממשיך לעשות bet אחרי ה-flop, גם אם לא פגע.","עשית raise עם AK, ה-flop הוא 8-5-2, ואתה עושה bet קטן."],
+ [["range","ranges"],"טווח ידיים","כל הידיים שיריב יכול להחזיק במצב מסוים, ולא יד אחת.","ה-range של UTG שעושה raise כולל בעיקר זוגות גבוהים ואסים חזקים."],
+ [["equity"],"סיכוי לנצח","אחוז הפעמים שהיד שלך תנצח עד הסוף.","ל-flush draw ב-flop יש כ-35% equity."],
+ [["pot odds"],"כמה אתה משלם","כמה אחוז מה-pot הסופי אתה משלם כשאתה עושה call. משווים את זה ל-equity.","bet של 5 לתוך pot של 10: אתה משלם 5 מתוך 20, כלומר 25%."],
+ [["outs"],"קלפים שעוזרים לך","הקלפים שעוד יכולים לבוא ולהשלים לך את היד.","ל-flush draw יש 9 outs."],
+ [["draw","draws"],"כמעט יד","יד שעוד לא מוכנה, וצריכה קלף כדי להשלים אותה.","4 קלפים לצבע זה draw ל-flush."],
+ [["flush draw"],"כמעט צבע","4 קלפים מאותו צבע. חסר קלף אחד ל-flush.","A♥ K♥ עם 7♥ 2♥ על השולחן."],
+ [["flush"],"צבע","5 קלפים מאותו צבע.","5 קלפי לב."],
+ [["straight"],"רצף","5 קלפים ברצף.","5-6-7-8-9."],
+ [["open-ended straight draw","open-ended"],"כמעט רצף, משני הצדדים","4 קלפים ברצף, ושני קלפים שונים יכולים להשלים.","7-8-9-10: גם 6 וגם J משלימים. 8 outs."],
+ [["gutshot"],"כמעט רצף, באמצע","4 קלפים לרצף עם חור באמצע. רק קלף אחד משלים.","7-8-10-J: רק 9 משלים. 4 outs."],
+ [["set"],"שלישייה מזוג","שלושה מאותו קלף, כשזוג מהם ביד שלך.","יש לך 7-7, וב-flop יש 7."],
+ [["top pair"],"זוג עליון","זוג עם הקלף הכי גבוה על השולחן.","יש לך K-Q, וה-flop הוא K-8-3."],
+ [["second pair"],"זוג שני","זוג עם הקלף השני בגובהו על השולחן.","יש לך 8-7, וה-flop הוא K-8-3."],
+ [["overcards"],"קלפים גבוהים מהשולחן","הקלפים ביד שלך גבוהים מכל הקלפים שעל השולחן.","A-K מול flop של 9-6-2."],
+ [["bluff","bluffs"],"בלוף","להמר עם יד חלשה כדי שהיריב יעשה fold.","bet גדול ב-river בלי כלום ביד."],
+ [["value","value bet","value bets"],"הימור לרווח","להמר עם יד חזקה כדי שהיריב ישלם לך עם יד חלשה יותר.","יש לך top pair, ואתה עושה bet כדי שיד חלשה תעשה call."],
+ [["blockers","blocker"],"קלפים חוסמים","קלף ביד שלך שמקטין את הסיכוי שליריב יש יד מסוימת.","אם יש לך A, פחות סביר שיש ליריב AA."],
+ [["tilt"],"עצבים","משחק גרוע אחרי הפסד או עצבים: יותר ידיים, פחות סבלנות.","הפסדת יד גדולה ופתאום אתה עושה call להכל: זה tilt."],
+ [["tell","tells"],"סימן גוף","התנהגות של יריב שרומזת על היד שלו.","ידיים רועדות אחרי bet גדול הן לרוב סימן ליד חזקה."],
+ [["bankroll"],"תקציב פוקר","הכסף שהקצית רק לפוקר.","עם תקציב של 2,000 ₪ לא משחקים במשחק של 500 ₪ ליד."],
+ [["buy-in","buy-ins"],"כניסה למשחק","כמה כסף מביאים לשולחן כשמתיישבים.","במשחק של 100 ₪, ה-buy-in הוא 100 ₪."],
+ [["stop-loss"],"גבול הפסד","כמה מותר להפסיד בסשן לפני שקמים.","Stop-loss של 3 buy-ins: אחרי 3 הפסדים קמים."],
+ [["suited"],"מאותו צבע","שני קלפים מאותו צבע ביד. מסומן ב-s.","A5s: אס וחמש מאותו צבע."],
+ [["offsuit"],"מצבעים שונים","שני קלפים מצבעים שונים ביד. מסומן ב-o.","KQo: מלך ומלכה מצבעים שונים."],
+ [["spr"],"יחס stack ל-pot","כמה פעמים ה-stack גדול מה-pot אחרי ה-flop. ככל שהוא נמוך, קל יותר להכניס הכל.","stack של {bb:100} ו-pot של {bb:20}: SPR של 5."],
+ [["implied odds"],"רווח עתידי","הכסף שתרוויח ברחובות הבאים אם תשלים את היד.","call קטן עם זוג קטן, כי אם יבוא set תרוויח הרבה."],
+ [["gto"],"משחק מאוזן","אסטרטגיה מאוזנת לפי מחשב, שאי אפשר לנצל.","הטבלאות באפליקציה קרובות ל-GTO."],
+ [["exploit"],"לנצל טעויות","לסטות מ-GTO כדי להרוויח מטעויות של יריב מסוים.","מול שחקן שעושה call להכל, לא עושים bluff."],
+ [["lag","loose aggressive"],"פרוע ותוקפני","שחקן שמשחק הרבה ידיים ומהמר הרבה.","LAG יעשה raise גם עם ידיים בינוניות."],
+ [["tag","tight aggressive"],"זהיר ותוקפני","שחקן שמשחק מעט ידיים, אבל כשהוא משחק הוא מהמר.","TAG עושה fold הרבה, ו-raise כשיש לו משהו."],
+ [["nit"],"זהיר מאוד","שחקן שמשחק רק ידיים חזקות מאוד.","כש-nit עושה raise גדול, כנראה יש לו AA או KK."],
+ [["calling station"],"משווה הכל","שחקן שעושה call כמעט לכל bet ולא עושה fold.","מולו לא עושים bluff, אבל מהמרים גדול כשיש יד."],
+ [["maniac"],"מטורף","שחקן שעושה raise כמעט עם כל יד.","מולו מחכים ליד טובה ונותנים לו להמר."],
+ [["passive"],"פסיבי","שחקן שבעיקר עושה check ו-call, ומעט bet ו-raise.","כש-passive פתאום עושה bet גדול, כנראה יש לו יד חזקה."],
+ [["aggressive"],"תוקפני","שחקן שעושה הרבה bet ו-raise.","מול aggressive נותנים לו להמר כשיש לך יד טובה."],
+ [["tight"],"זהיר","שחקן שמשחק מעט ידיים.","Tight עושה fold לרוב הידיים preflop."],
+ [["loose"],"משחק הרבה","שחקן שמשחק הרבה ידיים.","Loose עושה call עם ידיים חלשות."],
+ [["wheel"],"הרצף הנמוך","הרצף A-2-3-4-5.","A5s יכול להשלים wheel."],
+ [["backdoor draws","backdoor"],"draw דרך שני קלפים","draw שצריך גם turn וגם river מתאימים.","שני קלפי לב ב-flop ועוד שניים ביד."],
+ [["playability"],"קלות משחק","כמה קל להמשיך עם היד אחרי ה-flop.","ידיים suited ומחוברות קלות יותר לשחק."],
+ [["villain"],"היריב","היריב שמולך ביד.","באפליקציה היריב נקרא \"הנבל\"."]
+];
+const GMAP={};GLOSS.forEach((g,i)=>g[0].forEach(k=>GMAP[k]=i));
+/* Wrap glossary terms inside a Latin run; in "easy" mode add a short Hebrew gloss after the run (first time per text). */
+function termify(run,seen){
+  const w=run.split(" "),out=[],gl=[];let i=0;
+  while(i<w.length){let hit=null;
+    for(let L=Math.min(4,w.length-i);L>0;L--){const ph=w.slice(i,i+L).join(" "),k=ph.toLowerCase();if(GMAP[k]!=null){hit={L,ph,g:GMAP[k]};break}}
+    if(hit){out.push(`<span class="term" data-t="${hit.g}">${hit.ph}</span>`);if(settings.lang==="easy"&&!seen.has(hit.g)){seen.add(hit.g);gl.push(GLOSS[hit.g][1])}i+=hit.L}
+    else{out.push(w[i]);i++}}
+  return {html:out.join(" "),gl};
+}
 
 /* ===== DATA: PokerCoaching charts (from charts-pokercoaching.json) ===== */
 const DATA={"positions":["UTG","UTG+1","UTG+2","LJ","HJ","CO","BTN","SB","BB"],"sizing":{"in_position":{"open_bb":2.5,"3bet_x":3,"4bet_x":2.5},"out_of_position":{"open_bb":3.5,"3bet_x":3.5,"4bet_x":2.75}},"codes":{"rfi":{"R":"Raise","F":"Fold"},"rfi_SB":{"R":"Raise for value","B":"Raise as a bluff","C":"Limp","F":"Fold"},"facing_rfi":{"R":"3-bet for value","B":"3-bet as a bluff","C":"Call","F":"Fold"},"rfi_vs_3bet":{"R":"4-bet for value","B":"4-bet as a bluff","C":"Call","X":"Fold (hand was in your opening range)","F":"Not in your opening range"},"sb_limp_vs_raise":{"R":"3-bet for value","B":"3-bet as a bluff","C":"Call","X":"Fold (hand was limped)","F":"Not in your limping range"}},"charts":[{"id":"UTG","title":"UTG","kind":"rfi","hero":"UTG","vs":[],"grid":"RRRRRRFFFRFFFRRRRRFFFFFFFFRFRRRFFFFFFFFFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRFFFFFFFFFFFFFRFFFFFFFFFFFFFRFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"},{"id":"UTGp1","title":"UTG+1","kind":"rfi","hero":"UTG+1","vs":[],"grid":"RRRRRRRRRRRFFRRRRRRFFFFFFFRRRRRRFFFFFFFRFFRRRFFFFFFFFFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRFFFFFFFFFFFFFRFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"},{"id":"UTGp2","title":"UTG+2","kind":"rfi","hero":"UTG+2","vs":[],"grid":"RRRRRRRRRRRRRRRRRRRFFFFFFFRRRRRRFFFFFFFRFFRRRFFFFFFFFFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRFFFFFFFFFFFFFRFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"},{"id":"LJ","title":"LJ","kind":"rfi","hero":"LJ","vs":[],"grid":"RRRRRRRRRRRRRRRRRRRFFFFFFFRRRRRRFFFFFFFRRFRRRFFFFFFFRFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRFFFFFFFFFFFFFRFFFFFFFFFFFFFFFFFFFFFFFFFFFF"},{"id":"HJ","title":"HJ","kind":"rfi","hero":"HJ","vs":[],"grid":"RRRRRRRRRRRRRRRRRRRRFFFFFFRRRRRRFFFFFFFRRRRRRFFFFFFFRFFFRRRFFFFFFFFFFFRRRFFFFFFFFFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRFFFFFFFFFFFFFRFFFFFFFFFFFFFR"},{"id":"CO","title":"CO","kind":"rfi","hero":"CO","vs":[],"grid":"RRRRRRRRRRRRRRRRRRRRRFFFFFRRRRRRRFFFFFFRRRRRRRFFFFFFRRRRRRRFFFFFFRFFFFRRRFFFFFFFFFFFRRRFFFFFFFFFFFRRRFFFFFFFFFFFRRRFFFFFFFFFFFRRFFFFFFFFFFFFRRFFFFFFFFFFFFRFFFFFFFFFFFFFR"},{"id":"BTN","title":"BTN","kind":"rfi","hero":"BTN","vs":[],"grid":"RRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRFFFFRRRRRRRRRFFFFRRRRRRRRRFFFFRRRRRRRRRRFFFRRFFFRRRRRRFFRFFFFFFRRRRFFRFFFFFFFFRRRFRFFFFFFFFFRRFRFFFFFFFFFFRRRFFFFFFFFFFFR"},{"id":"SB","title":"SB","kind":"rfi","hero":"SB","vs":[],"grid":"CRRRRCCCCCCCCCCRRCCCCCCCCCRRRRCCCCCCCCCRRCRCCCCCCBBBRCCCRCCCCBBFFCCCCCRCCCBBFFCCCCCCRCCBBFFCCCCCCCCCCBFFCCCBBBBCCCCBFCCBFFFFFCCCBFCCBFFFFFFFCBFCBBFFFFFFFFCCCBBFFFFFFFFFC"},{"id":"UTGp1_vs_UTG","title":"UTG+1 vs UTG","kind":"facing_rfi","hero":"UTG+1","vs":["UTG"],"grid":"RRCCBFFFFFFFFRRCBFFFFFFFFFBFRCFFFFFFFFFFFFCCFFFFFFFFFFFFCFFFFFFFFFFFFFCFFFFFFFFFFFFFCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"},{"id":"UTGp2_vs_UTG-UTGp1","title":"UTG+2 vs UTG/UTG+1","kind":"facing_rfi","hero":"UTG+2","vs":["UTG","UTG+1"],"grid":"RRCCBFFFFFFFFRRCBFFFFFFFFFBFRCFFFFFFFFFFFFCCFFFFFFFFFFFFCFFFFFFFFFFFFFCFFFFFFFFFFFFFCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"},{"id":"LJ_vs_UTG-UTGp1","title":"LJ vs UTG/UTG+1","kind":"facing_rfi","hero":"LJ","vs":["UTG","UTG+1"],"grid":"RRCCBFFFFBFFFRRCBFFFFFFFFFBFRCFFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCFFFFFFFFFFFFFCFFFFFFFFFFFFFCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"},{"id":"LJ_vs_UTGp2","title":"LJ vs UTG+2","kind":"facing_rfi","hero":"LJ","vs":["UTG+2"],"grid":"RRCCBFFFFBFFFRRCBFFFFFFFFFBFRCFFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCBFFFFFFFFFFFFCBFFFFFFFFFFFFCFFFFFFFFFFFFFCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"},{"id":"HJ_vs_UTG","title":"HJ vs UTG","kind":"facing_rfi","hero":"HJ","vs":["UTG"],"grid":"RRCCBFFFFBFFFRRCBFFFFFFFFFBFRCFFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCFFFFFFFFFFFFFCFFFFFFFFFFFFFCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"},{"id":"HJ_vs_UTGp1","title":"HJ vs UTG+1","kind":"facing_rfi","hero":"HJ","vs":["UTG+1"],"grid":"RRCCBFFFFBFFFRRCBFFFFFFFFFBFRCFFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCFFFFFFFFFFFFFCFFFFFFFFFFFFFCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"},{"id":"HJ_vs_UTGp2","title":"HJ vs UTG+2","kind":"facing_rfi","hero":"HJ","vs":["UTG+2"],"grid":"RRCCBFFFFBBBFRRCBFFFFFFFFFBFRCFFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCBFFFFFFFFFFFFCBFFFFFFFFFFFFCFFFFFFFFFFFFFCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"},{"id":"HJ_vs_LJ","title":"HJ vs LJ","kind":"facing_rfi","hero":"HJ","vs":["LJ"],"grid":"RRRRCFFFFBBBBRRRCCFFFFFFFFRBRCCFFFFFFFFBFFCCFFFFFFFFBFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCBFFFFFFFFFFFFCBFFFFFFFFFFFFCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"},{"id":"CO_vs_UTG-UTGp1","title":"CO vs UTG/UTG+1","kind":"facing_rfi","hero":"CO","vs":["UTG","UTG+1"],"grid":"RRRCCFFFFBBFFRRCCCFFFFFFFFBFRCCFFFFFFFFBFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCFFFFFFFFFFFFFCFFFFFFFFFFFFFCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"},{"id":"CO_vs_UTGp2","title":"CO vs UTG+2","kind":"facing_rfi","hero":"CO","vs":["UTG+2"],"grid":"RRRCCFFFFBBBBRRCCCFFFFFFFFBFRCCFFFFFFFFBFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCBFFFFFFFFFFFFCBFFFFFFFFFFFFCFFFFFFFFFFFFFCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"},{"id":"CO_vs_LJ","title":"CO vs LJ","kind":"facing_rfi","hero":"CO","vs":["LJ"],"grid":"RRRRCFFFFBBBBRRRCCFFFFFFFFRBRCCFFFFFFFFBFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCBFFFFFFFFFFFFCBFFFFFFFFFFFFCBFFFFFFFFFFFFCBFFFFFFFFFFFFCFFFFFFFFFFFFFFFFFFFFFFFFFFFF"},{"id":"CO_vs_HJ","title":"CO vs HJ","kind":"facing_rfi","hero":"CO","vs":["HJ"],"grid":"RRRRCBBBBBBBBRRRCCBFFFFFFFRBRCCBFFFFFFFBFFCCBFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCBFFFFFFFFFFFFCBFFFFFFFFFFFFCBFFFFFFFFFFFFCFFFFFFFFFFFFFFFFFFFFFFFFFFFF"},{"id":"BTN_vs_UTG","title":"BTN vs UTG","kind":"facing_rfi","hero":"BTN","vs":["UTG"],"grid":"RRCCCFFFFBBFFRRCCCFFFFFFFFBBRCCFFFFFFFFBFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCBFFFFFFFFFFFFCFFFFFFFFFFFFFCFFFFFFFFFFFFFCFFFFFFFFFFFFFCFFFFFFFFFFFFFC"},{"id":"BTN_vs_UTGp1","title":"BTN vs UTG+1","kind":"facing_rfi","hero":"BTN","vs":["UTG+1"],"grid":"RRCCCFFFFBBBBRRCCCFFFFFFFFBBRCCFFFFFFFFBFFCCCFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCFFFFFFFFFFFFFCFFFFFFFFFFFFFCFFFFFFFFFFFFFCFFFFFFFFFFFFFC"},{"id":"BTN_vs_UTGp2","title":"BTN vs UTG+2","kind":"facing_rfi","hero":"BTN","vs":["UTG+2"],"grid":"RRRCCBFFFBBBBRRCCCFFFFFFFFRCRCCFFFFFFFFCBFCCCFFFFFFFBFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCBFFFFFFFFFFFFCBFFFFFFFFFFFFCFFFFFFFFFFFFFCFFFFFFFFFFFFFC"},{"id":"BTN_vs_LJ","title":"BTN vs LJ","kind":"facing_rfi","hero":"BTN","vs":["LJ"],"grid":"RRRCCCBBBBBBBRRCCCFFFFFFFFRCRCCFFFFFFFFCBFCCCFFFFFFFBFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCBFFFFFFFFFFFFCBFFFFFFFFFFFFCFFFFFFFFFFFFFCFFFFFFFFFFFFFC"},{"id":"BTN_vs_HJ","title":"BTN vs HJ","kind":"facing_rfi","hero":"BTN","vs":["HJ"],"grid":"RRRRCCBBBBBBBRRCCCCFFFFFFFRCRCCCFFFFFFFCBFCCCFFFFFFFBFFFCCCFFFFFFFFFFFCCCFFFFFFFFFFFCCBFFFFFFFFFFFCCBFFFFFFFFFFFCBFFFFFFFFFFFFCBFFFFFFFFFFFFCFFFFFFFFFFFFFCFFFFFFFFFFFFFC"},{"id":"BTN_vs_CO","title":"BTN vs CO","kind":"facing_rfi","hero":"BTN","vs":["CO"],"grid":"RRRRCCBBBCCBBRRCCCCBFFFFFFRCRCCCBFFFFFFCCBCCCBFFFFFFCBFFCCCFFFFFFBFFFFCCCFFFFFFFFFFFCCBFFFFFFFFFFFCCBFFFFFFFFFFFCBBFFFFFFFFFFFCBFFFFFFFFFFFFCBFFFFFFFFFFFFCFFFFFFFFFFFFFC"},{"id":"SB_vs_UTG-UTGp1","title":"SB vs UTG/UTG+1","kind":"facing_rfi","hero":"SB","vs":["UTG","UTG+1"],"grid":"RRCCCFFFFBFFFCRCCFFFFFFFFFCFRCFFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCBFFFFFFFFFFFFCBFFFFFFFFFFFFCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"},{"id":"SB_vs_UTGp2","title":"SB vs UTG+2","kind":"facing_rfi","hero":"SB","vs":["UTG+2"],"grid":"RRCCCFFFFBFFFCRCCCFFFFFFFFCFRCCFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCBFFFFFFFFFFFFCBFFFFFFFFFFFFCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"},{"id":"SB_vs_LJ","title":"SB vs LJ","kind":"facing_rfi","hero":"SB","vs":["LJ"],"grid":"RRRCCFFFFBBFFRRCCCFFFFFFFFCFRCCFFFFFFFFBFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCBFFFFFFFFFFFFCBFFFFFFFFFFFFCFFFFFFFFFFFFFCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"},{"id":"SB_vs_HJ","title":"SB vs HJ","kind":"facing_rfi","hero":"SB","vs":["HJ"],"grid":"RRRCCBFFFBBBFRRCCCFFFFFFFFCFRCCFFFFFFFFBFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCBFFFFFFFFFFFFCBFFFFFFFFFFFFCBFFFFFFFFFFFFCFFFFFFFFFFFFFFFFFFFFFFFFFFFF"},{"id":"SB_vs_CO","title":"SB vs CO","kind":"facing_rfi","hero":"SB","vs":["CO"],"grid":"RRRRRBBBBBBBBRRRBBBFFFFFFFRBRBBBFFFFFFFBFFRBBFFFFFFFFFFFRBFFFFFFFFFFFFBBFFFFFFFFFFFFBBFFFFFFFFFFFFBBFFFFFFFFFFFFBBFFFFFFFFFFFFBBFFFFFFFFFFFFBFFFFFFFFFFFFFFFFFFFFFFFFFFFF"},{"id":"SB_vs_BTN","title":"SB vs BTN","kind":"facing_rfi","hero":"SB","vs":["BTN"],"grid":"RRRRRBBBBBBBBRRRRBBFFFFFFFRRRBBBFFFFFFFRBBRBBFFFFFFFBFFFRBBFFFFFFFFFFFBBBFFFFFFFFFFFBBBFFFFFFFFFFFBBFFFFFFFFFFFFBBFFFFFFFFFFFFBBFFFFFFFFFFFFBFFFFFFFFFFFFFBFFFFFFFFFFFFFB"},{"id":"BB_vs_UTG-UTGp1","title":"BB vs UTG/UTG+1","kind":"facing_rfi","hero":"BB","vs":["UTG","UTG+1"],"grid":"RRRCCCCCCCCCCCRCCCCCCCCFFFCCRCCCCCFFFFFCCCCCCCCFFFFFCCCCCCCCFFFFFFFFFFCCCCFFFFFFFFFFCCBFFFFFFFFFFFCBBFFFFFFFFFFFCBBFFFFFFFFFFFCBFFFFFFFFFFFFCBFFFFFFFFFFFFCFFFFFFFFFFFFFC"},{"id":"BB_vs_UTGp2","title":"BB vs UTG+2","kind":"facing_rfi","hero":"BB","vs":["UTG+2"],"grid":"RRRCCCCCCCCCCRRCCCCCCCCCFFCCRCCCCCCFFFFCCCRCCCCCFFFFCCCCCCCCCFFFFFFFFFCCCCFFFFFFFFFFCCBBFFFFFFFFFFCBBBFFFFFFFFFFCBBFFFFFFFFFFFCBBFFFFFFFFFFFCBFFFFFFFFFFFFCFFFFFFFFFFFFFC"},{"id":"BB_vs_LJ","title":"BB vs LJ","kind":"facing_rfi","hero":"BB","vs":["LJ"],"grid":"RRRRCCCCCCCCCRRRCCCCCCCCCCCCRCCCCCCCCFFCCCRCCCCCCFFFCCCCRCCCCCFFFBFFFFCCCCCFFFFFFFFFCCCBFFFFFFFFFFCCBBFFFFFFFFFFCBBFFFFFFFFFFFCBBFFFFFFFFFFFCBFFFFFFFFFFFFCFFFFFFFFFFFFFC"},{"id":"BB_vs_HJ","title":"BB vs HJ","kind":"facing_rfi","hero":"BB","vs":["HJ"],"grid":"RRRRCCCCCCCCCRRRCCCCCCCCCCRCRCCCCCCCCFFCCCRCCCCCCFFFCCCCRCCCCCFFFBFFFFCCCCCFFFFFFFFFCCCBFFFFFFFFFFCBBBFFFFFFFFFFCBBBFFFFFFFFFFCBBFFFFFFFFFFFCBFFFFFFFFFFFFCBFFFFFFFFFFFFC"},{"id":"BB_vs_CO","title":"BB vs CO","kind":"facing_rfi","hero":"BB","vs":["CO"],"grid":"RRRRRCCCCCCCCRRRRCCCCCCCCCRRRRCCCCCCCFFRCCRCCCCCCCFFCCCCRCCCCCCFFCCCCCCCCCCCFFCFFFFCCCCBBFFFFFFFFFCBBBBFFFFFFFFFCBBBFCFFFFFFFFCBBBBFFFFFFFFFCBBBFFFFFFFFFFCBFFFFFFFFFFFFC"},{"id":"BB_vs_BTN","title":"BB vs BTN","kind":"facing_rfi","hero":"BB","vs":["BTN"],"grid":"RRRRRCCCCCCCCRRRRRCCCCCCCCRRRRRCCCCCCCCRCCRRCCCCCCCCCCCCRCCCCCCCCCCCCCRCCCCCCCCCCCCCCCCCCCCCCCCCCCCBBBBCCCBCCCCCCBBBCCBBFFFFBBCBBBCBFFFFFFFFCBBBBFFFFFFFFFCBBBFFFFFFFFFFC"},{"id":"BB_vs_SB","title":"BB vs SB","kind":"facing_rfi","hero":"BB","vs":["SB"],"grid":"RRRRRCCCCCCCCRRRRRCCCCCCCCRRRRRCCCCCCCCRCCRRBCCCCCCCCCCCRBBCCCCCCCCCCCRBCCCCCCCCCCCCCBCCCCCCCCCCCCCBCCCCCCCCCCCBCBCCCCCCBBFFBBCBCCCCBFFFFFBBCCCCBBFFFFFFFFCCBBBFFFFFFFFFC"},{"id":"UTG_vs_UTGp1_3bet","title":"UTG vs UTG+1 3bet","kind":"rfi_vs_3bet","hero":"UTG","vs":["UTG+1"],"grid":"RRCCBXFFFXFFFRRCXXFFFFFFFFBFCCXFFFFFFFFFFFCCFFFFFFFFFFFFCXFFFFFFFFFFFFCXFFFFFFFFFFFFXFFFFFFFFFFFFFXFFFFFFFFFFFFFXFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"},{"id":"UTG_vs_UTGp2_3bet","title":"UTG vs UTG+2 3bet","kind":"rfi_vs_3bet","hero":"UTG","vs":["UTG+2"],"grid":"RRCCBBFFFXFFFRRCXXFFFFFFFFBFCCXFFFFFFFFFFFCCFFFFFFFFFFFFCXFFFFFFFFFFFFCXFFFFFFFFFFFFCFFFFFFFFFFFFFXFFFFFFFFFFFFFXFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"},{"id":"UTG_vs_LJ_3bet","title":"UTG vs LJ 3bet","kind":"rfi_vs_3bet","hero":"UTG","vs":["LJ"],"grid":"RRCCBBFFFXFFFRRCXXFFFFFFFFBFCCXFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCXFFFFFFFFFFFFCFFFFFFFFFFFFFXFFFFFFFFFFFFFXFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"},{"id":"UTG_vs_HJ_3bet","title":"UTG vs HJ 3bet","kind":"rfi_vs_3bet","hero":"UTG","vs":["HJ"],"grid":"RRCCBBFFFBFFFRRCCXFFFFFFFFBFRCXFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCXFFFFFFFFFFFFCFFFFFFFFFFFFFCFFFFFFFFFFFFFXFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"},{"id":"UTG_vs_CO-BTN_3bet","title":"UTG vs CO/BTN 3bet","kind":"rfi_vs_3bet","hero":"UTG","vs":["CO","BTN"],"grid":"RRCCCBFFFBFFFRRCCBFFFFFFFFCFRCBFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCBFFFFFFFFFFFFCFFFFFFFFFFFFFCFFFFFFFFFFFFFXFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"},{"id":"UTG_vs_SB-BB_3bet","title":"UTG vs SB/BB 3bet","kind":"rfi_vs_3bet","hero":"UTG","vs":["SB","BB"],"grid":"RRCCCBFFFBFFFRRCCBFFFFFFFFCFRCBFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCBFFFFFFFFFFFFCFFFFFFFFFFFFFCFFFFFFFFFFFFFCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"},{"id":"UTGp1_vs_UTGp2_3bet","title":"UTG+1 vs UTG+2 3bet","kind":"rfi_vs_3bet","hero":"UTG+1","vs":["UTG+2"],"grid":"RRCCBBXXXBXFFRRCCXXFFFFFFFBXCCXXFFFFFFFBFFCCXFFFFFFFXFFFCCFFFFFFFFFFFFCXFFFFFFFFFFFFCXFFFFFFFFFFFFCFFFFFFFFFFFFFXFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"},{"id":"UTGp1_vs_LJ_3bet","title":"UTG+1 vs LJ 3bet","kind":"rfi_vs_3bet","hero":"UTG+1","vs":["LJ"],"grid":"RRCCCBXXXBBFFRRCCBXFFFFFFFCXCCBXFFFFFFFBFFCCXFFFFFFFXFFFCCFFFFFFFFFFFFCXFFFFFFFFFFFFCXFFFFFFFFFFFFCFFFFFFFFFFFFFXFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"},{"id":"UTGp1_vs_HJ-CO_3bet","title":"UTG+1 vs HJ/CO 3bet","kind":"rfi_vs_3bet","hero":"UTG+1","vs":["HJ","CO"],"grid":"RRCCCBXXXBBFFRRCCBXFFFFFFFCBCCBXFFFFFFFBFFCCXFFFFFFFXFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCFFFFFFFFFFFFFCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"},{"id":"UTGp1_vs_BTN_3bet","title":"UTG+1 vs BTN 3bet","kind":"rfi_vs_3bet","hero":"UTG+1","vs":["BTN"],"grid":"RRCCCBXXXBBFFRRCCBXFFFFFFFCBCCBXFFFFFFFCFFCCBFFFFFFFBFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCFFFFFFFFFFFFFCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"},{"id":"UTGp1_vs_SB-BB_3bet","title":"UTG+1 vs SB/BB 3bet","kind":"rfi_vs_3bet","hero":"UTG+1","vs":["SB","BB"],"grid":"RRCCCBBXXBBFFRRCCCBFFFFFFFCBRCCXFFFFFFFCFFCCBFFFFFFFBFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCFFFFFFFFFFFFFCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"},{"id":"UTGp2_vs_LJ_3bet","title":"UTG+2 vs LJ 3bet","kind":"rfi_vs_3bet","hero":"UTG+2","vs":["LJ"],"grid":"RRCCCBXXXBBBBRRCCXXFFFFFFFCBCCXXFFFFFFFBFFCCXFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCXFFFFFFFFFFFFCXFFFFFFFFFFFFXFFFFFFFFFFFFFXFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"},{"id":"UTGp2_vs_HJ_3bet","title":"UTG+2 vs HJ 3bet","kind":"rfi_vs_3bet","hero":"UTG+2","vs":["HJ"],"grid":"RRCCCBXXXBBBBRRCCXXFFFFFFFCBCCXXFFFFFFFBFFCCXFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCBFFFFFFFFFFFFCXFFFFFFFFFFFFCFFFFFFFFFFFFFXFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"},{"id":"UTGp2_vs_CO-BTN_3bet","title":"UTG+2 vs CO/BTN 3bet","kind":"rfi_vs_3bet","hero":"UTG+2","vs":["CO","BTN"],"grid":"RRCCCBBXXBBBBRRCCCXFFFFFFFCBCCCXFFFFFFFBFFCCXFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCXFFFFFFFFFFFFCFFFFFFFFFFFFFCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"},{"id":"UTGp2_vs_SB-BB_3bet","title":"UTG+2 vs SB/BB 3bet","kind":"rfi_vs_3bet","hero":"UTG+2","vs":["SB","BB"],"grid":"RRCCCBBXXBBBBRRCCCXFFFFFFFCBRCCXFFFFFFFBFFCCXFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCXFFFFFFFFFFFFCFFFFFFFFFFFFFCFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF"},{"id":"LJ_vs_HJ_3bet","title":"LJ vs HJ 3bet","kind":"rfi_vs_3bet","hero":"LJ","vs":["HJ"],"grid":"RRCCCBBXXBBBBRRCCCXFFFFFFFCBRCCXFFFFFFFBXFCCXFFFFFFFXFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCXFFFFFFFFFFFFCXFFFFFFFFFFFFXXFFFFFFFFFFFFXFFFFFFFFFFFFFXFFFFFFFFFFFFFFFFFFFFFFFFFFFF"},{"id":"LJ_vs_CO_3bet","title":"LJ vs CO 3bet","kind":"rfi_vs_3bet","hero":"LJ","vs":["CO"],"grid":"RRCCCBBXXBBBBRRCCCXFFFFFFFCBRCCXFFFFFFFBXFRCXFFFFFFFXFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCBFFFFFFFFFFFFCXFFFFFFFFFFFFCXFFFFFFFFFFFFXFFFFFFFFFFFFFXFFFFFFFFFFFFFFFFFFFFFFFFFFFF"},{"id":"LJ_vs_BTN_3bet","title":"LJ vs BTN 3bet","kind":"rfi_vs_3bet","hero":"LJ","vs":["BTN"],"grid":"RRCCCBBBXBBBBRRCCCXFFFFFFFCBRCCXFFFFFFFBXFRCXFFFFFFFXFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCBFFFFFFFFFFFFCXFFFFFFFFFFFFCFFFFFFFFFFFFFXFFFFFFFFFFFFFFFFFFFFFFFFFFFF"},{"id":"LJ_vs_SB_3bet","title":"LJ vs SB 3bet","kind":"rfi_vs_3bet","hero":"LJ","vs":["SB"],"grid":"RRCCCBBBBBBBBRRCCCXFFFFFFFCCRCCXFFFFFFFCBFRCCFFFFFFFBFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCXFFFFFFFFFFFFCFFFFFFFFFFFFFXFFFFFFFFFFFFFFFFFFFFFFFFFFFF"},{"id":"LJ_vs_BB_3bet","title":"LJ vs BB 3bet","kind":"rfi_vs_3bet","hero":"LJ","vs":["BB"],"grid":"RRCCCBBBBBBBBRRCCCXFFFFFFFCBRCCXFFFFFFFBXFRCXFFFFFFFXFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCXFFFFFFFFFFFFCFFFFFFFFFFFFFCFFFFFFFFFFFFFFFFFFFFFFFFFFFF"},{"id":"HJ_vs_CO_3bet","title":"HJ vs CO 3bet","kind":"rfi_vs_3bet","hero":"HJ","vs":["CO"],"grid":"RRCCCBBBBBBBBRRCCCCXFFFFFFCCRCCCFFFFFFFCBXRCCFFFFFFFBFFFCCXFFFFFFFFFFFCCXFFFFFFFFFFFCCFFFFFFFFFFFFCBFFFFFFFFFFFFCXFFFFFFFFFFFFCXFFFFFFFFFFFFXFFFFFFFFFFFFFXFFFFFFFFFFFFFX"},{"id":"HJ_vs_BTN_3bet","title":"HJ vs BTN 3bet","kind":"rfi_vs_3bet","hero":"HJ","vs":["BTN"],"grid":"RRCCCBBBBBBBBRRCCCCXFFFFFFCCRCCCFFFFFFFCBXRCCFFFFFFFBFFFCCXFFFFFFFFFFFCCXFFFFFFFFFFFCCFFFFFFFFFFFFCBFFFFFFFFFFFFCBFFFFFFFFFFFFCBFFFFFFFFFFFFCFFFFFFFFFFFFFXFFFFFFFFFFFFFX"},{"id":"HJ_vs_SB_3bet","title":"HJ vs SB 3bet","kind":"rfi_vs_3bet","hero":"HJ","vs":["SB"],"grid":"RRCCCBBBBBBBBRRCCCCXFFFFFFCCRCCCFFFFFFFCBXRCCFFFFFFFBFFFCCXFFFFFFFFFFFCCXFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCXFFFFFFFFFFFFCXFFFFFFFFFFFFCFFFFFFFFFFFFFXFFFFFFFFFFFFFX"},{"id":"HJ_vs_BB_3bet","title":"HJ vs BB 3bet","kind":"rfi_vs_3bet","hero":"HJ","vs":["BB"],"grid":"RRCCCBBBBBBBBRRCCCXXFFFFFFCBRCCXFFFFFFFBXXRCXFFFFFFFXFFFCCXFFFFFFFFFFFCCXFFFFFFFFFFFCCFFFFFFFFFFFFCCFFFFFFFFFFFFCXFFFFFFFFFFFFCXFFFFFFFFFFFFCFFFFFFFFFFFFFXFFFFFFFFFFFFFX"},{"id":"CO_vs_BTN-SB_3bet","title":"CO vs BTN/SB 3bet","kind":"rfi_vs_3bet","hero":"CO","vs":["BTN","SB"],"grid":"RRCCCCBBBCBBBRRCCCCXXFFFFFCCRCCCXFFFFFFCBXRCCXFFFFFFBXXXRCCFFFFFFXFFFFCCBFFFFFFFFFFFCCBFFFFFFFFFFFCCBFFFFFFFFFFFCCXFFFFFFFFFFFCBFFFFFFFFFFFFCXFFFFFFFFFFFFXFFFFFFFFFFFFFX"},{"id":"CO_vs_BB_3bet","title":"CO vs BB 3bet","kind":"rfi_vs_3bet","hero":"CO","vs":["BB"],"grid":"RRCCCCBXXCBBBRRCCCCXXFFFFFCCRCCCXFFFFFFCBXRCCXFFFFFFBXXXRCBFFFFFFXFFFFCCBFFFFFFFFFFFCCXFFFFFFFFFFFCCXFFFFFFFFFFFCBXFFFFFFFFFFFCBFFFFFFFFFFFFCXFFFFFFFFFFFFXFFFFFFFFFFFFFX"},{"id":"BTN_vs_SB-BB_3bet","title":"BTN vs SB/BB 3bet","kind":"rfi_vs_3bet","hero":"BTN","vs":["SB","BB"],"grid":"RRRRCCCCCCCCCRRCCCCCCBBBXXRCRCCCCBXXXXXCCCRCCCBXFFFFCCBBRCCCXFFFFCBXXXRCCXFFFFBXXXXXCCBXFFFXXFFFXXCCBXFFXFFFFFFXCCBFFBFFFFFFFFCBXFBFFFFFFFFFCBFBFFFFFFFFFFCXXFFFFFFFFFFFC"},{"id":"SB_RFI_vs_BB_3bet","title":"SB RFI vs BB 3bet","kind":"rfi_vs_3bet","hero":"SB","vs":["BB"],"grid":"FRRRCFFFFFFFFFFCCFFFFFFFFFRCRCFFFFFFFFFCCFRFFFFFFBXXCFFFCFFFFXXFFFFFFFCFFFCXFFFFFFFFCFFCXFFFFFFFFFFFFCFFFFFXXXXFFFFXFFFBFFFFFFFFXFFFBFFFFFFFFCFFBXFFFFFFFFFFFBXFFFFFFFFFF"},{"id":"SB_Limp_vs_BB_Raise","title":"SB Limp vs BB Raise","kind":"sb_limp_vs_raise","hero":"SB","vs":["BB"],"grid":"RFFFFCCCCCCCCRRFFCCCCCCCCCFFFFCCCCCCCCCFFCFCCCCCCFFFFCCCFCCCCFFFFCCCCCFCCCFFFFCCCCCCFCCFFFFCCBXXCCCCCFFFCBXFFFFCCCCFFCBFFFFFFXCCFFCXFFFFFFFFCFFBFFFFFFFFFFCCBFFFFFFFFFFFC"}]};
@@ -459,12 +602,6 @@ function pickHand(s,prefer){
   return Math.random()<.7&&e.length?rnd(e):rnd(pool);
 }
 const openSize=p=>p==="SB"?3.5:2.5;
-function actionsFor(s){
-  if(s.kind==="rfi")return s.hero==="SB"?[{k:"R",l:"Raise של 3.5bb"},{k:"C",l:"Limp"},{k:"F",l:"Fold"}]:[{k:"R",l:"Raise של 2.5bb"},{k:"F",l:"Fold"}];
-  if(s.kind==="facing_rfi"){const x=openSize(s.vill)*(ip(s.hero,s.vill)?3:3.5);return [{k:"R",l:"3bet של "+fmt(x)+"bb"},{k:"C",l:"Call"},{k:"F",l:"Fold"}]}
-  if(s.kind==="rfi_vs_3bet"){const t=openSize(s.hero)*(ip(s.vill,s.hero)?3:3.5),f=t*(ip(s.hero,s.vill)?2.5:2.75);return [{k:"R",l:"4bet של "+fmt(f)+"bb"},{k:"C",l:"Call"},{k:"F",l:"Fold"}]}
-  return [{k:"R",l:"3bet"},{k:"C",l:"Call"},{k:"F",l:"Fold"}];
-}
 function spotText(s){
   const pos=ip(s.hero,s.vill)?"אתה in position.":"אתה out of position.";
   if(s.kind==="rfi"){const after=PREFLOP.length-1-PREFLOP.indexOf(s.hero);return {title:"עמדת "+s.hero+", כולם עשו fold",desc:s.hero==="SB"?"כולם עשו fold עד אליך. רק ה-BB נשאר אחריך.":"כולם עשו fold עד אליך. יש אחריך "+after+" שחקנים."}}
@@ -500,20 +637,21 @@ function explain(s,h,code){
   const bet=s.kind==="rfi_vs_3bet"?"4bet":"3bet";
   if(code==="R")return t+bet+" ל-value: היד מקדימה את ה-range של "+v+" ורוצה pot גדול.";
   if(code==="B")return t+bet+" כ-bluff: יש לה blockers (A או K) או playability טובה, וב-call היא הייתה נשלטת. לכן raise או fold.";
-  if(code==="C")return t+"Call: חזקה מספיק כדי להמשיך, לא חזקה מספיק ל-"+bet+" value."+(s.hero==="BB"?" ב-BB כבר שמת 1bb, ולכן מגינים רחב.":"");
+  if(code==="C")return t+"Call: חזקה מספיק כדי להמשיך, לא חזקה מספיק ל-"+bet+" value."+(s.hero==="BB"?" ב-BB כבר שמת {bb:1}, ולכן מגינים רחב.":"");
   if(code==="X")return t+"Fold: היד הייתה ב-range שלך, אבל מול ה-raise של "+v+" היא נשלטת.";
   return t+"Fold: מול ה-range של "+v+" היד הזו נשלטת או לא מממשת מספיק equity.";
 }
 
 /* ===== CONTENT (game terms in English) ===== */
 const THEORY=[
+ {t:"הבסיס: איך משחקים",q:"בסיס",c:["**המטרה**\nלזכות ב-pot: כל הג׳יטונים שהשחקנים שמו באמצע. זוכים כשכולם האחרים עושים fold, או כשיש לך את היד הכי טובה בסוף.","**הקלפים**\nכל שחקן מקבל 2 קלפים סגורים. על השולחן נפתחים עד 5 קלפים משותפים.\nהיד שלך היא 5 הקלפים הכי טובים מתוך ה-7.","**Blinds**\nלפני כל יד, שני שחקנים שמים הימור חובה:\nה-SB שם {bb:0.5}.\nה-BB שם {bb:1}.\nככה תמיד יש על מה לשחק.","**הכפתור**\nהעמדה של הדילר מסומנת בכפתור (BTN), והוא זז שחקן אחד בכל יד.\nה-SB וה-BB יושבים משמאלו.","**4 סיבובים**\nPreflop: כל אחד קיבל 2 קלפים.\nFlop: נפתחים 3 קלפים.\nTurn: נפתח קלף רביעי.\nRiver: נפתח קלף חמישי.","**מה אפשר לעשות בתור שלך**\nFold: לוותר על היד.\nCheck: להעביר בלי לשים כסף, רק אם אף אחד לא שם.\nCall: לשים כמו מי ששם לפניך.\nBet: לשים ראשון.\nRaise: לשים יותר ממי ששם לפניך.","**הידיים החזקות**\n1. Royal flush: 10 עד A באותו צבע.\n2. Straight flush: 5 ברצף באותו צבע.\n3. Four of a kind: ארבעה זהים.\n4. Full house: שלושה זהים וזוג.\n5. Flush: 5 מאותו צבע.","**הידיים הנפוצות**\n6. Straight: 5 ברצף.\n7. Three of a kind: שלושה זהים.\n8. Two pair: שני זוגות.\n9. Pair: זוג.\n10. High card: הקלף הכי גבוה.","**למה העמדה חשובה**\nמי שפועל אחרון רואה מה כולם עשו לפני שהוא מחליט.\nלכן ה-BTN היא העמדה הכי טובה, וה-blinds הכי קשות."]},
  {t:"Position",q:"Position",c:["מי שפועל אחרון ב-flop, ב-turn וב-river רואה מה כולם עשו לפני שהוא מחליט. זה היתרון הכי גדול במשחק.","סדר העמדות: UTG, UTG+1, UTG+2, LJ, HJ, CO, BTN, SB, BB.","ככל שיש פחות שחקנים אחריך, ה-range רחב יותר: מ-UTG עושים open עם כ-10% מהידיים, מה-BTN עם כ-51%.","ה-blinds משחקים out of position בכל רחוב אחרי ה-flop."]},
  {t:"קבוצות ידיים",q:"Preflop",c:["זוגות חזקים (AA–QQ), בינוניים (JJ–88), נמוכים (77–22).","אסים suited, ברודווי suited ומחברים suited: פוטנציאל ל-flush ול-straight.","זוגות נמוכים משחקים בשביל set (בערך 12% ב-flop). צריך stacks עמוקים.","ידיים suited ומחברים מרוויחים מ-implied odds, אבל גם מפסידים ל-flush או straight גבוהים יותר.","ברודווי offsuit מסוכן כשהוא נשלט: KJ מול KQ או AK."]},
  {t:"GTO מול exploit",q:"Exploit",c:["GTO: אסטרטגיה מאוזנת שאי אפשר לנצל.","Exploit: סטייה מ-GTO כדי להרוויח מהטעויות של יריב מסוים.","בסיס: הטבלאות. התאמה: לפי היריבים בשולחן.","בסטייקים נמוכים מרוויחים יותר מ-exploit: פחות bluffs מול שחקנים שעושים call להכל, יותר value bets דקים.","שולחן passive: לשחק יותר ידיים ולבודד. שולחן aggressive: להדק."]},
  {t:"3bet ו-4bet",q:"Preflop",c:["3bet הוא ה-raise השני preflop. ה-range בנוי מידיים ל-value ומ-bluffs עם blockers.","A5s ו-A4s הם bluffs טובים: blockers ל-AA ול-AK, ואפשרות ל-straight 5-A.","בטבלאות, משבצת שחורה היא value ומשבצת כחולה היא bluff. שתיהן נחשבות raise.","גודל 3bet: פי 3 מה-open in position, פי 3.5 out of position.","גודל 4bet: פי 2.5 מה-3bet in position, פי 2.75 out of position."]},
- {t:"הגנת ה-BB",q:"Preflop",c:["ב-BB כבר שמת 1bb. מול open ל-2.5bb אתה משלם 1.5bb כדי לזכות ב-pot של 5.5bb.","לכן מספיק כ-27% equity כדי לעשות call.","מול BTN ו-SB מגינים רחב מאוד. מול UTG מגינים צר, כי ה-range שלו חזק."]},
+ {t:"הגנת ה-BB",q:"Preflop",c:["ב-BB כבר שמת {bb:1}. מול open ל-{bb:2.5} אתה משלם {bb:1.5} כדי לזכות ב-pot של {bb:5.5}.","לכן מספיק כ-27% equity כדי לעשות call.","מול BTN ו-SB מגינים רחב מאוד. מול UTG מגינים צר, כי ה-range שלו חזק."]},
  {t:"Pot odds ו-equity",q:"מתמטיקה",c:["Pot odds: היחס בין הסכום שצריך לשלם ל-pot הסופי.","Equity: אחוז הפעמים שהיד שלך תנצח.","אם ה-equity גבוה מהאחוז הנדרש, ה-call רווחי לאורך זמן.","כמה equity צריך: מול bet של חצי pot צריך 25%. מול שני שליש pot צריך 28.5%. מול pot מלא צריך 33%."]},
- {t:"Implied odds ו-SPR",q:"Postflop",c:["Implied odds: הכסף שתרוויח ברחובות הבאים אם תשלים את היד.","SPR הוא ה-stack האפקטיבי חלקי ה-pot ב-flop. דוגמה: stack של 100bb ו-pot של 20bb: [[SPR = 100 ÷ 20 = 5]]","SPR נמוך (מתחת ל-4): top pair בדרך כלל מספיק ל-all-in.","SPR גבוה (מעל 10): צריך ידיים חזקות יותר ל-pot ענק.","Call עם זוג קטן בשביל set: כשה-stacks לפחות פי 15–20 מה-call."]},
+ {t:"Implied odds ו-SPR",q:"Postflop",c:["Implied odds: הכסף שתרוויח ברחובות הבאים אם תשלים את היד.","SPR הוא ה-stack האפקטיבי חלקי ה-pot ב-flop. דוגמה: stack של {bb:100} ו-pot של {bb:20}. ה-stack גדול פי 5 מה-pot, ולכן [[SPR = 5]]","SPR נמוך (מתחת ל-4): top pair בדרך כלל מספיק ל-all-in.","SPR גבוה (מעל 10): צריך ידיים חזקות יותר ל-pot ענק.","Call עם זוג קטן בשביל set: כשה-stacks לפחות פי 15–20 מה-call."]},
  {t:"C-bet ומרקם בורד",q:"Postflop",c:["Continuation bet: מי שעשה raise אחרון preflop ממשיך לעשות bet ב-flop.","בורד יבש וגבוה (K-7-2 בצבעים שונים) טוב לפותח: c-bet קטן (25–33%) בתדירות גבוהה.","בורד רטוב ומחובר (9-8-6 עם שני קלפים מאותו צבע) טוב למגן: פחות c-bet, ובגודל גדול יותר.","מול כמה יריבים: מורידים את התדירות."]},
  {t:"החטאת את ה-flop עם יד חזקה",q:"החטאת flop",c:["עשית raise preflop עם AK, וה-flop הגיע 9-6-2. החטאת. זה קורה בערך 2 מכל 3 פעמים.","ל-AK בלי זוג עדיין יש בערך 25–30% equity מול זוג נמוך: 6 outs ל-top pair ועוד backdoor draws.","ל-range שלך כפותח יש יותר ידיים חזקות מאשר ליריב (AA, KK, QQ). בבורד יבש היתרון אצלך.","בבורד יבש: c-bet קטן (25–33% pot) עם רוב ה-range, גם כשהחטאת. היריב מחטיא רוב הזמן.","בבורד רטוב או מול כמה יריבים: יותר check. מותר לוותר על ה-pot.","מתי לוותר: היריב עשה raise ל-c-bet בבורד רטוב, ואין לך draw או overcards טובים.","בדיקת פחד: לפני fold, תגיד את המספר. כמה equity יש לך וכמה צריך? אם אתה לא יודע, ה-fold הוא מפחד ולא מחישוב.","מול LAG: פחות c-bet כ-bluff ויותר check-call. מול nit: יותר c-bet, הוא עושה fold לכל מה שלא פגע."]},
  {t:"Value מול bluff",q:"Postflop",c:["עושים bet ל-value כשידיים חלשות משלך יעשו call.","עושים bluff כשידיים חזקות משלך יעשו fold.","ב-river, bet של pot מלא מאוזן עם בערך 2 value על כל bluff.","Bluff טוב: blockers לידיים החזקות של היריב, וסיפור הגיוני מכל הרחובות.","מול שחקן שלא עושה fold: כמעט בלי bluffs."]},
@@ -535,12 +673,16 @@ const MATH_CARDS=[
 ];
 const TELL_CARDS=["Tell הוא שינוי מההתנהגות הרגילה של השחקן. קודם צופים בו כמה סיבובים כשהוא לא ב-pot, ורק אז משווים.","חזק = חלש, חלש = חזק: שחקנים לא מנוסים משחקים תפקיד. עם יד חזקה הם נראים אדישים, ועם bluff הם נראים בטוחים.","ידיים רועדות אחרי bet גדול: לרוב אדרנלין מיד חזקה, לא פחד.","מבט מהיר על הצ׳יפים אחרי שה-flop נפתח: אוהב את הבורד.","בדיקה חוזרת של הקלפים כשהבורד מותאם: לרוב אין לו flush מוכן.","דיבור רגוע אחרי bet: נוטה ליד חזקה. שחקן שעושה bluff נוטה לקפוא ולשתוק.","Call מיידי ב-flop: לרוב draw או יד בינונית, לא מפלצת.","Bet גדול ומהיר ב-river משחקן passive: לרוב value.","היסוס ארוך ואז bet קטן: לרוב יד בינונית שמחפשת זול.","ה-tells שלך: אותה שגרה בכל החלטה, ואותו גודל bet עם bluffs ועם value.","Tells הם תוספת, לא תחליף. Tell טוב מזיז החלטה גבולית, לא הופך fold ברור ל-call."];
 const QUIZ=[
+ ["בסיס","מי שם הימור חובה של {bb:1} לפני שמחלקים קלפים?",["ה-BTN","ה-SB","ה-BB"],2,"ה-BB שם {bb:1}, וה-SB שם {bb:0.5}."],
+ ["בסיס","מה חזק יותר?",["Flush","Straight"],0,"Flush (5 קלפים מאותו צבע) מנצח straight (5 קלפים ברצף)."],
+ ["בסיס","אף אחד עוד לא שם כסף בסיבוב הזה. מה אפשר לעשות בלי לשים כסף?",["Check","Call","Raise"],0,"Check מעביר את התור בלי לשים כסף. מותר רק כשאף אחד לא שם לפניך."],
+ ["בסיס","כמה קלפים משותפים יש על השולחן בסוף היד?",["3","4","5"],2,"3 ב-flop, עוד 1 ב-turn ועוד 1 ב-river: סך הכל 5."],
  ["Position","איזו עמדה עושה open עם ה-range הרחב ביותר בטבלאות?",["UTG","CO","BTN","BB"],2,"ה-BTN עושה open עם כ-51% מהידיים, כי הוא תמיד פועל אחרון אחרי ה-flop."],
  ["Position","למה ה-SB משחק הרבה ידיים למרות שהוא out of position?",["חצי blind כבר ב-pot ורק ה-BB אחריו","זו העמדה הכי טובה","ה-BB לא יכול לעשות 3bet","ה-BB תמיד עושה fold"],0,"רק ה-BB נשאר, וחצי blind כבר ב-pot. לכן ה-SB משחק הרבה ידיים, חלקן ב-raise וחלקן ב-limp."],
- ["Preflop","אתה ב-UTG, כולם לפניך עשו fold. יש לך KQo. מה עושים?",["Raise ל-2.5bb","Fold"],1,"מ-UTG עושים open רק עם AKo ו-AQo מבין ידיים offsuit. KQo נשלט ע״י AK, AQ ו-KK."],
- ["Preflop","אתה ב-UTG עם A5s. מה עושים?",["Raise ל-2.5bb","Fold"],0,"A5s ב-range: היא עושה wheel (A-2-3-4-5) ויש לה blockers ל-AA ול-AK. לעומת זאת A8s מ-UTG היא fold: נשלטת ואין לה straight."],
- ["Preflop","אתה ב-BB. ה-BTN עשה open ל-2.5bb. יש לך 72o. מה עושים?",["3bet","Call","Fold"],2,"גם עם pot odds טובים, 72o לא מממש equity out of position. Fold."],
- ["Preflop","לכמה עושים open בטבלאות שלך?",["2bb","2.5bb (מה-SB 3.5bb)","3bb","4bb"],1,"In position 2.5bb, out of position (SB) 3.5bb. בלייב נמוך עושים open הרבה פעמים גדול יותר, כי הרבה שחקנים עושים call."],
+ ["Preflop","אתה ב-UTG, כולם לפניך עשו fold. יש לך KQo. מה עושים?",["Raise ל-{bb:2.5}","Fold"],1,"מ-UTG עושים open רק עם AKo ו-AQo מבין ידיים offsuit. KQo נשלט ע״י AK, AQ ו-KK."],
+ ["Preflop","אתה ב-UTG עם A5s. מה עושים?",["Raise ל-{bb:2.5}","Fold"],0,"A5s ב-range: היא עושה wheel (A-2-3-4-5) ויש לה blockers ל-AA ול-AK. לעומת זאת A8s מ-UTG היא fold: נשלטת ואין לה straight."],
+ ["Preflop","אתה ב-BB. ה-BTN עשה open ל-{bb:2.5}. יש לך 72o. מה עושים?",["3bet","Call","Fold"],2,"גם עם pot odds טובים, 72o לא מממש equity out of position. Fold."],
+ ["Preflop","לכמה עושים open בטבלאות שלך?",["{bb:2}","{bb:2.5} (מה-SB {bb:3.5})","{bb:3}","{bb:4}"],1,"In position {bb:2.5}, out of position (SB) {bb:3.5}. בלייב נמוך עושים open הרבה פעמים גדול יותר, כי הרבה שחקנים עושים call."],
  ["Preflop","עשית open מ-CO עם AJs, וה-BTN עשה 3bet. מה עושים?",["4bet","Call","Fold"],1,"AJs ב-range ה-call: חזקה מדי ל-fold, ולא מספיק חזקה ל-4bet value."],
  ["מתמטיקה","ב-pot יש 100. היריב עושה bet של 50. כמה equity צריך ל-call?",["20%","25%","33%","50%"],1,"ה-call הוא 50, וה-pot הסופי 100 + 50 + 50 = 200. [[50 ÷ 200 = 25%]]"],
  ["מתמטיקה","Flush draw ב-flop. כמה equity יש לך בערך עד ה-river?",["18%","32%","36%","48%"],2,"ל-flush draw יש 9 outs. ב-flop מכפילים ב-4: [[9 × 4 = 36%]]. החישוב המדויק הוא 35%."],
@@ -595,11 +737,11 @@ const hasProfile=()=>!!(profile&&!profile.skipped);
 const errRate=o=>o&&o.n?(o.n-o.ok)/(o.n+3):.15;
 function topPattern(){const a=lastAssess(),p=Object.assign({},a?a.patterns:{});for(const k in stats.pat)p[k]=(p[k]||0)+stats.pat[k]*.5;let best=null,bv=0;for(const k in p)if(p[k]>bv){bv=p[k];best=k}return best}
 const PREFER={loose:["F","X"],tight:["R","B","C"],passive:["R","B"],aggressive:["C","F","X"],bluff:["B"]};
-function fromMiss(){const m=Object.entries(stats.miss).filter(([k,v])=>v>0);if(!m.length)return null;const [k]=rnd(m);const [sid,h]=k.split("#");return {spot:SPOT[sid],hand:h}}
+function fromMiss(){const m=Object.entries(stats.miss).filter(([k,v])=>v>0&&SPOT[k.split("#")[0]]&&inTable(SPOT[k.split("#")[0]]));if(!m.length)return null;const [k]=rnd(m);const [sid,h]=k.split("#");return {spot:SPOT[sid],hand:h}}
 function pickSpot(mode){
   if(mode==="miss")return fromMiss();
   if(mode==="leaks"&&Math.random()<.3){const m=fromMiss();if(m)return m}
-  const pool=SPOTS.filter(s=>mode==="leaks"||mode==="all"||s.kind===mode);
+  let pool=SPOTS.filter(s=>(mode==="leaks"||mode==="all"||s.kind===mode)&&inTable(s));if(!pool.length)pool=SPOTS.filter(s=>inTable(s));
   const a=lastAssess(),weak=a?Object.keys(a.posErr||{}):[];
   const w=pool.map(s=>1+4*errRate(stats.byKind[s.kind])+4*errRate(stats.byPos[s.hero])+(mode==="leaks"&&weak.includes(s.hero)?2:0));
   let r=Math.random()*w.reduce((x,y)=>x+y,0),i=0;for(;i<w.length-1;i++){r-=w[i];if(r<=0)break}
@@ -630,10 +772,10 @@ function dealHand(h){
 }
 /* The situation the way a player tells it: who you are, what the villain did, how much. */
 function situation(s,handTxt){
-  const me=`אתה עם **${handTxt}** בעמדת **${s.hero}**.`,pos=ip(s.hero,s.vill)?"אתה in position.":"אתה out of position.";
-  if(s.kind==="rfi"){const after=PREFLOP.length-1-PREFLOP.indexOf(s.hero);return [me,"כל השחקנים לפניך עשו fold.",s.hero==="SB"?"רק ה-BB נשאר אחריך.":`יש אחריך עוד ${after} שחקנים.`]}
-  if(s.kind==="facing_rfi")return [me,`הנבל בעמדת **${s.vill}** עושה raise של **${fmt(openSize(s.vill))}bb**.`,"כל השאר עשו fold. "+pos];
-  if(s.kind==="rfi_vs_3bet"){const o=openSize(s.hero),t=o*(ip(s.vill,s.hero)?3:3.5);return [me+` עשית raise של ${fmt(o)}bb.`,`הנבל בעמדת **${s.vill}** עושה 3bet: raise של **${fmt(t)}bb**.`,"כל השאר עשו fold. "+pos]}
+  const me=`אתה עם **${handTxt}** בעמדת **${s.hero}**.`,pos=ip(s.hero,s.vill)?"אתה in position.":"אתה out of position.",P=tablePos();
+  if(s.kind==="rfi"){const after=P.length-1-P.indexOf(s.hero);return [me,"כל השחקנים לפניך עשו fold.",(s.hero==="SB"?"רק ה-BB נשאר אחריך.":`יש אחריך עוד ${after} שחקנים.`)+" "+stackLine()]}
+  if(s.kind==="facing_rfi")return [me,`הנבל בעמדת **${s.vill}** עושה raise ל-**${money(openSize(s.vill))}**.`,"כל השאר עשו fold. "+pos+" "+stackLine()];
+  if(s.kind==="rfi_vs_3bet"){const o=openSize(s.hero),t=o*(ip(s.vill,s.hero)?3:3.5);return [me+` עשית raise ל-${money(o)}.`,`הנבל בעמדת **${s.vill}** עושה 3bet: raise ל-**${money(t)}**.`,"כל השאר עשו fold. "+pos]}
   return [me+" עשית limp.","הנבל בעמדת **BB** עושה raise.","כל השאר עשו fold. אתה out of position."];
 }
 /* Default raise size in bb for the spot (what the charts assume), or null. */
@@ -645,7 +787,7 @@ function raiseSize(s){
 }
 function answerSet(s){
   const rName={rfi:"Raise",facing_rfi:"Raise (3bet)",rfi_vs_3bet:"Raise (4bet)",sb_limp_vs_raise:"Raise (3bet)"}[s.kind];
-  const call=s.kind==="rfi"?(s.hero==="SB"?"Call (limp)":"Call (limp) של 1bb"):"Call";
+  const call=s.kind==="rfi"?(s.hero==="SB"?"Call (limp)":"Call (limp) של "+money(1)):"Call";
   const noCheck=s.kind==="rfi"?"לא אפשרי: צריך לשלם לפחות את ה-BB":"לא אפשרי: יש raise מולך";
   return {rName,call,noCheck};
 }
@@ -673,28 +815,28 @@ function mountPF(root,{spot,hand,feedback,onDone,onAsk,record}){
   root.innerHTML=`<div class="stage"><div class="st-lines">${lines.map((l,i)=>`<p class="${i<2?"st-line":"st-desc"}">${mdInline(l)}</p>`).join("")}</div><div class="cards" role="img" aria-label="היד שלך: ${dealt.txt}">${dealt.html}</div><p class="fb" hidden></p></div>
   <div class="answers" role="group" aria-label="מה אתה עושה?">
     <button class="ans" data-k="F"><span class="n">1</span><span>Fold</span></button>
-    <div class="ans ans-raise"><button class="ans-btn" data-k="R"><span class="n">2</span><span>${bidi(A.rName)}</span></button><label class="size"><span class="sr">גודל ה-raise ב-bb</span><input type="number" inputmode="decimal" step="0.5" min="1" max="300" ${rec?`value="${rec}"`:'placeholder="?"'} aria-label="גודל ה-raise ב-bb"><span>bb</span></label></div>
+    <div class="ans ans-raise"><button class="ans-btn" data-k="R"><span class="n">2</span><span>${bidi(A.rName)}</span></button><label class="size"><span class="sr">גודל ה-raise ב-${unitName()}</span><input type="number" inputmode="decimal" step="${settings.units==="chips"?5:0.5}" min="1" ${rec?`value="${toUnit(rec)}"`:'placeholder="?"'} aria-label="גודל ה-raise ב-${unitName()}"><span>${unitName()}</span></label></div>
     <button class="ans" data-k="C"><span class="n">3</span><span>${bidi(A.call)}</span></button>
     <button class="ans" data-k="K" disabled><span class="n">4</span><span>Check</span><small>${bidi(A.noCheck)}</small></button>
   </div>
   <div class="after" hidden><div class="row" style="justify-content:center"><button class="btn primary" data-x="next">הבא ←</button><button class="btn" data-x="grid">הצג טבלה</button>${onAsk?'<button class="btn ghost" data-x="ask">שאל את המאמן</button>':""}</div><div class="why"></div><div class="gridwrap" hidden></div><div class="legend" hidden></div></div>`;
   const stage=root.querySelector(".stage"),bar=root.querySelector(".answers"),after=root.querySelector(".after"),sizeIn=root.querySelector(".size input");
   const go=res=>{if(activePF===me)activePF=null;onDone(res)};
-  const label=(k,size)=>k==="R"?A.rName+(size?" של "+fmt(size)+"bb":""):k==="C"?A.call:"Fold";
+  const label=(k,size)=>k==="R"?A.rName+(size?" ל-"+money(size):""):k==="C"?A.call:"Fold";
   const answer=k=>{
     if(done||!["F","R","C"].includes(k))return;
-    let size=null;if(k==="R"){size=parseFloat(sizeIn.value);if(!(size>=1&&size<=300)){if(rec){size=rec}else{sizeIn.focus();return}}}
+    let size=null;if(k==="R"){const v=parseFloat(sizeIn.value);size=v>0?fromUnit(v):null;if(!(size>=1&&size<=300)){if(rec){size=rec}else{sizeIn.focus();return}}}
     done=true;const ok=NORM[code]===k;if(record!==false)recordPF(spot,hand,k,code);
     const res={ok,ms:performance.now()-t0,chosen:k,size,code,spot,hand,patterns:classify(k,code)};
     if(!feedback)return go(res);
     stage.classList.add(ok?"ok":"bad");const fb=stage.querySelector(".fb");fb.hidden=false;fb.classList.add(ok?"ok":"bad");
-    const right=codeLabel(spot,code)+((code==="R"||code==="B")&&rec?" של "+fmt(rec)+"bb":"");
+    const right=codeLabel(spot,code)+((code==="R"||code==="B")&&rec?" ל-"+money(rec):"");
     fb.innerHTML=(ok?"נכון · ":"טעות · התשובה: ")+bidi(right);
     bar.hidden=true;after.hidden=false;after.querySelector('[data-x="next"]').focus({preventScroll:true});
     let why=explain(spot,hand,code);
-    if(k==="R"&&size&&rec){const r=size/rec;why+=r<.8||r>1.3?`\nהגודל שבחרת: ${fmt(size)}bb. הגודל המקובל כאן: ${fmt(rec)}bb.`:`\nגודל ה-raise שבחרת (${fmt(size)}bb) מתאים.`}
+    if(k==="R"&&size&&rec){const r=size/rec;why+=r<.8||r>1.3?`\nהגודל שבחרת: ${money(size)}. הגודל המקובל כאן: ${money(rec)}.`:`\nגודל ה-raise שבחרת (${money(size)}) מתאים.`}
     after.querySelector(".why").innerHTML=md(why);
-    followUp(after,ok,`מצב: ${lines.join(" ").replace(/\*\*/g,"")}\nהיד שלי: ${hand}\nאפשרויות: Fold | ${A.rName} | ${A.call}\nבחרתי: ${label(k,size)}\nהתשובה לפי הטבלה (PokerCoaching 9-max, 100bb): ${right}\nהסבר: ${explain(spot,hand,code)}`);
+    followUp(after,ok,`מצב: ${lines.join(" ").replace(/\*\*/g,"")}\nהיד שלי: ${hand}\nאפשרויות: Fold | ${A.rName} | ${A.call}\nבחרתי: ${label(k,size)}\nהתשובה לפי הטבלה (PokerCoaching 9-max, 100bb, שולחן של ${settings.players}): ${right}\nהסבר: ${explain(spot,hand,code)}`);
     me.next=()=>go(res);
   };
   const me={answer,next:()=>{}};activePF=me;
@@ -733,7 +875,8 @@ ${ctx}
 2. למה התשובה הנכונה עדיפה, עם מספר אם רלוונטי (pot odds, equity, combos, range).
 3. כלל אחד לפעם הבאה שיוביל לפעולה הנכונה.
 אם השחקן צדק, חזק את החשיבה והוסף ניואנס אחד.
-פרופיל השחקן: ${profileText()}`;
+פרופיל השחקן: ${profileText()}
+${aiStyle()}`;
     try{const {text}=await sample(prompt,{onText:({text})=>{out.innerHTML=md(text)}});answer=text;out.innerHTML=md(text);more.hidden=false}
     catch(err){out.innerHTML=md((err.text?err.text+"\n":"")+errCopy(err.code));if(["not_granted","sampling_disabled"].includes(err.code)){disableAI();box.remove()}}
     finally{send.disabled=false}};
@@ -754,15 +897,15 @@ const quizItem=q=>({q:q[1],opts:q[2],ans:q[3],explain:q[4],topic:q[0]});
 const tellItem=t=>({q:t[0],opts:t[1],ans:t[2],explain:t[3],dom:"reads"});
 
 /* ===== NAVIGATION ===== */
-const VIEWS=["home","drill","charts","learn","topics","deck","coach","journal","entry","profile","focus"];
-const NAV_OF={home:"home",profile:"home",journal:"home",entry:"home",drill:"drill",charts:"drill",learn:"learn",topics:"learn",deck:"learn",coach:"coach"};
+const VIEWS=["settings","home","drill","charts","learn","topics","deck","coach","journal","entry","profile","focus"];
+const NAV_OF={settings:"home",home:"home",profile:"home",journal:"home",entry:"home",drill:"drill",charts:"drill",learn:"learn",topics:"learn",deck:"learn",coach:"coach"};
 let current=null;
 function show(v){
   current=v;VIEWS.forEach(x=>$("#v-"+x).hidden=x!==v);
   document.body.classList.toggle("focus",v==="focus");
   $$("nav.tabbar button").forEach(b=>{if(b.dataset.nav===NAV_OF[v])b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});
   if(v!=="drill"&&v!=="focus")activePF=null;
-  if(v==="home")renderHome();if(v==="drill")nextDrill();if(v==="profile")renderProfile();if(v==="charts")renderCharts();if(v==="coach")renderChat();if(v==="journal")renderJournal();
+  if(v==="settings")renderSettings();if(v==="home")renderHome();if(v==="drill")nextDrill();if(v==="profile")renderProfile();if(v==="charts")renderCharts();if(v==="coach")renderChat();if(v==="journal")renderJournal();
   window.scrollTo(0,0);
 }
 $$("nav.tabbar button").forEach(x=>x.onclick=()=>show(x.dataset.nav));
@@ -804,7 +947,8 @@ function renderHome(){
 }
 $("#v-home").addEventListener("change",e=>{const c=e.target;if(c.matches("input[data-w]")&&plan){plan.weeks[+c.dataset.w].tasks[+c.dataset.t].done=c.checked;store.set("plan_v2",plan);const open=$("#h-details").open;renderHome();$("#h-details").open=open}});
 $("#h-profile").onclick=()=>hasProfile()?show("profile"):startWizard();
-$("#h-start-assess").onclick=()=>startWizard();
+$("#h-start-assess").onclick=()=>startTest();
+$("#h-settings").onclick=()=>show("settings");
 $("#h-retest-btn").onclick=()=>startTest();
 $("#h-daily").onclick=()=>startDaily();
 $("#h-journal").onclick=()=>show("journal");
@@ -825,61 +969,77 @@ const PQ=[
  {k:"freq",q:"כמה פעמים בחודש אתה משחק?",o:[["1-2","1–2"],["3-6","3–6"],["7-12","7–12"],["13+","יותר מ-12"]]},
  {k:"table",q:"גודל השולחן הרגיל?",o:[["full","מלא (8–10 שחקנים)"],["6max","6-max"],["both","משתנה"]]},
  {k:"opps",q:"איך היריבים הרגילים שלך משחקים?",o:[["passive","Passive, עושים call הרבה"],["tight","Tight, משחקים מעט ידיים"],["aggressive","Aggressive, עושים raise הרבה"],["mixed","מעורב"]]},
- {k:"open",q:"לכמה עושים open בדרך כלל בשולחן שלך?",o:[["2-2.5","2–2.5bb"],["3","3bb"],["4-5","4–5bb"],["6+","6bb ומעלה"],["unk","לא יודע"]]},
+ {k:"open",q:"לכמה עושים open בדרך כלל בשולחן שלך?",o:[["2-2.5","{bb:2}–{bb:2.5}"],["3","{bb:3}"],["4-5","{bb:4}–{bb:5}"],["6+","{bb:6} ומעלה"],["unk","לא יודע"]]},
  {k:"exp",q:"כמה זמן אתה משחק?",o:[["lt1","פחות משנה"],["1-3","1–3 שנים"],["3+","יותר מ-3 שנים"]]},
  {k:"goal",q:"מה המטרה שלך?",o:[["fun","ליהנות ולשחק טוב יותר"],["stoploss","להפסיק להפסיד"],["profit","להרוויח באופן קבוע"],["moveup","לעלות סטייק"]]},
  {k:"self",q:"איך היית מדרג את עצמך?",o:[["1","1 · מתחיל"],["2","2"],["3","3 · בינוני"],["4","4"],["5","5 · מקצוען"]]}
 ];
 const optLabel=(k,v)=>{const q=PQ.find(x=>x.k===k),o=q&&q.o&&q.o.find(x=>x[0]===v);return o?o[1]:v};
-function skipProfile(){if(!profile){profile={skipped:true};store.set("profile",profile)}show("home")}
-function startWizard(){
-  focus("שלב 1 מתוך 3 · היכרות",0,skipProfile);
-  fbody().innerHTML=`<h1>בוא נבנה לך מאמן אישי.</h1><p class="muted">שלושה שלבים, בערך 10 דקות.</p>
-  <div class="list"><div class="topic" style="cursor:default"><div class="snip"><span>המשחק שלך</span><span>11 שאלות קצרות</span></div><small>1</small></div><div class="topic" style="cursor:default"><div class="snip"><span>מבחן מיקום</span><span>25 החלטות ושאלות, בלי משוב באמצע</span></div><small>2</small></div><div class="topic" style="cursor:default"><div class="snip"><span>האבחון שלך</span><span>רמה, דליפות ותכנית אימון</span></div><small>3</small></div></div>
-  <button class="cta" id="wz-go"><b>מתחילים</b><span>אפשר לצאת בכל שלב</span></button><button class="btn ghost" id="wz-skip" style="justify-self:center">דלג לעכשיו</button>`;
-  $("#wz-go").onclick=()=>askProfile(0,Object.assign({},hasProfile()?profile:{}));
-  $("#wz-skip").onclick=skipProfile;
-}
-function askProfile(i,draft){
-  if(i>=PQ.length){draft.skipped=false;draft.updatedAt=Date.now();profile=draft;store.set("profile",profile);return startTest()}
-  const q=PQ[i];focus(`שלב 1 · המשחק שלך · ${i+1}/${PQ.length}`,i/PQ.length*.33,skipProfile);
-  if(q.type==="stakes"){
-    let cur=draft.currency||"₪";
-    fbody().innerHTML=`<p class="wz-q">${bidi(q.q)}</p><input type="text" id="wz-stakes" placeholder="למשל 1/2 או 50" value="${esc(draft.stakes||"")}" aria-label="blinds או buy-in">
-    <div class="row" id="wz-cur" style="flex-wrap:nowrap">${["₪","$","€"].map(c=>`<button class="choice" style="text-align:center" data-c="${c}" aria-pressed="${cur===c}">${c}</button>`).join("")}</div>
-    <div class="row between"><button class="btn" id="wz-back">חזרה</button><button class="btn primary" id="wz-next">המשך</button></div>`;
-    $("#wz-cur").onclick=e=>{const b=e.target.closest("[data-c]");if(!b)return;cur=b.dataset.c;$$("#wz-cur .choice").forEach(x=>x.setAttribute("aria-pressed",x===b))};
-    $("#wz-next").onclick=()=>{draft.stakes=$("#wz-stakes").value.trim().slice(0,40);draft.currency=cur;askProfile(i+1,draft)};
-    $("#wz-stakes").onkeydown=e=>{if(e.key==="Enter")$("#wz-next").click()};
-  } else {
-    fbody().innerHTML=`<p class="wz-q">${bidi(q.q)}</p><div class="choices">${q.o.map(([v,l])=>`<button class="choice" data-v="${v}" aria-pressed="${draft[q.k]===v}">${bidi(l)}</button>`).join("")}</div><div class="row"><button class="btn" id="wz-back">חזרה</button></div>`;
-    fbody().querySelector(".choices").onclick=e=>{const b=e.target.closest("[data-v]");if(!b)return;draft[q.k]=b.dataset.v;askProfile(i+1,draft)};
+function skipProfile(){if(!profile){profile={skipped:true};store.set("profile",profile)}saveSettings();show("home")}
+const ONB=[
+ {k:"start",q:"כמה אתה משחק פוקר?",o:[["never","אף פעם, אני רוצה ללמוד מההתחלה"],["some","קצת, בעיקר עם חברים"],["lots","הרבה, אני רוצה להשתפר"]]},
+ {k:"units",q:"איך נוח לך לספור?",o:[["chips","ג׳יטונים","לדוגמה: יש לי 1,000 ג׳יטונים, והנבל העלה ל-25."],["bb","Big blinds","לדוגמה: יש לי 100bb, והנבל עשה raise ל-2.5bb."]]},
+ {k:"players",q:"כמה שחקנים יש בדרך כלל בשולחן שלך?",type:"players"},
+ {k:"aim",q:"מה המטרה שלך?",o:[["fun","ליהנות ולשחק טוב יותר"],["friends","לנצח את החברים"],["profit","להרוויח באופן קבוע"]]}
+];
+function startWizard(){startOnboarding(0,{})}
+function startOnboarding(i,d){
+  if(i>=ONB.length){
+    settings.units=d.units||"chips";settings.players=+d.players||6;settings.lang=d.start==="lots"?"pro":"easy";saveSettings();
+    profile=Object.assign({},hasProfile()?profile:{},{start:d.start,aim:d.aim,skipped:false,updatedAt:Date.now()});store.set("profile",profile);
+    return welcome(d.start);
   }
-  $("#wz-back").onclick=()=>i?askProfile(i-1,draft):startWizard();
+  const q=ONB[i];focus(`היכרות · ${i+1}/${ONB.length}`,i/ONB.length,skipProfile);
+  const back=i?`<div class="row"><button class="btn" id="ob-back">חזרה</button></div>`:`<button class="btn ghost" id="ob-skip" style="justify-self:center">דלג</button>`;
+  if(q.type==="players"){
+    const cur=+d.players||settings.players;
+    fbody().innerHTML=`<p class="wz-q">${bidi(q.q)}</p><div class="seats">${[3,4,5,6,7,8,9].map(n=>`<button class="choice" data-v="${n}" aria-pressed="${cur===n}"><b>${n}</b><span>${n===9?"שולחן מלא":"שחקנים"}</span></button>`).join("")}</div><p class="small muted">אפשר לשנות בכל רגע בהגדרות.</p>${back}`;
+  } else {
+    fbody().innerHTML=`<p class="wz-q">${bidi(q.q)}</p><div class="choices">${q.o.map(([v,l,ex])=>`<button class="choice" data-v="${v}" aria-pressed="${d[q.k]===v}"><span>${bidi(l)}</span>${ex?`<small class="ex">${bidi(ex)}</small>`:""}</button>`).join("")}</div>${back}`;
+  }
+  fbody().querySelector(".choices,.seats").onclick=e=>{const b=e.target.closest("[data-v]");if(!b)return;d[q.k]=b.dataset.v;startOnboarding(i+1,d)};
+  const bk=$("#ob-back");if(bk)bk.onclick=()=>startOnboarding(i-1,d);const sk=$("#ob-skip");if(sk)sk.onclick=skipProfile;
+}
+function welcome(start){
+  if(start==="lots")return startTest();
+  focus("מוכן",1,()=>show("home"));
+  const basics=start==="never";
+  fbody().innerHTML=`<h1>${basics?"נתחיל מהבסיס.":"מעולה, אפשר להתחיל."}</h1><p class="muted">${bidi(basics?"9 כרטיסיות קצרות: איך משחקים, blinds, סיבובים ומה עושים בתור שלך. בכל מקום שמופיע מונח מסומן בקו, אפשר ללחוץ עליו ולקבל הסבר.":"בכל מקום שמופיע מונח מסומן בקו, אפשר ללחוץ עליו ולקבל הסבר. אחרי כמה אימונים אפשר לעשות בדיקת רמה קצרה.")}</p>
+  <button class="cta" id="wl-go"><b>${basics?"לשיעור הראשון":"לאימון הראשון"}</b><span>${basics?"3 דקות":"10 דקות"}</span></button>`;
+  $("#wl-go").onclick=()=>{if(basics){const t=THEORY[0];openDeck(t.t,t.c,"home",end=>theoryEnd(end,t))}else startDaily()};
 }
 
 /* ===== PLACEMENT TEST ===== */
 const DOM_HE={preflop:"Preflop",math:"מתמטיקה",postflop:"Postflop",reads:"קריאת יריבים",mental:"מנטלי"};
-function buildTest(){
-  const pf=[["rfi",["UTG","UTG+1","UTG+2","LJ"]],["rfi",["HJ","CO"]],["rfi",["BTN","SB"]],["facing_rfi",["UTG+1","UTG+2","LJ","HJ"]],["facing_rfi",["CO","BTN"]],["facing_rfi",["SB"]],["facing_rfi",["BB"]],["facing_rfi",["BB"]],["rfi_vs_3bet",["UTG","UTG+1","UTG+2","LJ"]],["rfi_vs_3bet",["HJ","CO"]],["rfi_vs_3bet",["BTN","SB"]],["sb_limp_vs_raise",["SB"]]];
-  const items=pf.map(([k,hs])=>{const s=rnd(SPOTS.filter(x=>x.kind===k&&hs.includes(x.hero)));return {type:"pf",dom:"preflop",spot:s,hand:pickHand(s,null)}});
-  items.push(Object.assign({type:"mcq"},genPotOdds()),Object.assign({type:"mcq"},genPotOdds()),Object.assign({type:"mcq"},genOuts()),Object.assign({type:"mcq"},genOuts()));
-  shuffle(QUIZ.filter(q=>q[0]==="Postflop")).slice(0,4).forEach(q=>items.push(Object.assign({type:"mcq",dom:"postflop"},quizItem(q))));
-  shuffle(TS).slice(0,3).forEach(t=>items.push(Object.assign({type:"mcq"},tellItem(t))));
-  shuffle(QUIZ.filter(q=>q[0]==="מנטלי")).slice(0,2).forEach(q=>items.push(Object.assign({type:"mcq",dom:"mental"},quizItem(q))));
-  return items;
+function testCats(){
+  const pfSpec=[["rfi",["UTG","UTG+1","UTG+2","LJ","HJ"]],["rfi",["CO","BTN","SB"]],["facing_rfi",["UTG+1","UTG+2","LJ","HJ","CO","BTN"]],["facing_rfi",["SB","BB"]],["rfi_vs_3bet",["UTG","UTG+1","UTG+2","LJ","HJ","CO","BTN","SB"]]];
+  const pf=pfSpec.map(([k,hs])=>{let c=SPOTS.filter(x=>x.kind===k&&hs.includes(x.hero)&&inTable(x));if(!c.length)c=SPOTS.filter(x=>x.kind===k&&inTable(x));const sp=rnd(c);return {type:"pf",dom:"preflop",spot:sp,hand:pickHand(sp,null)}});
+  const post=[Object.assign({type:"mcq"},genPotOdds()),Object.assign({type:"mcq"},genOuts())].concat(shuffle(QUIZ.filter(q=>q[0]==="Postflop")).slice(0,3).map(q=>Object.assign({type:"mcq",dom:"postflop"},quizItem(q))));
+  const opp=shuffle(TS).slice(0,3).map(t=>Object.assign({type:"mcq"},tellItem(t))).concat(shuffle(QUIZ.filter(q=>q[0]==="מנטלי")).slice(0,2).map(q=>Object.assign({type:"mcq",dom:"mental"},quizItem(q))));
+  return [{name:"Preflop",about:"החלטות לפני ה-flop",items:pf},{name:"אחרי ה-flop ומתמטיקה",about:"מה עושים כשהקלפים על השולחן",items:post},{name:"יריבים וראש",about:"קריאת יריבים ושליטה עצמית",items:opp}];
 }
+const CAT_VERDICT=r=>r>=.8?"מצוין. זה תחום חזק אצלך.":r>=.6?"טוב. יש כמה דברים לחדד.":r>=.4?"בינוני. כאן נתמקד באימונים.":"כאן יש הכי הרבה מקום לשיפור.";
 function startTest(){
-  const items=buildTest(),res=[],exit=()=>show("home");
-  focus("שלב 2 מתוך 3 · מבחן מיקום",.33,exit);
-  fbody().innerHTML=`<h1>מבחן מיקום.</h1><p class="muted">${bidi("25 פריטים: 12 החלטות preflop, 4 מתמטיקה, 4 postflop, 3 tells ו-2 מנטלי. אין משוב באמצע. תענה כמו שהיית משחק באמת. אנחנו מודדים גם זמן.")}</p><button class="cta" id="t-go"><b>התחל מבחן</b><span>6–8 דקות</span></button>`;
-  $("#t-go").onclick=()=>step(0);
-  function step(i){
-    if(i>=items.length)return finishTest(res);
-    const it=items[i];focus(`שלב 2 · מבחן · ${i+1}/${items.length} · ${DOM_HE[it.dom]}`,.33+i/items.length*.34,exit);
-    const box=freshBox();
-    if(it.type==="pf")mountPF(box,{spot:it.spot,hand:it.hand,feedback:false,record:false,onDone:r=>{res.push({dom:"preflop",ok:r.ok,ms:r.ms,patterns:r.patterns,kind:it.spot.kind,hero:it.spot.hero});step(i+1)}});
-    else mountMCQ(box,{q:it.q,opts:it.opts,ans:it.ans,feedback:false,onDone:r=>{res.push({dom:it.dom,ok:r.ok,ms:r.ms});step(i+1)}});
+  const cats=testCats(),res=[],exit=()=>show("home"),total=cats.reduce((a,c)=>a+c.items.length,0);let done=0;
+  focus("בדיקת רמה",0,exit);
+  fbody().innerHTML=`<h1>בדיקת רמה.</h1><p class="muted">${bidi("3 קטגוריות, 5 שאלות בכל אחת. אחרי כל קטגוריה תקבל ציון. בערך 5 דקות.")}</p><div class="list">${cats.map((c,i)=>`<div class="topic" style="cursor:default"><div class="snip"><span>${bidi(c.name)}</span><span>${bidi(c.about)}</span></div><small>${i+1}</small></div>`).join("")}</div><button class="cta" id="t-go"><b>מתחילים</b><span>אפשר לצאת בכל שלב</span></button>`;
+  $("#t-go").onclick=()=>runCat(0);
+  function runCat(ci){
+    if(ci>=cats.length)return finishTest(res);
+    const cat=cats[ci],start=res.length;
+    const step=j=>{
+      if(j>=cat.items.length){
+        const mine=res.slice(start),ok=mine.filter(r=>r.ok).length,last=ci===cats.length-1;
+        focus(`בדיקת רמה · ${cat.name} · ציון`,done/total,exit);
+        fbody().innerHTML=`<div class="card-box" style="text-align:center;justify-items:center"><span class="eyebrow">${bidi(cat.name)}</span><div class="level mono">${ok}/${cat.items.length}</div><div class="stars" aria-label="${ok} מתוך ${cat.items.length}">${cat.items.map((_,k)=>`<i class="${k<ok?"on":""}"></i>`).join("")}</div><p>${bidi(CAT_VERDICT(ok/cat.items.length))}</p></div><button class="cta" id="cat-next"><b>${last?"לתוצאות":"לקטגוריה הבאה"}</b><span>${last?"רמה, דליפות ותכנית":bidi(cats[ci+1].name)}</span></button>`;
+        $("#cat-next").onclick=()=>runCat(ci+1);return;
+      }
+      const it=cat.items[j];focus(`בדיקת רמה · ${cat.name} · ${j+1}/${cat.items.length}`,done/total,exit);const box=freshBox();
+      const next=r=>{done++;res.push(r);step(j+1)};
+      if(it.type==="pf")mountPF(box,{spot:it.spot,hand:it.hand,feedback:false,record:false,onDone:r=>next({dom:"preflop",ok:r.ok,ms:r.ms,patterns:r.patterns,kind:it.spot.kind,hero:it.spot.hero})});
+      else mountMCQ(box,{q:it.q,opts:it.opts,ans:it.ans,feedback:false,onDone:r=>next({dom:it.dom,ok:r.ok,ms:r.ms})});
+    };
+    step(0);
   }
 }
 const LEAK={
@@ -915,7 +1075,7 @@ function computeResults(res){
 function finishTest(res){const r=computeResults(res),prev=lastAssess();assessments.push(r);assessments=assessments.slice(-12);store.set("assessments",assessments);showResults(r,prev)}
 function scoresHTML(r,prev){return `<div class="scores">${Object.keys(DOM_HE).map(d=>{const dl=prev?r.scores[d]-prev.scores[d]:0;return `<div class="score-row"><span>${bidi(DOM_HE[d])}</span><div class="bar"><i style="width:${r.scores[d]*20}%"></i></div><span class="mono">${r.scores[d]}/5${dl?` <span class="delta ${dl>0?"up":"down"}">${dl>0?"+":""}${dl}</span>`:""}</span></div>`}).join("")}</div>`}
 function showResults(r,prev){
-  focus("שלב 3 מתוך 3 · האבחון שלך",.85,()=>show("home"));
+  focus("בדיקת רמה · התוצאות שלך",1,()=>show("home"));
   const pats=Object.entries(r.patterns).sort((a,b)=>b[1]-a[1]),pos=Object.entries(r.posErr).sort((a,b)=>b[1]-a[1]);
   fbody().innerHTML=`<div class="card-box"><span class="eyebrow">הרמה שלך</span><div class="level">${LEVEL_HE[r.level]}</div><p class="small muted">${bidi(Math.round(r.overall*100)+"% ציון משוקלל · "+(r.avgMs/1000).toFixed(1)+" שנ׳ בממוצע להחלטת preflop"+(prev?" · בהשוואה למבחן מ-"+new Date(prev.date).toLocaleDateString("he-IL"):""))}</p></div>
   <div class="card-box"><h2>ציון לפי תחום</h2>${scoresHTML(r,prev)}</div>
@@ -999,7 +1159,7 @@ function startDaily(){
   for(let i=0;i<15;i++)steps.push({type:"pf"});
   const topics=[];if(leakKeys.includes("postflop"))topics.push("Postflop");if(leakKeys.includes("mental"))topics.push("מנטלי");
   if(Object.keys(patterns).some(k=>/flop|fear|missed/i.test(k)))topics.push("החטאת flop");
-  const qpool=QUIZ.filter(q=>q[0]!=="מתמטיקה"),pref=qpool.filter(q=>topics.includes(q[0]));const used=new Set();
+  const qpool=QUIZ.filter(q=>q[0]!=="מתמטיקה"&&(q[0]!=="בסיס"||settings.lang==="easy")),pref=qpool.filter(q=>topics.includes(q[0]));const used=new Set();
   for(let i=0;i<3;i++){
     if(leakKeys.includes("reads")&&i===2){steps.push(Object.assign({type:"mcq"},tellItem(rnd(TS))));continue}
     let q,tries=0;do{q=rnd(pref.length&&Math.random()<.6?pref:qpool)}while(used.has(q)&&++tries<10);used.add(q);
@@ -1043,13 +1203,13 @@ const accLine=()=>stats.n?`דיוק כולל ${Math.round(stats.ok/stats.n*100)}
 function nextDrill(){
   let p=pickSpot(drillMode);$("#d-note").hidden=true;
   if(!p){$("#d-note").textContent="אין טעויות שמורות כרגע. עובר לתרגול לפי הדליפות.";$("#d-note").hidden=false;p=pickSpot("leaks")}
-  $("#d-acc").textContent=accLine();
+  $("#d-acc").textContent=accLine()+(settings.players<9?` · שולחן של ${settings.players}`:"");
   mountPF($("#d-pf"),{spot:p.spot,hand:p.hand,feedback:true,onDone:()=>nextDrill(),onAsk:(s,h,c)=>{show("coach");$("#chat-in").value=`תרגלתי: "${spotText(s).title}" עם ${h}. הטבלה אומרת ${codeLabel(s,c)}. תסביר לי את ההיגיון, ותשאל אותי שאלה אחת שתבדוק שהבנתי.`;$("#chat-in").focus()}});
 }
 
 /* ===== CHARTS VIEWER ===== */
 const cv={kind:"rfi",hero:"UTG",vill:null};
-$("#c-src").innerHTML=bidi("מקור: PokerCoaching.com, 9-max, stack של 100bb עם ante. In position: open ל-2.5bb, 3bet פי 3, 4bet פי 2.5. Out of position: open ל-3.5bb, 3bet פי 3.5, 4bet פי 2.75. לחץ על משבצת כדי לראות את הפעולה.");
+$("#c-src").innerHTML=bidi("מקור: PokerCoaching.com, 9-max, stack של {bb:100} עם ante. In position: open ל-{bb:2.5}, 3bet פי 3, 4bet פי 2.5. Out of position: open ל-{bb:3.5}, 3bet פי 3.5, 4bet פי 2.75. לחץ על משבצת כדי לראות את הפעולה.");
 function renderCharts(){
   $("#c-kinds").innerHTML=Object.keys(KIND_NAME).map(k=>`<button class="chip" data-k="${k}" aria-pressed="${k===cv.kind}">${bidi(KIND_NAME[k])}</button>`).join("");
   const heroes=PREFLOP.filter(p=>SPOTS.some(s=>s.kind===cv.kind&&s.hero===p));if(!heroes.includes(cv.hero))cv.hero=heroes[0];
@@ -1247,6 +1407,7 @@ async function practiceEntry(e){
   const prompt=`אתה מאמן פוקר. על סמך המשחק שהשחקן תיאר והניתוח שלו, צור 3 שאלות אמריקאיות שמתרגלות בדיוק את המצב והדפוס שזוהו. כל שאלה: מצב משחק קונקרטי (עמדה, יד, בורד, פעולה של היריב), 3–4 אפשרויות, תשובה נכונה אחת, הסבר של משפט או שניים. האפשרויות הן הפעולה בלבד, 1–4 מילים, בלי נימוק (למשל: Call, Fold, Check, All-in, Raise ל-9bb, C-bet של 33%). הנימוק נכתב רק ב-explain. עברית, מונחי משחק באנגלית (call, check, raise, fold, bet, c-bet, flop, turn, river, equity, pot odds).
 מה קרה: ${e.text.slice(0,2500)}
 ניתוח: ${e.analysis.summary}. דפוסים: ${e.analysis.patterns.map(p=>p.title).join(", ")}
+${aiStyle()}
 החזר JSON בלבד: {"questions":[{"q":"...","opts":["...","...","..."],"ans":0,"explain":"..."}]}`;
   try{
     const j=await sample.json(prompt);
@@ -1262,6 +1423,16 @@ async function practiceEntry(e){
 }
 $("#c-journal").onclick=()=>show("journal");
 
+/* ===== SETTINGS ===== */
+function renderSettings(){
+  const ch=(id,key,opts)=>{$(id).innerHTML=opts.map(([v,l,ex])=>`<button class="choice" data-v="${v}" aria-pressed="${settings[key]===v}"><span>${bidi(l)}</span><small class="ex">${bidi(ex)}</small></button>`).join("");$(id).onclick=e=>{const b=e.target.closest("[data-v]");if(!b)return;settings[key]=b.dataset.v;saveSettings();renderSettings()}};
+  ch("#st-units","units",[["chips","ג׳יטונים","Blinds של 5/10, לכל שחקן 1,000. לדוגמה: raise ל-25."],["bb","Big blinds","לכל שחקן 100bb. לדוגמה: raise ל-2.5bb."]]);
+  ch("#st-lang","lang",[["easy","רגיל","מונח באנגלית עם הסבר קצר בעברית לידו."],["pro","מקצוען","מונחים באנגלית בלבד."]]);
+  $("#st-players").innerHTML=[3,4,5,6,7,8,9].map(n=>`<button class="choice" data-v="${n}" aria-pressed="${settings.players===n}"><b>${n}</b><span>${n===9?"שולחן מלא":"שחקנים"}</span></button>`).join("");
+  $("#st-players").onclick=e=>{const b=e.target.closest("[data-v]");if(!b)return;settings.players=+b.dataset.v;saveSettings();renderSettings()};
+  $("#st-players-note").innerHTML=bidi(settings.players<9?`בשולחן של ${settings.players} שחקנים משחקים רק העמדות ${tablePos().join(", ")}. הטווחים מבוססים על טבלאות של 9 שחקנים, ולכן הם מקורבים.`:"שולחן מלא: כל 9 העמדות, לפי הטבלאות המקוריות.");
+}
+
 /* ===== PROFILE ===== */
 function renderProfile(){
   const p=hasProfile()?profile:{};
@@ -1276,11 +1447,11 @@ function renderProfile(){
 }
 $("#p-replan").onclick=()=>{const a=lastAssess();if(!a)return;plan=buildPlan(profile,a);for(const k in patterns)patterns[k].addedToPlan=false;store.set("plan_v2",plan);syncPatternTasks();renderProfile();$("#p-ai-out").textContent="נבנתה תכנית חדשה לפי הפרופיל המעודכן."};
 $("#p-ai").onclick=()=>improvePlan($("#p-ai"),$("#p-ai-out"),renderProfile);
-$("#p-reassess").onclick=()=>hasProfile()?startTest():startWizard();
+$("#p-reassess").onclick=()=>startTest();
 
 /* ===== AI COACH ===== */
 let sample=null,imgOK="",ctl=null,turns=store.get("chat",[]);if(!Array.isArray(turns))turns=[];
-function profileText(){if(!hasProfile())return "לא מולא";const p=profile;return PQ.map(q=>q.type==="stakes"?`סטייק: ${p.stakes||"?"} ${p.currency||""}`:`${q.q} ${p[q.k]?optLabel(q.k,p[q.k]):"?"}`).join("; ")}
+function profileText(){if(!hasProfile())return "לא מולא";const p=profile;return (p.start?`ניסיון: ${({never:"מתחיל לגמרי",some:"משחק קצת עם חברים",lots:"משחק הרבה"})[p.start]}; מטרה: ${({fun:"ליהנות",friends:"לנצח את החברים",profit:"להרוויח"})[p.aim]||"?"}; `:"")+PQ.filter(q=>q.type==="stakes"?p.stakes:p[q.k]).map(q=>q.type==="stakes"?`סטייק: ${p.stakes||"?"} ${p.currency||""}`:`${q.q} ${p[q.k]?optLabel(q.k,p[q.k]):"?"}`).join("; ")}
 function assessText(a){if(!a)return "לא בוצע";return `רמה ${LEVEL_HE[a.level]} (${Math.round(a.overall*100)}%). ציונים 1–5: ${Object.keys(DOM_HE).map(d=>DOM_HE[d]+" "+a.scores[d]).join(", ")}. דפוסים: ${Object.entries(a.patterns).map(([k,v])=>PAT_HE[k]+"×"+v).join(", ")||"אין"}. דליפות: ${a.leaks.map(l=>l.title).join(", ")}.`}
 function statsText(){
   const bk=Object.entries(stats.byKind).map(([k,v])=>`${KIND_NAME[k]}: ${v.ok}/${v.n}`).join(", ")||"אין עדיין";
@@ -1297,6 +1468,7 @@ function rules(){const last=journal.filter(e=>e.analysis).slice(-1)[0];return `�
 - התאם דוגמאות לסטייק, לסוג היריבים, ליריבים הקבועים ולפורמט של השחקן. תעדף את הדליפות ואת הדפוסים מהיומן.
 - Tells: תמיד להזכיר שצריך בסיס לפני tell, ושהוא רק מזיז החלטות גבוליות.
 - סיים כל תשובה בשורה "צעד הבא:" עם פעולה אחת לתרגול.
+- ${aiStyle()}
 הטבלאות: PokerCoaching 9-max, 100bb. Open ל-2.5bb (מה-SB 3.5bb), 3bet פי 3 in position ופי 3.5 out of position. Ranges של open (ב-SB כולל limp):
 ${rangesText()}
 פרופיל השחקן: ${profileText()}
@@ -1325,6 +1497,23 @@ $("#chat-in").addEventListener("keydown",e=>{if(e.key==="Enter"&&(e.ctrlKey||e.m
 $("#chat-stop").onclick=()=>ctl&&ctl.abort();
 $("#chat-clear").onclick=()=>{turns=[];store.set("chat",[]);renderChat()};
 $("#chips").onclick=e=>{const b=e.target.closest("[data-p]");if(b)send(b.dataset.p)};
+
+/* ===== GLOSSARY SHEET ===== */
+let glBack=null,glCur=null;
+function openTerm(g){
+  const G=GLOSS[g];if(!G)return;glCur=g;glBack=document.activeElement;
+  $("#gl-t").textContent=G[0][0].replace(/\b\w/g,c=>c.toUpperCase());$("#gl-he").textContent=G[1];
+  $("#gl-def").innerHTML=bidi(G[2]);$("#gl-ex").innerHTML="<p><b>דוגמה:</b> "+bidi(G[3])+"</p>";
+  $("#gl-ask").hidden=!sample;$("#gl-bg").hidden=false;$("#gl-sheet").hidden=false;$("#gl-close").focus();
+}
+function closeTerm(){$("#gl-bg").hidden=true;$("#gl-sheet").hidden=true;if(glBack&&glBack.focus)glBack.focus({preventScroll:true})}
+$("#gl-close").onclick=closeTerm;$("#gl-bg").onclick=closeTerm;
+$("#gl-ask").onclick=()=>{const G=GLOSS[glCur];closeTerm();show("coach");$("#chat-in").value=`תסביר לי בפשטות מה זה ${G[0][0]}, עם דוגמה מיד אמיתית.`;$("#chat-in").focus()};
+const termHost=t=>t.closest("button,.opt,.ans,[data-k],a,.chip,.choice,select,textarea,input");
+document.addEventListener("click",e=>{const t=e.target.closest&&e.target.closest(".term");if(!t||termHost(t))return;e.preventDefault();e.stopPropagation();openTerm(+t.dataset.t)},true);
+document.addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#gl-sheet").hidden){closeTerm();return}const t=e.target.closest&&e.target.closest(".term");if(t&&!termHost(t)&&(e.key==="Enter"||e.key===" ")){e.preventDefault();e.stopPropagation();openTerm(+t.dataset.t)}},true);
+/* Terms that are not inside another control become keyboard-focusable buttons. */
+new MutationObserver(()=>{for(const t of document.querySelectorAll(".term:not([data-ready])")){t.dataset.ready=1;if(!termHost(t)){t.tabIndex=0;t.setAttribute("role","button");t.setAttribute("aria-label",(t.textContent||"")+": הסבר")}}}).observe(document.body,{childList:true,subtree:true});
 
 /* ===== BOOT ===== */
 const hash=(location.hash||"").slice(1);
