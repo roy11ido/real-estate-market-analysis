@@ -138,6 +138,8 @@ body.focus nav.tabbar{display:none}
 .act:active{transform:scale(.96)}
 .act-R{background:var(--r-val);color:var(--r-val-fg)} .act-C{background:var(--r-call);color:var(--r-call-fg)} .act-F{background:var(--surface);color:var(--fg);box-shadow:var(--shadow-sm)}
 .after{display:grid;gap:16px}
+.follow{display:grid;gap:12px}
+.reply{white-space:pre-wrap}
 .why{background:var(--surface);border-radius:22px;padding:20px;font-size:.98rem;box-shadow:var(--shadow-sm);color:var(--fg-2)}
 .gridwrap{position:relative;min-width:0;background:var(--surface);border-radius:24px;padding:14px;box-shadow:var(--shadow-sm)}
 .rgrid{display:grid;grid-template-columns:repeat(13,1fr);gap:3px;direction:ltr;font:600 clamp(.46rem,2.1vw,.7rem)/1 var(--mono);width:100%}
@@ -253,7 +255,7 @@ label.fld,.fld{display:grid;gap:6px;font-size:.85rem;color:var(--muted);font-wei
     <div class="chip-row" id="d-modes" role="group" aria-label="מצב תרגול"></div>
     <p class="small muted" id="d-note" hidden></p>
     <div id="d-pf" class="view"></div>
-    <p class="small muted mono" id="d-acc" style="text-align:center"></p>
+    <p class="small muted" id="d-acc" style="text-align:center;font-variant-numeric:tabular-nums"></p>
   </section>
 
   <!-- CHARTS -->
@@ -263,7 +265,7 @@ label.fld,.fld{display:grid;gap:6px;font-size:.85rem;color:var(--muted);font-wei
     <div class="chip-row" id="c-kinds"></div>
     <div class="chip-row" id="c-heroes"></div>
     <div class="chip-row" id="c-vills"></div>
-    <div style="display:grid;gap:6px"><h2 id="c-title"></h2><p class="small muted mono" id="c-pct"></p></div>
+    <div style="display:grid;gap:6px"><h2 id="c-title"></h2><p class="small muted" id="c-pct" style="font-variant-numeric:tabular-nums"></p></div>
     <div class="gridwrap" id="c-gridwrap"></div>
     <div class="legend" id="c-legend"></div>
     <p class="small muted" id="c-src"></p>
@@ -423,17 +425,17 @@ function pickHand(s,prefer){
 }
 const openSize=p=>p==="SB"?3.5:2.5;
 function actionsFor(s){
-  if(s.kind==="rfi")return s.hero==="SB"?[{k:"R",l:"Raise ל-3.5bb"},{k:"C",l:"Limp"},{k:"F",l:"Fold"}]:[{k:"R",l:"Raise ל-2.5bb"},{k:"F",l:"Fold"}];
-  if(s.kind==="facing_rfi"){const x=openSize(s.vill)*(ip(s.hero,s.vill)?3:3.5);return [{k:"R",l:"3bet ל-"+fmt(x)+"bb"},{k:"C",l:"Call"},{k:"F",l:"Fold"}]}
-  if(s.kind==="rfi_vs_3bet"){const t=openSize(s.hero)*(ip(s.vill,s.hero)?3:3.5),f=t*(ip(s.hero,s.vill)?2.5:2.75);return [{k:"R",l:"4bet ל-"+fmt(f)+"bb"},{k:"C",l:"Call"},{k:"F",l:"Fold"}]}
+  if(s.kind==="rfi")return s.hero==="SB"?[{k:"R",l:"Raise של 3.5bb"},{k:"C",l:"Limp"},{k:"F",l:"Fold"}]:[{k:"R",l:"Raise של 2.5bb"},{k:"F",l:"Fold"}];
+  if(s.kind==="facing_rfi"){const x=openSize(s.vill)*(ip(s.hero,s.vill)?3:3.5);return [{k:"R",l:"3bet של "+fmt(x)+"bb"},{k:"C",l:"Call"},{k:"F",l:"Fold"}]}
+  if(s.kind==="rfi_vs_3bet"){const t=openSize(s.hero)*(ip(s.vill,s.hero)?3:3.5),f=t*(ip(s.hero,s.vill)?2.5:2.75);return [{k:"R",l:"4bet של "+fmt(f)+"bb"},{k:"C",l:"Call"},{k:"F",l:"Fold"}]}
   return [{k:"R",l:"3bet"},{k:"C",l:"Call"},{k:"F",l:"Fold"}];
 }
 function spotText(s){
   const pos=ip(s.hero,s.vill)?"אתה in position.":"אתה out of position.";
-  if(s.kind==="rfi"){const after=PREFLOP.length-1-PREFLOP.indexOf(s.hero);return {title:"Open מ-"+s.hero,desc:s.hero==="SB"?"כולם עשו fold עד אליך ב-SB. רק ה-BB נשאר.":"כולם עשו fold עד אליך. "+after+" שחקנים אחריך."}}
-  if(s.kind==="facing_rfi")return {title:s.hero+" מול open של "+s.vill,desc:s.vill+" עשה open ל-"+fmt(openSize(s.vill))+"bb וכולם עשו fold עד אליך. "+pos};
-  if(s.kind==="rfi_vs_3bet"){const o=openSize(s.hero),t=o*(ip(s.vill,s.hero)?3:3.5);return {title:"Open מ-"+s.hero+", ו-"+s.vill+" עשה 3bet",desc:"עשית open ל-"+fmt(o)+"bb, ו-"+s.vill+" עשה 3bet ל-"+fmt(t)+"bb. "+pos}}
-  return {title:"SB: עשית limp וה-BB עשה raise",desc:"כולם עשו fold, עשית limp מה-SB וה-BB עשה raise."};
+  if(s.kind==="rfi"){const after=PREFLOP.length-1-PREFLOP.indexOf(s.hero);return {title:"עמדת "+s.hero+": open",desc:s.hero==="SB"?"כולם עשו fold עד אליך. רק ה-BB נשאר אחריך.":"כולם עשו fold עד אליך. יש אחריך "+after+" שחקנים."}}
+  if(s.kind==="facing_rfi")return {title:"עמדת "+s.hero+" מול open מ-"+s.vill,desc:"ה-"+s.vill+" עשה open של "+fmt(openSize(s.vill))+"bb. כולם עשו fold עד אליך. "+pos};
+  if(s.kind==="rfi_vs_3bet"){const o=openSize(s.hero),t=o*(ip(s.vill,s.hero)?3:3.5);return {title:"עמדת "+s.hero+" מול 3bet מ-"+s.vill,desc:"עשית open של "+fmt(o)+"bb מעמדת "+s.hero+". אחריך ה-"+s.vill+" עשה 3bet של "+fmt(t)+"bb. "+pos}}
+  return {title:"עמדת SB: limp מול raise",desc:"כולם עשו fold. עשית limp מה-SB, וה-BB עשה raise."};
 }
 const CODE_LABEL={rfi_SB:{R:"Raise (value)",B:"Raise (bluff)",C:"Limp"},facing_rfi:{R:"3bet (value)",B:"3bet (bluff)",C:"Call"},rfi_vs_3bet:{R:"4bet (value)",B:"4bet (bluff)",C:"Call"},sb_limp_vs_raise:{R:"3bet (value)",B:"3bet (bluff)",C:"Call"}};
 function codeLabel(s,code){
@@ -486,42 +488,42 @@ const THEORY=[
 const MATH_CARDS=["Pot odds: כמה אחוז מה-pot הסופי אתה משלם כדי לעשות call.","נוסחה: call ÷ (pot + bet + call).","Bet של חצי pot = 25%. שני שליש = 28.5%. Pot מלא = 33%.","Outs: הקלפים שמשלימים לך את היד.","חוק 2/4: ב-flop (שני קלפים לבוא) outs × 4. ב-turn outs × 2. מעל 8 outs מורידים מעט.","Flush draw = 9 outs. Open-ended straight draw = 8. Gutshot = 4.","אם ה-equity שלך גבוה מה-pot odds, ה-call רווחי לאורך זמן."];
 const TELL_CARDS=["Tell הוא שינוי מההתנהגות הרגילה של השחקן. קודם צופים בו כמה סיבובים כשהוא לא ב-pot, ורק אז משווים.","חזק = חלש, חלש = חזק: שחקנים לא מנוסים משחקים תפקיד. עם יד חזקה הם נראים אדישים, ועם bluff הם נראים בטוחים.","ידיים רועדות אחרי bet גדול: לרוב אדרנלין מיד חזקה, לא פחד.","מבט מהיר על הצ׳יפים אחרי שה-flop נפתח: אוהב את הבורד.","בדיקה חוזרת של הקלפים כשהבורד מותאם: לרוב אין לו flush מוכן.","דיבור רגוע אחרי bet: נוטה ליד חזקה. שחקן שעושה bluff נוטה לקפוא ולשתוק.","Call מיידי ב-flop: לרוב draw או יד בינונית, לא מפלצת.","Bet גדול ומהיר ב-river משחקן passive: לרוב value.","היסוס ארוך ואז bet קטן: לרוב יד בינונית שמחפשת זול.","ה-tells שלך: אותה שגרה בכל החלטה, ואותו גודל bet עם bluffs ועם value.","Tells הם תוספת, לא תחליף. Tell טוב מזיז החלטה גבולית, לא הופך fold ברור ל-call."];
 const QUIZ=[
- ["Position","איזו עמדה עושה open עם ה-range הרחב ביותר בטבלאות?",["UTG","CO","BTN","BB"],2,"ה-BTN עושה open עם כ-51% מהידיים כי הוא תמיד פועל אחרון אחרי ה-flop."],
- ["Position","למה ה-SB משחק הרבה ידיים למרות שהוא out of position?",["כי שם 0.5bb ונשאר רק שחקן אחד אחריו","כי זו העמדה הכי טובה","כי הוא לא יכול לקבל 3bet","כי ה-BB תמיד עושה fold"],0,"רק ה-BB נשאר, וחצי blind כבר ב-pot. לכן ה-SB משחק הרבה ידיים, חלקן ב-raise וחלקן ב-limp."],
- ["Preflop","לפי הטבלה, האם עושים open עם KQo מ-UTG?",["כן","לא"],1,"מ-UTG עושים open רק עם AKo ו-AQo מבין ידיים offsuit. KQo נשלט ע״י AK, AQ ו-KK."],
- ["Preflop","למה A5s ב-range ה-open מ-UTG ו-A8s לא?",["A5s חזק יותר ב-showdown","A5s יכול לעשות straight 5-A ומשמש bluff טוב","טעות בטבלה","A8s פחות suited"],1,"A5s עושה wheel (A-2-3-4-5) ויש לו blockers ל-AA ול-AK. A8s נשלט ואין לו straight."],
- ["Preflop","ב-BB מול open מה-BTN עם 72o. מה עושים?",["3bet","Call","Fold"],2,"גם עם pot odds טובים, 72o לא מממש equity out of position. Fold."],
- ["Preflop","לכמה עושים open בטבלאות שלך?",["2bb בכל מקום","2.5bb, ומה-SB 3.5bb","3bb בכל מקום","4bb"],1,"In position 2.5bb, out of position (SB) 3.5bb. בלייב נמוך עושים open הרבה פעמים גדול יותר כי הרבה שחקנים עושים call."],
- ["Preflop","עשית open מ-CO עם AJs וקיבלת 3bet מה-BTN. לפי הטבלה?",["4bet","Call","Fold"],1,"AJs ב-range ה-call: חזקה מדי ל-fold, ולא מספיק חזקה ל-4bet value."],
- ["מתמטיקה","ב-pot יש 100, יריב עושה bet של 50. כמה equity צריך ל-call?",["20%","25%","33%","50%"],1,"50 ÷ (100+50+50) = 25%."],
- ["מתמטיקה","Flush draw ב-flop. כמה outs ומה ה-equity בערך עד ה-river?",["8 outs, 32%","9 outs, 36%","9 outs, 18%","12 outs, 48%"],1,"13 קלפים בצבע פחות 4 שרואים = 9. חוק 4: 36% (האמיתי 35%)."],
- ["מתמטיקה","Open-ended straight draw ב-turn. Equity ל-river בערך?",["8%","16%","32%","50%"],1,"8 outs × 2 = 16% (האמיתי 17.4%)."],
- ["מתמטיקה","מה הסיכוי לפגוע set ב-flop עם זוג?",["בערך 6%","בערך 12%","בערך 25%","בערך 33%"],1,"בערך 1 ל-8.5 = 11.8%. לכן צריך implied odds גבוהים."],
- ["Postflop","עשית open מה-BTN, ה-BB עשה call. Flop K♠7♦2♣. מה האסטרטגיה הסבירה?",["C-bet קטן בתדירות גבוהה","Check תמיד","All-in","C-bet של 150% pot"],0,"בורד יבש וגבוה מעדיף את ה-range של הפותח. Bet קטן משיג את המטרה בזול."],
- ["Postflop","Flop 9♥8♥6♠ אחרי שעשית open מ-UTG וה-BB עשה call. מה נכון יותר?",["C-bet קטן תמיד","יותר check, ו-bet גדול כשעושים bet","All-in עם AK","Fold"],1,"הבורד הזה מתחבר ל-range של ה-BB (מחברים, זוגות קטנים). מורידים תדירות."],
- ["Postflop","מה זה SPR של 2?",["ה-stack פי 2 מה-pot, קל להתחייב עם top pair","היריב עשה 2 bets","אחוז הזכייה","גודל ה-blind"],0,"SPR נמוך = מעט מקום לתמרון. Top pair בדרך כלל מספיק ל-all-in."],
- ["Postflop","מתי bluff ב-river הכי רווחי?",["מול calling station","כשיש לך blockers לידיים החזקות של היריב והסיפור הגיוני","כשאתה מתוסכל","תמיד כשהיריב עושה check"],1,"Blockers + סיפור עקבי + יריב שמסוגל לעשות fold."],
- ["Postflop","יש לך flush draw ב-flop, in position. היריב עושה bet של חצי pot. מה בדרך כלל?",["Fold","Call","All-in תמיד"],1,"צריך 25% equity, ול-flush draw יש כ-35% עד ה-river. Call רווחי, ולפעמים גם raise."],
- ["Postflop","ב-river יש לך second pair. יריב passive עושה bet של pot מלא בפעם הראשונה ביד.",["Call, הוא עושה bluff","Fold ברוב המקרים","Raise"],1,"שחקן passive שעושה bet גדול ב-river מחזיק לרוב יד חזקה. מול שחקנים כאלה עושים יותר fold."],
- ["Postflop","למה c-bet קטן (33%) עובד טוב בבורד יבש?",["כי הוא מפחיד","כי הוא מפעיל לחץ על כל ה-range של היריב בזול","כי היריב תמיד עושה fold","כי ככה לא מפסידים"],1,"בבורד יבש ליריב יש הרבה ידיים שמחטיאות. Bet קטן מרוויח את ה-pot לעתים קרובות ועולה מעט כשהוא נכשל."],
- ["Postflop","עשית open מ-UTG עם AA. Flop J♠T♠9♦ ושלושה שחקנים ב-pot.",["All-in מיד","להיזהר: הבורד מתחבר ל-ranges של מי שעשו call","זה תמיד value bet גדול"],1,"בבורד מחובר מול כמה שחקנים, AA הרבה פעמים כבר מאחור או מול הרבה draws. משחקים pot קטן יותר ונזהרים מ-raise."],
- ["החטאת flop","עשית raise מ-CO עם AK וה-BB עשה call. Flop 8♠5♦2♣, ה-BB עושה check. מה ברירת המחדל?",["Check תמיד, החטאתי","C-bet קטן (כ-33% pot)","All-in"],1,"בורד יבש ונמוך עדיף ל-range של הפותח. C-bet קטן מרוויח את ה-pot הרבה פעמים, ול-AK יש עדיין 6 outs ל-top pair."],
- ["החטאת flop","עשית c-bet עם AQ ב-J-8-3 והיריב עשה raise. אין לך draw. מה סביר?",["Fold ברוב המקרים","4bet","Call עד ה-river בכל מקרה"],0,"Raise ל-c-bet בבורד הזה מגיע הרבה מ-Jx, set ו-draws. בלי draw ובלי זוג, fold הוא החישוב ולא הפחד."],
- ["Exploit","יריב עושה call לכל bet עד ה-river. מה ההתאמה?",["יותר bluffs","Value bets גדולים יותר וכמעט בלי bluffs","לשחק passive","לא לשחק מולו"],1,"Calling station משלם על value ולא עושה fold ל-bluffs."],
- ["Exploit","שולחן עם הרבה שחקנים passive. מה לעשות preflop?",["להדק","לשחק יותר ידיים ולבודד את החלשים","לעשות limp","לשחק רק AA"],1,"מול שחקנים passive מרחיבים ומבודדים. מול aggressive מהדקים."],
- ["Exploit","Nit עושה 3bet בפעם הראשונה בשעה. יש לך AQo.",["4bet","Call in position","Fold היא אופציה סבירה","All-in"],2,"ה-range של nit ב-3bet הוא בערך QQ+ ו-AK. AQo נשלט מאוד."],
- ["מנטלי","הפסדת 3 buy-ins בסשן. מה עושים?",["מגדילים סטייק כדי להחזיר","ממשיכים עוד שעה","קמים לפי ה-stop-loss","משחקים יותר ידיים"],2,"ה-stop-loss קיים בדיוק לרגע הזה. ההחלטות שלך עכשיו פחות טובות."],
+ ["Position","איזו עמדה עושה open עם ה-range הרחב ביותר בטבלאות?",["UTG","CO","BTN","BB"],2,"ה-BTN עושה open עם כ-51% מהידיים, כי הוא תמיד פועל אחרון אחרי ה-flop."],
+ ["Position","למה ה-SB משחק הרבה ידיים למרות שהוא out of position?",["חצי blind כבר ב-pot ורק ה-BB אחריו","זו העמדה הכי טובה","ה-BB לא יכול לעשות 3bet","ה-BB תמיד עושה fold"],0,"רק ה-BB נשאר, וחצי blind כבר ב-pot. לכן ה-SB משחק הרבה ידיים, חלקן ב-raise וחלקן ב-limp."],
+ ["Preflop","אתה ב-UTG, כולם לפניך עשו fold. יש לך KQo. מה עושים?",["Raise ל-2.5bb","Fold"],1,"מ-UTG עושים open רק עם AKo ו-AQo מבין ידיים offsuit. KQo נשלט ע״י AK, AQ ו-KK."],
+ ["Preflop","אתה ב-UTG עם A5s. מה עושים?",["Raise ל-2.5bb","Fold"],0,"A5s ב-range: היא עושה wheel (A-2-3-4-5) ויש לה blockers ל-AA ול-AK. לעומת זאת A8s מ-UTG היא fold: נשלטת ואין לה straight."],
+ ["Preflop","אתה ב-BB. ה-BTN עשה open ל-2.5bb. יש לך 72o. מה עושים?",["3bet","Call","Fold"],2,"גם עם pot odds טובים, 72o לא מממש equity out of position. Fold."],
+ ["Preflop","לכמה עושים open בטבלאות שלך?",["2bb","2.5bb (מה-SB 3.5bb)","3bb","4bb"],1,"In position 2.5bb, out of position (SB) 3.5bb. בלייב נמוך עושים open הרבה פעמים גדול יותר, כי הרבה שחקנים עושים call."],
+ ["Preflop","עשית open מ-CO עם AJs, וה-BTN עשה 3bet. מה עושים?",["4bet","Call","Fold"],1,"AJs ב-range ה-call: חזקה מדי ל-fold, ולא מספיק חזקה ל-4bet value."],
+ ["מתמטיקה","ב-pot יש 100. היריב עושה bet של 50. כמה equity צריך ל-call?",["20%","25%","33%","50%"],1,"50 ÷ (100+50+50) = 25%."],
+ ["מתמטיקה","Flush draw ב-flop. כמה equity יש לך בערך עד ה-river?",["18%","32%","36%","48%"],2,"9 outs × 4 = 36% (האמיתי 35%)."],
+ ["מתמטיקה","Open-ended straight draw ב-turn. כמה equity יש לך בערך ל-river?",["8%","16%","32%","50%"],1,"8 outs × 2 = 16% (האמיתי 17.4%)."],
+ ["מתמטיקה","מה הסיכוי לפגוע set ב-flop עם זוג?",["6%","12%","25%","33%"],1,"בערך 1 ל-8.5, כלומר 11.8%. לכן צריך implied odds גבוהים."],
+ ["Postflop","עשית open מה-BTN וה-BB עשה call. Flop K♠7♦2♣, ה-BB עושה check. מה עושים?",["C-bet של 33%","Check","All-in","C-bet של 150%"],0,"בורד יבש וגבוה מעדיף את ה-range של הפותח. Bet קטן משיג את המטרה בזול."],
+ ["Postflop","עשית open מ-UTG וה-BB עשה call. Flop 9♥8♥6♠, ה-BB עושה check. מה עושים ברוב הידיים?",["C-bet של 33%","Check","All-in"],1,"הבורד הזה מתחבר ל-range של ה-BB (מחברים, זוגות קטנים). עושים יותר check, וכשעושים bet הוא גדול."],
+ ["Postflop","SPR של 2 ויש לך top pair. היריב עושה bet. מה בדרך כלל?",["All-in","Fold","Call ואז fold ב-turn"],0,"SPR נמוך = מעט מקום לתמרון. Top pair בדרך כלל מספיק כדי להכניס הכל."],
+ ["Postflop","מתי bluff ב-river הכי רווחי?",["מול calling station","עם blockers וסיפור הגיוני","אחרי הפסד גדול","בכל check של היריב"],1,"Blockers + סיפור עקבי מכל הרחובות + יריב שמסוגל לעשות fold."],
+ ["Postflop","יש לך flush draw ב-flop, in position. היריב עושה bet של חצי pot. מה עושים?",["Fold","Call","All-in"],1,"צריך 25% equity, ול-flush draw יש כ-35% עד ה-river. Call רווחי, ולפעמים גם raise."],
+ ["Postflop","ב-river יש לך second pair. יריב passive עושה bet של pot מלא בפעם הראשונה ביד. מה עושים?",["Call","Fold","Raise"],1,"שחקן passive שעושה bet גדול ב-river מחזיק לרוב יד חזקה. מול שחקנים כאלה עושים יותר fold."],
+ ["Postflop","למה c-bet קטן (33%) עובד טוב בבורד יבש?",["מפחיד את היריב","לחץ זול על כל ה-range שלו","היריב תמיד עושה fold","אין בו סיכון"],1,"בבורד יבש ליריב יש הרבה ידיים שמחטיאות. Bet קטן מרוויח את ה-pot לעתים קרובות ועולה מעט כשהוא נכשל."],
+ ["Postflop","עשית open מ-UTG עם AA ושלושה שחקנים עשו call. Flop J♠T♠9♦, כולם עושים check אליך. מה עושים?",["All-in","Bet קטן","Bet של pot מלא"],1,"בבורד מחובר מול כמה שחקנים, AA הרבה פעמים כבר מאחור או מול הרבה draws. Bet קטן או check שומרים את ה-pot קטן, ונזהרים מ-raise."],
+ ["החטאת flop","עשית raise מ-CO עם AK וה-BB עשה call. Flop 8♠5♦2♣, ה-BB עושה check. מה עושים?",["Check","C-bet של 33%","All-in"],1,"בורד יבש ונמוך עדיף ל-range של הפותח. C-bet קטן מרוויח את ה-pot הרבה פעמים, ול-AK יש עדיין 6 outs ל-top pair."],
+ ["החטאת flop","עשית c-bet עם AQ בבורד J-8-3 והיריב עשה raise. אין לך draw. מה עושים?",["Fold","Raise","Call"],0,"Raise ל-c-bet בבורד הזה מגיע הרבה מ-Jx, set ו-draws. בלי draw ובלי זוג, fold הוא החישוב ולא הפחד."],
+ ["Exploit","יריב עושה call לכל bet עד ה-river. מה ההתאמה?",["יותר bluffs","Value bets גדולים, בלי bluffs","לשחק passive","להימנע ממנו"],1,"Calling station משלם על value ולא עושה fold ל-bluffs."],
+ ["Exploit","שולחן עם הרבה שחקנים passive. מה משנים preflop?",["מהדקים","יותר ידיים ובידוד","Limp","רק AA"],1,"מול שחקנים passive מרחיבים ומבודדים. מול aggressive מהדקים."],
+ ["Exploit","Nit עושה 3bet בפעם הראשונה בשעה. יש לך AQo. מה עושים?",["4bet","Call","Fold","All-in"],2,"ה-range של nit ב-3bet הוא בערך QQ+ ו-AK. AQo נשלט מאוד."],
+ ["מנטלי","הפסדת 3 buy-ins בסשן. מה עושים?",["מעלים סטייק","ממשיכים עוד שעה","קמים (stop-loss)","משחקים יותר ידיים"],2,"ה-stop-loss קיים בדיוק לרגע הזה. ההחלטות שלך עכשיו פחות טובות."],
  ["מנטלי","כמה buy-ins מומלץ להחזיק ב-bankroll לקאש?",["5","10","20–30","200"],2,"20–30 buy-ins מגנים מתנודתיות רגילה."]
 ];
 const TS=[
- ["יריב עושה bet גדול ב-river, ואז הידיים שלו רועדות כשהוא מניח אותן על השולחן.",["Bluff, הוא מפחד","יד חזקה, אדרנלין","אין מידע"],1,"רעידה אחרי bet היא בדרך כלל התרגשות מיד חזקה. שחקנים שעושים bluff נוטים לקפוא."],
- ["אחרי ה-bet שלו, היריב מסתכל עליך ישר בעיניים ומחייך.",["מנסה להפחיד: נוטה ל-bluff","בטוח: יד חזקה","תמיד אמין"],0,"\"חזק = חלש\": שחקן לא מנוסה משחק תפקיד של ביטחון כשהוא עושה bluff. בדוק מול הבסיס שלו."],
- ["ה-flop נפתח ויריב מעיף מבט מהיר לערימת הצ׳יפים שלו ואז מסיט את המבט.",["פגע בבורד","החטיא","משועמם"],0,"מבט אינסטינקטיבי לצ׳יפים = מתכנן לעשות bet. Tell אמין יחסית אצל מתחילים."],
- ["בורד עם שלושה קלפים מאותו צבע. היריב מסתכל שוב בקלפים שלו.",["יש לו flush מוכן","כנראה אין לו flush מוכן","יש לו set"],1,"מי שיש לו שני קלפים מהצבע בדרך כלל זוכר. בדיקה חוזרת = בודק אם יש לו קלף אחד מהצבע."],
- ["יריב עושה call מיד ל-c-bet שלך ב-flop 9♠8♠3♦, בלי לחשוב.",["מפלצת (set)","Draw או יד בינונית","אין לו כלום"],1,"Call מיידי לרוב אומר שההחלטה קלה: draw או זוג. עם set רוב השחקנים חושבים על raise."],
- ["השחקן הכי פטפטן בשולחן פתאום שותק ומפסיק לזוז אחרי all-in.",["נוטה ל-bluff","נוטה ליד חזקה","לא קשור"],0,"שינוי מהבסיס. שחקנים שעושים bluff נוטים לקפוא ולהקטין תנועה כדי לא להסגיר."],
- ["יריב מניח bet בעדינות ובשקט, בלי להסתכל עליך.",["נוטה לחוזק","נוטה ל-bluff","אין מידע"],0,"התנהגות חלשה ושקטה בכוונה היא לרוב חוזק (משחק תפקיד הפוך)."],
- ["יריב מבקש לראות כמה צ׳יפים יש לך לפני שהוא מחליט על call.",["שוקל call אמיתי: יד בינונית-חזקה","Bluff ודאי","Fold ודאי"],0,"מי שמתכוון לעשות fold בדרך כלל לא טורח לבדוק סכומים. בדיקה מעידה שהוא שוקל ברצינות."]
+ ["יריב עושה bet גדול ב-river, ואז הידיים שלו רועדות כשהוא מניח אותן על השולחן. מה זה מרמז?",["Bluff","יד חזקה","אין מידע"],1,"רעידה אחרי bet היא בדרך כלל אדרנלין מיד חזקה. שחקנים שעושים bluff נוטים לקפוא."],
+ ["אחרי ה-bet שלו, היריב מסתכל עליך ישר בעיניים ומחייך. מה זה מרמז?",["Bluff","יד חזקה","אין מידע"],0,"\"חזק = חלש\": שחקן לא מנוסה משחק תפקיד של ביטחון כשהוא עושה bluff. בדוק מול הבסיס שלו."],
+ ["ה-flop נפתח, ויריב מעיף מבט מהיר לערימת הצ׳יפים שלו ואז מסיט את המבט. מה זה מרמז?",["פגע","החטיא","אין מידע"],0,"מבט אינסטינקטיבי לצ׳יפים = מתכנן לעשות bet. Tell אמין יחסית אצל מתחילים."],
+ ["בבורד יש שלושה קלפים מאותו צבע. היריב מסתכל שוב בקלפים שלו. מה זה מרמז?",["Flush מוכן","אין flush מוכן","Set"],1,"מי שיש לו שני קלפים מהצבע בדרך כלל זוכר. בדיקה חוזרת = בודק אם יש לו קלף אחד מהצבע."],
+ ["יריב עושה call מיד ל-c-bet שלך ב-flop 9♠8♠3♦, בלי לחשוב. מה סביר שיש לו?",["Set","Draw או יד בינונית","כלום"],1,"Call מיידי לרוב אומר שההחלטה קלה: draw או זוג. עם set רוב השחקנים חושבים על raise."],
+ ["השחקן הכי פטפטן בשולחן פתאום שותק ומפסיק לזוז אחרי all-in. מה זה מרמז?",["Bluff","יד חזקה","אין מידע"],0,"שינוי מהבסיס. שחקנים שעושים bluff נוטים לקפוא ולהקטין תנועה כדי לא להסגיר."],
+ ["יריב מניח bet בעדינות ובשקט, בלי להסתכל עליך. מה זה מרמז?",["יד חזקה","Bluff","אין מידע"],0,"התנהגות חלשה ושקטה בכוונה היא לרוב חוזק (משחק תפקיד הפוך)."],
+ ["יריב מבקש לראות כמה צ׳יפים יש לך לפני שהוא מחליט. מה הוא כנראה יעשה?",["Call","Fold","Raise כ-bluff"],0,"מי שמתכוון לעשות fold בדרך כלל לא טורח לבדוק סכומים. בדיקה מעידה שהוא שוקל call ברצינות."]
 ];
 const DRAWS=[["Flush draw",9,"9 קלפים מהצבע שנשארו"],["Open-ended straight draw",8,"4 קלפים בכל קצה"],["Gutshot",4,"4 קלפים שמשלימים את האמצע"],["Flush draw + open-ended",15,"9 ל-flush + 6 ל-straight שלא כפולים"],["Flush draw + gutshot",12,"9 ל-flush + 3 ל-straight"],["שני overcards (ל-top pair)",6,"3 מכל אחד"],["זוג ל-set",2,"2 קלפים שנשארו"],["Two pair ל-full house",4,"2 לכל זוג"]];
 
@@ -601,7 +603,7 @@ function mountPF(root,{spot,hand,feedback,onDone,onAsk,record}){
   const acts=actionsFor(spot),t=spotText(spot),code=codeAt(spot,hand),t0=performance.now();let done=false;
   root.innerHTML=`<div class="stage"><div class="st-title">${bidi(t.title)}</div><p class="st-desc">${bidi(t.desc)}</p><div class="cards" role="img" aria-label="היד שלך: ${hand}">${dealCards(hand)}</div><p class="fb" hidden></p></div>
   <div class="actbar">${acts.map(a=>`<button class="act act-${a.k}" data-k="${a.k}">${bidi(a.l)}</button>`).join("")}</div>
-  <div class="after" hidden><div class="row" style="justify-content:center"><button class="btn primary" data-x="next">הבא ←</button><button class="btn" data-x="why">למה?</button><button class="btn" data-x="grid">הצג טבלה</button>${onAsk?'<button class="btn ghost" data-x="ask">שאל את המאמן</button>':""}</div><div class="why" hidden></div><div class="gridwrap" hidden></div><div class="legend" hidden></div></div>`;
+  <div class="after" hidden><div class="row" style="justify-content:center"><button class="btn primary" data-x="next">הבא ←</button><button class="btn" data-x="grid">הצג טבלה</button>${onAsk?'<button class="btn ghost" data-x="ask">שאל את המאמן</button>':""}</div><div class="why"></div><div class="gridwrap" hidden></div><div class="legend" hidden></div></div>`;
   const stage=root.querySelector(".stage"),bar=root.querySelector(".actbar"),after=root.querySelector(".after");
   const go=res=>{if(activePF===me)activePF=null;onDone(res)};
   const answer=k=>{
@@ -613,13 +615,14 @@ function mountPF(root,{spot,hand,feedback,onDone,onAsk,record}){
     fb.innerHTML=(ok?"נכון · ":"טעות · התשובה: ")+bidi(codeLabel(spot,code));
     bar.hidden=true;after.hidden=false;after.querySelector('[data-x="next"]').focus({preventScroll:true});
     after.querySelector(".why").innerHTML=bidi(explain(spot,hand,code));
+    const lbl=x=>(acts.find(a=>a.k===x)||{}).l||x;
+    followUp(after,ok,`מצב: ${t.title}. ${t.desc}\nהיד שלי: ${hand}\nאפשרויות: ${acts.map(a=>a.l).join(" | ")}\nבחרתי: ${lbl(k)}\nהתשובה לפי הטבלה (PokerCoaching 9-max, 100bb): ${codeLabel(spot,code)}\nהסבר: ${explain(spot,hand,code)}`);
     me.next=()=>go(res);
   };
   const me={answer,next:()=>{}};activePF=me;
   bar.onclick=e=>{const b=e.target.closest("[data-k]");if(b)answer(b.dataset.k)};
   after.onclick=e=>{const x=e.target.closest("[data-x]");if(!x)return;const a=x.dataset.x;
     if(a==="next")me.next();
-    if(a==="why"){const w=after.querySelector(".why");w.hidden=!w.hidden}
     if(a==="grid"){const gw=after.querySelector(".gridwrap"),lg=after.querySelector(".legend");gw.hidden=!gw.hidden;lg.hidden=gw.hidden;if(!gw.hidden){renderGrid(gw,spot,hand);lg.innerHTML=legendHTML(spot)}}
     if(a==="ask"&&onAsk)onAsk(spot,hand,code)};
   stage.onclick=()=>{if(done)me.next()};
@@ -630,8 +633,33 @@ function mountMCQ(root,{q,opts,ans,explain:ex,feedback,onDone,label}){
   root.querySelector(".opts").onclick=e=>{const b=e.target.closest(".opt");if(!b||done)return;done=true;const i=+b.dataset.i,ok=i===ans,ms=performance.now()-t0;
     if(!feedback)return onDone({ok,ms});
     b.classList.add(ok?"right":"wrong");root.querySelectorAll(".opt")[ans].classList.add("right");
-    const e2=root.querySelector(".explain");e2.innerHTML=ex?bidi(ex):"";e2.hidden=!ex;const r=root.querySelector(".row");r.hidden=false;
+    const e2=root.querySelector(".explain");e2.innerHTML=`<p><b>${ok?"צדקת.":"טעית."}</b> התשובה הנכונה: ${bidi(opts[ans])}</p>`+(ex?`<p>${bidi(ex)}</p>`:"");e2.hidden=false;const r=root.querySelector(".row");r.hidden=false;
+    followUp(root,ok,`שאלה: ${q}\nאפשרויות: ${opts.join(" | ")}\nבחרתי: ${opts[i]}\nהתשובה הנכונה: ${opts[ans]}\nהסבר: ${ex||""}`,r);
     const nx=r.querySelector("button");nx.focus({preventScroll:true});nx.onclick=()=>onDone({ok,ms})};
+}
+/* Free-text follow-up after any answer: the player explains the decision, the coach explains what was right or wrong and how to fix it. */
+function followUp(host,ok,ctx,before){
+  if(!sample)return;
+  const box=document.createElement("div");box.className="follow";
+  box.innerHTML=`<label class="fld"><span>${ok?"רוצה לבדוק שצדקת מהסיבה הנכונה? כתוב למאמן למה בחרת ככה.":"למה בחרת ככה? כתוב למאמן את החשיבה שלך, והוא יסביר איפה הטעות ואיך לתקן."}</span><textarea rows="3" placeholder="למשל: חשבתי שה-range שלו חזק, ולכן…"></textarea></label><div class="row"><button class="btn" data-f="send">שלח למאמן</button><button class="btn ghost" data-f="chat" hidden>המשך בשיחה עם המאמן</button></div><div class="explain reply" hidden aria-live="polite"></div>`;
+  before?host.insertBefore(box,before):host.appendChild(box);
+  const ta=box.querySelector("textarea"),send=box.querySelector('[data-f="send"]'),more=box.querySelector('[data-f="chat"]'),out=box.querySelector(".reply");let reason="",answer="";
+  send.onclick=async e=>{e.stopPropagation();reason=ta.value.trim();if(!reason){ta.focus();return}if(!sample)return;
+    send.disabled=true;out.hidden=false;out.textContent="המאמן קורא…";
+    const prompt=`אתה מאמן פוקר. השחקן ענה על שאלת תרגול ${ok?"נכון":"לא נכון"} והסביר את החשיבה שלו.
+${ctx}
+ההסבר של השחקן: "${reason.slice(0,2000)}"
+ענה בעברית, קצר וברור. מונחי משחק באנגלית באותיות לטיניות (call, check, raise, fold, bet, c-bet, 3bet, flop, range, position, equity, pot odds). מבנה:
+1. מה נכון ומה לא נכון בחשיבה שלו (משפט או שניים).
+2. למה התשובה הנכונה עדיפה, עם מספר אם רלוונטי (pot odds, equity, combos, range).
+3. כלל אחד לפעם הבאה שיוביל לפעולה הנכונה.
+אם השחקן צדק, חזק את החשיבה והוסף ניואנס אחד.
+פרופיל השחקן: ${profileText()}`;
+    try{const {text}=await sample(prompt,{onText:({text})=>{out.innerHTML=bidi(text)}});answer=text;out.innerHTML=bidi(text);more.hidden=false}
+    catch(err){out.innerHTML=bidi((err.text?err.text+"\n":"")+errCopy(err.code));if(["not_granted","sampling_disabled"].includes(err.code)){disableAI();box.remove()}}
+    finally{send.disabled=false}};
+  more.onclick=e=>{e.stopPropagation();turns.push({role:"user",content:`${ctx}\nלמה בחרתי ככה: ${reason}`.slice(0,4000)},{role:"assistant",content:answer});store.set("chat",turns.slice(-30));show("coach")};
+  box.addEventListener("click",e=>e.stopPropagation());
 }
 function genPotOdds(){
   const pot=rnd([20,30,40,50,60,80,100,120,150,200]),bet=Math.round(pot*rnd([.25,.33,.5,.66,.75,1])),need=Math.round(bet/(pot+2*bet)*100);
@@ -970,7 +998,7 @@ $("#t-list").onclick=e=>{const b=e.target.closest("[data-i]");if(!b)return;const
 let deck=null;
 function openDeck(title,cards,backTo,onEnd){deck={cards,i:0,backTo,onEnd};$("#k-title").innerHTML=bidi(title);$("#k-end").hidden=true;$("#k-end").innerHTML="";show("deck");drawDeck()}
 function drawDeck(){
-  const {cards,i}=deck;const el=$("#k-card");el.innerHTML=bidi(cards[i]);el.style.animation="none";void el.offsetWidth;el.style.animation="";
+  const {cards,i}=deck;const el=$("#k-card");el.innerHTML="<p>"+bidi(cards[i])+"</p>";el.style.animation="none";void el.offsetWidth;el.style.animation="";
   $("#k-dots").innerHTML=cards.map((_,j)=>`<i class="${j===i?"on":""}"></i>`).join("");
   $("#k-count").textContent=(i+1)+"/"+cards.length;$("#k-prev").disabled=i===0;$("#k-next").textContent=i===cards.length-1?"לתרגול ←":"הבא";
 }
@@ -982,7 +1010,7 @@ function theoryEnd(end,t){
   const pool=QUIZ.filter(q=>q[0]===t.q);
   const ask=()=>{end.innerHTML="";const box=document.createElement("div");box.className="view";end.appendChild(box);
     mountMCQ(box,Object.assign(quizItem(rnd(pool)),{label:"שאלה על הנושא",feedback:true,onDone:r=>{qs.n++;if(r.ok)qs.ok++;store.set("qscore",qs);
-      box.querySelector(".row").innerHTML=`<button class="btn" data-a="more">שאלה נוספת</button><button class="btn primary" data-a="back">לנושאים</button>`;
+      box.querySelector(":scope > .row").innerHTML=`<button class="btn" data-a="more">שאלה נוספת</button><button class="btn primary" data-a="back">לנושאים</button>`;
       box.querySelector('[data-a="more"]').onclick=ask;box.querySelector('[data-a="back"]').onclick=()=>show("topics")}}))};
   ask();
 }
@@ -1016,7 +1044,7 @@ function tellsEnd(end){
 אם יש תמונה שלי, נתח את ה-tells שאני מסגיר ואיך לתקן.
 פרופיל השחקן: ${profileText()}
 התיאור: ${$("#tell-in").value.slice(0,3000)}`;
-    try{const {text}=await sample(p,{images:file||undefined,onText:({text})=>{out.textContent=text}});out.textContent=text}
+    try{const {text}=await sample(p,{images:file||undefined,onText:({text})=>{out.innerHTML=bidi(text)}});out.innerHTML=bidi(text)}
     catch(e){out.textContent=(e.text?e.text+"\n":"")+errCopy(e.code);if(["not_granted","sampling_disabled"].includes(e.code))disableAI()}
     finally{$("#tell-go").disabled=!sample}};
 }
@@ -1137,7 +1165,7 @@ function syncPatternTasks(){
 function patternsText(withKeys){const v=Object.entries(patterns);return v.length?v.map(([k,p])=>(withKeys?k+": ":"")+p.title+" ×"+p.count+" ("+(p.type==="mental"?"מנטלי":"טכני")+")").join("; "):"אין"}
 async function practiceEntry(e){
   const ps=$("#e-pstatus"),btn=$("#e-practice");btn.disabled=true;ps.textContent="המאמן מכין 3 שאלות… (עד דקה)";
-  const prompt=`אתה מאמן פוקר. על סמך המשחק שהשחקן תיאר והניתוח שלו, צור 3 שאלות אמריקאיות שמתרגלות בדיוק את המצב והדפוס שזוהו. כל שאלה: מצב משחק קונקרטי (עמדה, יד, בורד, פעולה של היריב), 3–4 אפשרויות, תשובה נכונה אחת, הסבר של משפט או שניים. עברית, מונחי משחק באנגלית (call, check, raise, fold, bet, c-bet, flop, turn, river, equity, pot odds).
+  const prompt=`אתה מאמן פוקר. על סמך המשחק שהשחקן תיאר והניתוח שלו, צור 3 שאלות אמריקאיות שמתרגלות בדיוק את המצב והדפוס שזוהו. כל שאלה: מצב משחק קונקרטי (עמדה, יד, בורד, פעולה של היריב), 3–4 אפשרויות, תשובה נכונה אחת, הסבר של משפט או שניים. האפשרויות הן הפעולה בלבד, 1–4 מילים, בלי נימוק (למשל: Call, Fold, Check, All-in, Raise ל-9bb, C-bet של 33%). הנימוק נכתב רק ב-explain. עברית, מונחי משחק באנגלית (call, check, raise, fold, bet, c-bet, flop, turn, river, equity, pot odds).
 מה קרה: ${e.text.slice(0,2500)}
 ניתוח: ${e.analysis.summary}. דפוסים: ${e.analysis.patterns.map(p=>p.title).join(", ")}
 החזר JSON בלבד: {"questions":[{"q":"...","opts":["...","...","..."],"ans":0,"explain":"..."}]}`;
@@ -1159,8 +1187,8 @@ $("#c-journal").onclick=()=>show("journal");
 function renderProfile(){
   const p=hasProfile()?profile:{};
   $("#p-fields").innerHTML=`<h2>המשחק שלך</h2>`+PQ.map(q=>q.type==="stakes"
-    ?`<label class="fld" for="pf-stakes">${bidi(q.q)}</label><div class="row" style="flex-wrap:nowrap"><input type="text" id="pf-stakes" value="${esc(p.stakes||"")}"><select id="pf-currency" style="width:90px" aria-label="מטבע">${["₪","$","€"].map(c=>`<option ${p.currency===c?"selected":""}>${c}</option>`).join("")}</select></div>`
-    :`<label class="fld" for="pf-${q.k}">${bidi(q.q)}</label><select id="pf-${q.k}"><option value="">—</option>${q.o.map(([v,l])=>`<option value="${v}" ${p[q.k]===v?"selected":""}>${esc(l)}</option>`).join("")}</select>`).join("")+`<p class="small muted">שינוי נשמר מיד. כדי שהתכנית תתעדכן: "בנה תכנית מחדש".</p>`;
+    ?`<label class="fld" for="pf-stakes"><span>${bidi(q.q)}</span></label><div class="row" style="flex-wrap:nowrap"><input type="text" id="pf-stakes" value="${esc(p.stakes||"")}"><select id="pf-currency" style="width:90px" aria-label="מטבע">${["₪","$","€"].map(c=>`<option ${p.currency===c?"selected":""}>${c}</option>`).join("")}</select></div>`
+    :`<label class="fld" for="pf-${q.k}"><span>${bidi(q.q)}</span></label><select id="pf-${q.k}"><option value="">—</option>${q.o.map(([v,l])=>`<option value="${v}" ${p[q.k]===v?"selected":""}>${esc(l)}</option>`).join("")}</select>`).join("")+`<p class="small muted">שינוי נשמר מיד. כדי שהתכנית תתעדכן: "בנה תכנית מחדש".</p>`;
   $("#p-fields").onchange=()=>{const np=Object.assign({},p);PQ.forEach(q=>{if(q.type==="stakes"){np.stakes=$("#pf-stakes").value.trim().slice(0,40);np.currency=$("#pf-currency").value}else{const v=$("#pf-"+q.k).value;if(v)np[q.k]=v;else delete np[q.k]}});np.skipped=false;np.updatedAt=Date.now();profile=np;store.set("profile",profile)};
   const h=assessments.slice().reverse();
   $("#p-history").innerHTML=`<h2>היסטוריית אבחונים</h2>`+(h.length?h.slice(0,5).map((a,i)=>`<div class="plan-week"><div class="row between"><b>${new Date(a.date).toLocaleDateString("he-IL")} · ${LEVEL_HE[a.level]}</b><span class="mono small">${Math.round(a.overall*100)}%</span></div>${scoresHTML(a,h[i+1])}</div>`).join(""):`<p class="muted">עוד לא עשית אבחון.</p>`);
@@ -1199,7 +1227,7 @@ ${rangesText()}
 דפוסים מהיומן: ${patternsText()}
 ניתוח אחרון ביומן: ${last?last.analysis.summary:"אין"}`}
 const chat=$("#chat");
-function addMsg(role,text){const d=document.createElement("div");d.className="msg "+role;d.textContent=text;chat.appendChild(d);return d}
+function addMsg(role,text){const d=document.createElement("div");d.className="msg "+role;d.innerHTML=bidi(text);chat.appendChild(d);return d}
 function renderChat(){chat.innerHTML="";if(!turns.length)addMsg("sys","בחר אחת מהאפשרויות למעלה, או כתוב שאלה. למשל: \"היה לי AQo ב-UTG+1, שלושה עשו call, ב-flop Q-8-3…\"");turns.forEach(t=>addMsg(t.role==="user"?"me":"coach",t.content))}
 function errCopy(c){return ({not_granted:"המאמן לא אושר בדף הזה. אפשר לאשר מתפריט ההרשאות של הדף.",rate_limited:"יותר מדי בקשות. נסה שוב בעוד דקה.",session_expired:"צריך להתחבר מחדש ל-Claude.",refused:"המאמן לא ענה על זה. נסח אחרת.",sampling_disabled:"Claude לא זמין בחשבון הזה."})[c]||"התקשורת נכשלה. נסה שוב."}
 async function send(text){
@@ -1208,8 +1236,8 @@ async function send(text){
   turns.push({role:"user",content:text.slice(0,4000)});addMsg("me",text);$("#chat-in").value="";
   const bubble=addMsg("coach","חושב…");bubble.scrollIntoView({block:"end"});ctl=new AbortController();$("#chat-stop").hidden=false;$("#chat-send").disabled=true;
   const recent=turns.slice(-16);while(recent.length&&recent[0].role!=="user")recent.shift();
-  try{const {text:ans}=await sample([{role:"user",content:rules()},...recent],{cache:false,signal:ctl.signal,onText:({text})=>{bubble.textContent=text}});turns.push({role:"assistant",content:ans})}
-  catch(e){if(e.text){bubble.textContent=e.text;turns.push({role:"assistant",content:e.text})}else bubble.remove();if(e.code!=="cancelled")addMsg("sys",errCopy(e.code));if(["not_granted","sampling_disabled"].includes(e.code))disableAI()}
+  try{const {text:ans}=await sample([{role:"user",content:rules()},...recent],{cache:false,signal:ctl.signal,onText:({text})=>{bubble.innerHTML=bidi(text)}});turns.push({role:"assistant",content:ans})}
+  catch(e){if(e.text){bubble.innerHTML=bidi(e.text);turns.push({role:"assistant",content:e.text})}else bubble.remove();if(e.code!=="cancelled")addMsg("sys",errCopy(e.code));if(["not_granted","sampling_disabled"].includes(e.code))disableAI()}
   finally{ctl=null;$("#chat-stop").hidden=true;$("#chat-send").disabled=!sample;store.set("chat",turns.slice(-30))}
 }
 function disableAI(){sample=null;$("#chat-send").disabled=true;$("#chips").hidden=true;$("#coach-status").textContent="המאמן AI לא זמין בתצוגה הזו. כל שאר האפליקציה עובדת כרגיל.";$("#p-ai").hidden=true;$("#j-save-analyze").hidden=true;const t=$("#tell-go");if(t)t.disabled=true;const pa=$("#pp-ai");if(pa)pa.hidden=true}
