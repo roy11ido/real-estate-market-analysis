@@ -139,7 +139,13 @@ body.focus nav.tabbar{display:none}
 .act-R{background:var(--r-val);color:var(--r-val-fg)} .act-C{background:var(--r-call);color:var(--r-call-fg)} .act-F{background:var(--surface);color:var(--fg);box-shadow:var(--shadow-sm)}
 .after{display:grid;gap:16px}
 .follow{display:grid;gap:12px}
-.reply{white-space:pre-wrap}
+.reply p,.msg.coach p,#tell-out p{margin:0 0 8px}
+.reply p:last-child,.msg.coach p:last-child{margin-bottom:0}
+.md-h{font-weight:700}
+.md-li{position:relative;padding-inline-start:18px}
+.md-li::before{content:"•";position:absolute;inset-inline-start:2px;color:var(--muted)}
+.md-n::before{content:attr(data-n);font-variant-numeric:tabular-nums}
+.eq{display:inline-block;max-width:100%;font-variant-numeric:tabular-nums;font-weight:600}
 .why{background:var(--surface);border-radius:22px;padding:20px;font-size:.98rem;box-shadow:var(--shadow-sm);color:var(--fg-2)}
 .gridwrap{position:relative;min-width:0;background:var(--surface);border-radius:24px;padding:14px;box-shadow:var(--shadow-sm)}
 .rgrid{display:grid;grid-template-columns:repeat(13,1fr);gap:3px;direction:ltr;font:600 clamp(.46rem,2.1vw,.7rem)/1 var(--mono);width:100%}
@@ -387,9 +393,18 @@ const rnd=a=>a[Math.floor(Math.random()*a.length)];
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]);
 /* Wrap every run of Latin words / numbers in <bdi> so English poker terms keep their order inside Hebrew (RTL) text. */
-const LAT=/[A-Za-z0-9♠♥♦♣][A-Za-z0-9♠♥♦♣+\-\/'%–.]*(?: [A-Za-z0-9♠♥♦♣(][A-Za-z0-9♠♥♦♣+\-\/'%–.()]*)*/g;
-const bidi=s=>esc(s).replace(LAT,m=>{const t=m.match(/[.]+$/);const core=t?m.slice(0,-t[0].length):m;return "<bdi>"+core+"</bdi>"+(t?t[0]:"")});
-const fmt=n=>String(Math.round(n*100)/100);
+const LAT=/[A-Za-z0-9♠♥♦♣](?:[A-Za-z0-9♠♥♦♣+\-\/'%–]|\.(?=[0-9]))*(?: [A-Za-z0-9♠♥♦♣](?:[A-Za-z0-9♠♥♦♣+\-\/'%–]|\.(?=[0-9]))*)*/g;
+/* [[...]] marks a formula: shown as one left-to-right block so the math reads in order. */
+const bidi=s=>String(s).split(/\[\[(.+?)\]\]/).map((part,i)=>i%2?`<bdi dir="ltr" class="eq">${esc(part)}</bdi>`:esc(part).replace(LAT,m=>"<bdi>"+m+"</bdi>")).join("");
+/* Light markdown for coach replies: **bold**, "- " bullets, "1." numbered lines, "#" headings. */
+const mdInline=t=>bidi(t).replace(/\*\*(.+?)\*\*/g,"<b>$1</b>").replace(/\*\*/g,"");
+function md(text){return String(text).split("\n").map(line=>{const t=line.trim();let m;
+  if(!t)return "";
+  if(m=t.match(/^#{1,4}\s+(.*)/))return `<p class="md-h">${mdInline(m[1])}</p>`;
+  if(m=t.match(/^[-•*]\s+(.*)/))return `<p class="md-li">${mdInline(m[1])}</p>`;
+  if(m=t.match(/^(\d+)[.)]\s+(.*)/))return `<p class="md-li md-n" data-n="${m[1]}.">${mdInline(m[2])}</p>`;
+  return `<p>${mdInline(t)}</p>`}).join("")}
+const fmt=n=>String(Math.round(n*10)/10);
 const todayKey=(d=new Date())=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
 
 /* ===== DATA: PokerCoaching charts (from charts-pokercoaching.json) ===== */
@@ -453,7 +468,7 @@ function category(h){
 }
 function chartPct(cid){const m=CHARTS[cid].map,t={};for(const h of ALL){const c=m[h];if(c!=="F")t[c]=(t[c]||0)+combos(h)}return t}
 function explain(s,h,code){
-  const t=h+" = "+category(h)+". ",v=s.vill;
+  const t="היד שלך, "+h+", היא "+category(h)+". ",v=s.vill;
   if(s.kind==="rfi"){
     const p=chartPct(s.cid),open=((p.R||0)+(p.B||0)+(p.C||0))/1326*100;
     if(code==="R"&&s.hero!=="SB")return t+"ב-range ה-open מ-"+s.hero+" ("+open.toFixed(1)+"% מהידיים).";
@@ -475,17 +490,29 @@ const THEORY=[
  {t:"Position",q:"Position",c:["מי שפועל אחרון ב-flop, ב-turn וב-river רואה מה כולם עשו לפני שהוא מחליט. זה היתרון הכי גדול במשחק.","סדר העמדות: UTG, UTG+1, UTG+2, LJ, HJ, CO, BTN, SB, BB.","ככל שיש פחות שחקנים אחריך, ה-range רחב יותר: מ-UTG עושים open עם כ-10% מהידיים, מה-BTN עם כ-51%.","ה-blinds משחקים out of position בכל רחוב אחרי ה-flop."]},
  {t:"קבוצות ידיים",q:"Preflop",c:["זוגות חזקים (AA–QQ), בינוניים (JJ–88), נמוכים (77–22).","אסים suited, ברודווי suited ומחברים suited: פוטנציאל ל-flush ול-straight.","זוגות נמוכים משחקים בשביל set (בערך 12% ב-flop). צריך stacks עמוקים.","ידיים suited ומחברים מרוויחים מ-implied odds, אבל גם מפסידים ל-flush או straight גבוהים יותר.","ברודווי offsuit מסוכן כשהוא נשלט: KJ מול KQ או AK."]},
  {t:"GTO מול exploit",q:"Exploit",c:["GTO: אסטרטגיה מאוזנת שאי אפשר לנצל.","Exploit: סטייה מ-GTO כדי להרוויח מהטעויות של יריב מסוים.","בסיס: הטבלאות. התאמה: לפי היריבים בשולחן.","בסטייקים נמוכים מרוויחים יותר מ-exploit: פחות bluffs מול שחקנים שעושים call להכל, יותר value bets דקים.","שולחן passive: לשחק יותר ידיים ולבודד. שולחן aggressive: להדק."]},
- {t:"3bet ו-4bet",q:"Preflop",c:["3bet הוא ה-raise השני preflop. ה-range בנוי מידיים ל-value ומ-bluffs עם blockers.","A5s ו-A4s הם bluffs טובים: blockers ל-AA ול-AK, ואפשרות ל-straight 5-A.","בטבלאות: שחור = value, כחול = bluff. שניהם נחשבים raise.","גודל 3bet: פי 3 מה-open in position, פי 3.5 out of position.","גודל 4bet: פי 2.5 מה-3bet in position, פי 2.75 out of position."]},
+ {t:"3bet ו-4bet",q:"Preflop",c:["3bet הוא ה-raise השני preflop. ה-range בנוי מידיים ל-value ומ-bluffs עם blockers.","A5s ו-A4s הם bluffs טובים: blockers ל-AA ול-AK, ואפשרות ל-straight 5-A.","בטבלאות, משבצת שחורה היא value ומשבצת כחולה היא bluff. שתיהן נחשבות raise.","גודל 3bet: פי 3 מה-open in position, פי 3.5 out of position.","גודל 4bet: פי 2.5 מה-3bet in position, פי 2.75 out of position."]},
  {t:"הגנת ה-BB",q:"Preflop",c:["ב-BB כבר שמת 1bb. מול open ל-2.5bb אתה משלם 1.5bb כדי לזכות ב-pot של 5.5bb.","לכן מספיק כ-27% equity כדי לעשות call.","מול BTN ו-SB מגינים רחב מאוד. מול UTG מגינים צר, כי ה-range שלו חזק."]},
- {t:"Pot odds ו-equity",q:"מתמטיקה",c:["Pot odds: היחס בין הסכום שצריך לשלם ל-pot הסופי.","Equity: אחוז הפעמים שהיד שלך תנצח.","אם ה-equity גבוה מהאחוז הנדרש, ה-call רווחי לאורך זמן.","Bet של חצי pot: צריך 25%. שני שליש: 28.5%. Pot מלא: 33%."]},
- {t:"Implied odds ו-SPR",q:"Postflop",c:["Implied odds: הכסף שתרוויח ברחובות הבאים אם תשלים את היד.","SPR = stack אפקטיבי ÷ pot ב-flop.","SPR נמוך (מתחת ל-4): top pair בדרך כלל מספיק ל-all-in.","SPR גבוה (מעל 10): צריך ידיים חזקות יותר ל-pot ענק.","Call עם זוג קטן בשביל set: כשה-stacks לפחות פי 15–20 מה-call."]},
+ {t:"Pot odds ו-equity",q:"מתמטיקה",c:["Pot odds: היחס בין הסכום שצריך לשלם ל-pot הסופי.","Equity: אחוז הפעמים שהיד שלך תנצח.","אם ה-equity גבוה מהאחוז הנדרש, ה-call רווחי לאורך זמן.","כמה equity צריך: מול bet של חצי pot צריך 25%. מול שני שליש pot צריך 28.5%. מול pot מלא צריך 33%."]},
+ {t:"Implied odds ו-SPR",q:"Postflop",c:["Implied odds: הכסף שתרוויח ברחובות הבאים אם תשלים את היד.","SPR הוא ה-stack האפקטיבי חלקי ה-pot ב-flop. דוגמה: stack של 100bb ו-pot של 20bb: [[SPR = 100 ÷ 20 = 5]]","SPR נמוך (מתחת ל-4): top pair בדרך כלל מספיק ל-all-in.","SPR גבוה (מעל 10): צריך ידיים חזקות יותר ל-pot ענק.","Call עם זוג קטן בשביל set: כשה-stacks לפחות פי 15–20 מה-call."]},
  {t:"C-bet ומרקם בורד",q:"Postflop",c:["Continuation bet: מי שעשה raise אחרון preflop ממשיך לעשות bet ב-flop.","בורד יבש וגבוה (K-7-2 בצבעים שונים) טוב לפותח: c-bet קטן (25–33%) בתדירות גבוהה.","בורד רטוב ומחובר (9-8-6 עם שני קלפים מאותו צבע) טוב למגן: פחות c-bet, ובגודל גדול יותר.","מול כמה יריבים: מורידים את התדירות."]},
  {t:"החטאת את ה-flop עם יד חזקה",q:"החטאת flop",c:["עשית raise preflop עם AK, וה-flop הגיע 9-6-2. החטאת. זה קורה בערך 2 מכל 3 פעמים.","ל-AK בלי זוג עדיין יש בערך 25–30% equity מול זוג נמוך: 6 outs ל-top pair ועוד backdoor draws.","ל-range שלך כפותח יש יותר ידיים חזקות מאשר ליריב (AA, KK, QQ). בבורד יבש היתרון אצלך.","בבורד יבש: c-bet קטן (25–33% pot) עם רוב ה-range, גם כשהחטאת. היריב מחטיא רוב הזמן.","בבורד רטוב או מול כמה יריבים: יותר check. מותר לוותר על ה-pot.","מתי לוותר: היריב עשה raise ל-c-bet בבורד רטוב, ואין לך draw או overcards טובים.","בדיקת פחד: לפני fold, תגיד את המספר. כמה equity יש לך וכמה צריך? אם אתה לא יודע, ה-fold הוא מפחד ולא מחישוב.","מול LAG: פחות c-bet כ-bluff ויותר check-call. מול nit: יותר c-bet, הוא עושה fold לכל מה שלא פגע."]},
  {t:"Value מול bluff",q:"Postflop",c:["עושים bet ל-value כשידיים חלשות משלך יעשו call.","עושים bluff כשידיים חזקות משלך יעשו fold.","ב-river, bet של pot מלא מאוזן עם בערך 2 value על כל bluff.","Bluff טוב: blockers לידיים החזקות של היריב, וסיפור הגיוני מכל הרחובות.","מול שחקן שלא עושה fold: כמעט בלי bluffs."]},
  {t:"סוגי שחקנים",q:"Exploit",c:["Nit: משחק מעט ורק חזק. עושים fold מול האגרסיה שלו וגונבים לו blinds.","TAG (tight aggressive): השחקן הטוב הנפוץ.","LAG (loose aggressive): הרבה ידיים והרבה אגרסיה. נותנים לו לעשות bluff ומגינים רחב יותר.","Calling station: עושה call להכל. Value bets גדולים, אפס bluffs.","Maniac: עושה raise להכל. מהדקים ונותנים לו לעשות bet לתוכנו."]},
  {t:"Bankroll ו-tilt",q:"מנטלי",c:["קאש: לפחות 20–30 buy-ins לרמה. טורנירים: 50–100.","Stop-loss: 3 buy-ins לסשן, ואז קמים.","סימני tilt: משחק יותר ידיים אחרי הפסד, call \"רק כדי לראות\", רצון להחזיר מהר.","לפני סשן: 5 דקות תרגול preflop ומטרה אחת לסשן."]}
 ];
-const MATH_CARDS=["Pot odds: כמה אחוז מה-pot הסופי אתה משלם כדי לעשות call.","נוסחה: call ÷ (pot + bet + call).","Bet של חצי pot = 25%. שני שליש = 28.5%. Pot מלא = 33%.","Outs: הקלפים שמשלימים לך את היד.","חוק 2/4: ב-flop (שני קלפים לבוא) outs × 4. ב-turn outs × 2. מעל 8 outs מורידים מעט.","Flush draw = 9 outs. Open-ended straight draw = 8. Gutshot = 4.","אם ה-equity שלך גבוה מה-pot odds, ה-call רווחי לאורך זמן."];
+const MATH_CARDS=[
+ "Pot odds אומרים כמה אחוז מה-pot הסופי אתה משלם כשאתה עושה call. את המספר הזה משווים ל-equity, הסיכוי שלך לנצח.",
+ "הנוסחה: [[call ÷ (pot + bet + call)]]. ה-pot הוא מה שהיה לפני ה-bet של היריב. ה-bet הוא מה שהיריב שם. ה-call הוא מה שאתה צריך לשלם.",
+ "דוגמה: אחרי ה-flop יש ב-pot 10bb. היריב עושה bet של 3bb. כדי לעשות call אתה צריך לשים 3bb.",
+ "החישוב: ה-pot הסופי יהיה [[10 + 3 + 3 = 16bb]]. אתה משלם 3 מתוך 16: [[3 ÷ 16 ≈ 19%]].",
+ "המסקנה: אם יש לך יותר מ-19% equity, ה-call רווחי לאורך זמן. אם פחות, fold.",
+ "עוד דוגמה: pot של 20bb, והיריב עושה bet של 10bb (חצי pot). [[10 ÷ (20 + 10 + 10) = 10 ÷ 40 = 25%]]. מול bet של pot מלא צריך 33%.",
+ "Outs הם הקלפים שישלימו לך את היד. דוגמה: יש לך שני קלפי לב, וב-flop יש עוד שניים. בחפיסה נשארו 9 קלפי לב, כלומר 9 outs.",
+ "ספירת outs נפוצה: ל-flush draw יש 9 outs. ל-open-ended straight draw יש 8. ל-gutshot יש 4.",
+ "חוק 2/4: ב-flop, כשעוד שני קלפים יבואו, מכפילים את ה-outs ב-4. ב-turn, כשנשאר קלף אחד, מכפילים ב-2.",
+ "דוגמה: flush draw ב-flop: [[9 × 4 = 36%]]. אותו draw ב-turn: [[9 × 2 = 18%]].",
+ "הכל ביחד: ב-flop יש ב-pot 10bb, והיריב עושה bet של 5bb. צריך [[5 ÷ (10 + 5 + 5) = 25%]]. יש לך flush draw עם 36% equity. 36% גדול מ-25%, ולכן call."
+];
 const TELL_CARDS=["Tell הוא שינוי מההתנהגות הרגילה של השחקן. קודם צופים בו כמה סיבובים כשהוא לא ב-pot, ורק אז משווים.","חזק = חלש, חלש = חזק: שחקנים לא מנוסים משחקים תפקיד. עם יד חזקה הם נראים אדישים, ועם bluff הם נראים בטוחים.","ידיים רועדות אחרי bet גדול: לרוב אדרנלין מיד חזקה, לא פחד.","מבט מהיר על הצ׳יפים אחרי שה-flop נפתח: אוהב את הבורד.","בדיקה חוזרת של הקלפים כשהבורד מותאם: לרוב אין לו flush מוכן.","דיבור רגוע אחרי bet: נוטה ליד חזקה. שחקן שעושה bluff נוטה לקפוא ולשתוק.","Call מיידי ב-flop: לרוב draw או יד בינונית, לא מפלצת.","Bet גדול ומהיר ב-river משחקן passive: לרוב value.","היסוס ארוך ואז bet קטן: לרוב יד בינונית שמחפשת זול.","ה-tells שלך: אותה שגרה בכל החלטה, ואותו גודל bet עם bluffs ועם value.","Tells הם תוספת, לא תחליף. Tell טוב מזיז החלטה גבולית, לא הופך fold ברור ל-call."];
 const QUIZ=[
  ["Position","איזו עמדה עושה open עם ה-range הרחב ביותר בטבלאות?",["UTG","CO","BTN","BB"],2,"ה-BTN עושה open עם כ-51% מהידיים, כי הוא תמיד פועל אחרון אחרי ה-flop."],
@@ -495,9 +522,9 @@ const QUIZ=[
  ["Preflop","אתה ב-BB. ה-BTN עשה open ל-2.5bb. יש לך 72o. מה עושים?",["3bet","Call","Fold"],2,"גם עם pot odds טובים, 72o לא מממש equity out of position. Fold."],
  ["Preflop","לכמה עושים open בטבלאות שלך?",["2bb","2.5bb (מה-SB 3.5bb)","3bb","4bb"],1,"In position 2.5bb, out of position (SB) 3.5bb. בלייב נמוך עושים open הרבה פעמים גדול יותר, כי הרבה שחקנים עושים call."],
  ["Preflop","עשית open מ-CO עם AJs, וה-BTN עשה 3bet. מה עושים?",["4bet","Call","Fold"],1,"AJs ב-range ה-call: חזקה מדי ל-fold, ולא מספיק חזקה ל-4bet value."],
- ["מתמטיקה","ב-pot יש 100. היריב עושה bet של 50. כמה equity צריך ל-call?",["20%","25%","33%","50%"],1,"50 ÷ (100+50+50) = 25%."],
- ["מתמטיקה","Flush draw ב-flop. כמה equity יש לך בערך עד ה-river?",["18%","32%","36%","48%"],2,"9 outs × 4 = 36% (האמיתי 35%)."],
- ["מתמטיקה","Open-ended straight draw ב-turn. כמה equity יש לך בערך ל-river?",["8%","16%","32%","50%"],1,"8 outs × 2 = 16% (האמיתי 17.4%)."],
+ ["מתמטיקה","ב-pot יש 100. היריב עושה bet של 50. כמה equity צריך ל-call?",["20%","25%","33%","50%"],1,"ה-call הוא 50, וה-pot הסופי 100 + 50 + 50 = 200. [[50 ÷ 200 = 25%]]"],
+ ["מתמטיקה","Flush draw ב-flop. כמה equity יש לך בערך עד ה-river?",["18%","32%","36%","48%"],2,"ל-flush draw יש 9 outs. ב-flop מכפילים ב-4: [[9 × 4 = 36%]]. החישוב המדויק הוא 35%."],
+ ["מתמטיקה","Open-ended straight draw ב-turn. כמה equity יש לך בערך ל-river?",["8%","16%","32%","50%"],1,"ל-open-ended straight draw יש 8 outs. ב-turn מכפילים ב-2: [[8 × 2 = 16%]]. החישוב המדויק הוא 17.4%."],
  ["מתמטיקה","מה הסיכוי לפגוע set ב-flop עם זוג?",["6%","12%","25%","33%"],1,"בערך 1 ל-8.5, כלומר 11.8%. לכן צריך implied odds גבוהים."],
  ["Postflop","עשית open מה-BTN וה-BB עשה call. Flop K♠7♦2♣, ה-BB עושה check. מה עושים?",["C-bet של 33%","Check","All-in","C-bet של 150%"],0,"בורד יבש וגבוה מעדיף את ה-range של הפותח. Bet קטן משיג את המטרה בזול."],
  ["Postflop","עשית open מ-UTG וה-BB עשה call. Flop 9♥8♥6♠, ה-BB עושה check. מה עושים ברוב הידיים?",["C-bet של 33%","Check","All-in"],1,"הבורד הזה מתחבר ל-range של ה-BB (מחברים, זוגות קטנים). עושים יותר check, וכשעושים bet הוא גדול."],
@@ -655,8 +682,8 @@ ${ctx}
 3. כלל אחד לפעם הבאה שיוביל לפעולה הנכונה.
 אם השחקן צדק, חזק את החשיבה והוסף ניואנס אחד.
 פרופיל השחקן: ${profileText()}`;
-    try{const {text}=await sample(prompt,{onText:({text})=>{out.innerHTML=bidi(text)}});answer=text;out.innerHTML=bidi(text);more.hidden=false}
-    catch(err){out.innerHTML=bidi((err.text?err.text+"\n":"")+errCopy(err.code));if(["not_granted","sampling_disabled"].includes(err.code)){disableAI();box.remove()}}
+    try{const {text}=await sample(prompt,{onText:({text})=>{out.innerHTML=md(text)}});answer=text;out.innerHTML=md(text);more.hidden=false}
+    catch(err){out.innerHTML=md((err.text?err.text+"\n":"")+errCopy(err.code));if(["not_granted","sampling_disabled"].includes(err.code)){disableAI();box.remove()}}
     finally{send.disabled=false}};
   more.onclick=e=>{e.stopPropagation();turns.push({role:"user",content:`${ctx}\nלמה בחרתי ככה: ${reason}`.slice(0,4000)},{role:"assistant",content:answer});store.set("chat",turns.slice(-30));show("coach")};
   box.addEventListener("click",e=>e.stopPropagation());
@@ -664,12 +691,12 @@ ${ctx}
 function genPotOdds(){
   const pot=rnd([20,30,40,50,60,80,100,120,150,200]),bet=Math.round(pot*rnd([.25,.33,.5,.66,.75,1])),need=Math.round(bet/(pot+2*bet)*100);
   const opts=shuffle([...new Set([need,Math.round(bet/pot*100),Math.round(bet/(pot+bet)*100),need+8,Math.max(need-7,3)])].slice(0,4));
-  return {q:`ב-pot יש ${pot}. היריב עושה bet של ${bet}. כמה equity צריך כדי לעשות call?`,opts:opts.map(x=>x+"%"),ans:opts.indexOf(need),explain:`${bet} ÷ (${pot} + ${bet} + ${bet}) = ${need}%`,dom:"math"};
+  return {q:`ב-pot יש ${pot}. היריב עושה bet של ${bet}. כמה equity צריך כדי לעשות call?`,opts:opts.map(x=>x+"%"),ans:opts.indexOf(need),explain:`ה-call שלך הוא ${bet}, וה-pot הסופי יהיה ${pot} + ${bet} + ${bet}. [[${bet} ÷ (${pot} + ${bet} + ${bet}) = ${need}%]]`,dom:"math"};
 }
 function genOuts(){
   const d=rnd(DRAWS),flop=Math.random()<.5,m=flop?4:2,eq=d[1]*m;
   const opts=shuffle([...new Set([eq,d[1]*(flop?2:4),eq+10,Math.max(eq-6,2)])].slice(0,4));
-  return {q:`${d[0]}. אתה ב-${flop?"flop (שני קלפים לבוא)":"turn (קלף אחד לבוא)"}. מה ה-equity בערך?`,opts:opts.map(x=>x+"%"),ans:opts.indexOf(eq),explain:`${d[1]} outs (${d[2]}) × ${m} ≈ ${eq}%`,dom:"math"};
+  return {q:`${d[0]}. אתה ב-${flop?"flop (שני קלפים לבוא)":"turn (קלף אחד לבוא)"}. מה ה-equity בערך?`,opts:opts.map(x=>x+"%"),ans:opts.indexOf(eq),explain:`יש ${d[1]} outs: ${d[2]}. ${flop?"ב-flop מכפילים ב-4":"ב-turn מכפילים ב-2"}: [[${d[1]} × ${m} ≈ ${eq}%]]`,dom:"math"};
 }
 const quizItem=q=>({q:q[1],opts:q[2],ans:q[3],explain:q[4],topic:q[0]});
 const tellItem=t=>({q:t[0],opts:t[1],ans:t[2],explain:t[3],dom:"reads"});
@@ -1019,10 +1046,10 @@ function mathEnd(end){
   <div class="card-box"><h2>Outs וחוק 2/4</h2><p id="out-q"></p><div class="row"><input type="number" id="out-in" inputmode="numeric" placeholder="outs" style="width:100px" aria-label="outs"><input type="number" id="out-eq" inputmode="decimal" placeholder="%" style="width:100px" aria-label="אחוז"><button class="btn primary" id="out-check">בדוק</button><button class="btn" id="out-next">חדש</button></div><div class="explain" id="out-ex" hidden></div></div>`;
   let po,od;
   const newPO=()=>{const pot=rnd([20,30,40,50,60,80,100,120,150,200]),bet=Math.round(pot*rnd([.25,.33,.5,.66,.75,1,1.5]));po={pot,bet,need:bet/(pot+2*bet)*100};$("#po-q").innerHTML=bidi(`ב-pot יש ${pot}. היריב עושה bet של ${bet}. כמה equity (%) צריך כדי לעשות call?`);$("#po-in").value="";$("#po-ex").hidden=true};
-  $("#po-check").onclick=()=>{const v=parseFloat($("#po-in").value);if(isNaN(v))return;const ok=Math.abs(v-po.need)<=3;$("#po-ex").hidden=false;$("#po-ex").innerHTML=`<p><span class="tag ${ok?"ok":"bad"}">${ok?"נכון":"לא מדויק"}</span> <span class="mono"><bdi>${po.bet} ÷ (${po.pot} + ${po.bet} + ${po.bet}) = ${po.need.toFixed(1)}%</bdi></span></p>`};
+  $("#po-check").onclick=()=>{const v=parseFloat($("#po-in").value);if(isNaN(v))return;const ok=Math.abs(v-po.need)<=3;$("#po-ex").hidden=false;$("#po-ex").innerHTML=`<p><span class="tag ${ok?"ok":"bad"}">${ok?"נכון":"לא מדויק"}</span> <span class="mono"><bdi dir="ltr" class="eq">${po.bet} ÷ (${po.pot} + ${po.bet} + ${po.bet}) = ${po.need.toFixed(1)}%</bdi></span></p>`};
   $("#po-next").onclick=newPO;newPO();
   const newOut=()=>{od={d:rnd(DRAWS),flop:Math.random()<.5};$("#out-q").innerHTML=bidi(`${od.d[0]}, אתה ב-${od.flop?"flop (שני קלפים לבוא)":"turn (קלף אחד לבוא)"}. כמה outs, ואיזה אחוז בערך?`);$("#out-in").value="";$("#out-eq").value="";$("#out-ex").hidden=true};
-  $("#out-check").onclick=()=>{const o=parseInt($("#out-in").value),e=parseFloat($("#out-eq").value),m=od.flop?4:2,eq=od.d[1]*m,ok=o===od.d[1]&&Math.abs(e-eq)<=4;$("#out-ex").hidden=false;$("#out-ex").innerHTML=`<p><span class="tag ${ok?"ok":"bad"}">${ok?"נכון":"לא מדויק"}</span> ${bidi(od.d[1]+" outs ("+od.d[2]+").")} <span class="mono"><bdi>${od.d[1]} × ${m} ≈ ${eq}%</bdi></span></p>`};
+  $("#out-check").onclick=()=>{const o=parseInt($("#out-in").value),e=parseFloat($("#out-eq").value),m=od.flop?4:2,eq=od.d[1]*m,ok=o===od.d[1]&&Math.abs(e-eq)<=4;$("#out-ex").hidden=false;$("#out-ex").innerHTML=`<p><span class="tag ${ok?"ok":"bad"}">${ok?"נכון":"לא מדויק"}</span> ${bidi(od.d[1]+" outs ("+od.d[2]+").")} <span class="mono"><bdi dir="ltr" class="eq">${od.d[1]} × ${m} ≈ ${eq}%</bdi></span></p>`};
   $("#out-next").onclick=newOut;newOut();
 }
 function tellsEnd(end){
@@ -1031,7 +1058,7 @@ function tellsEnd(end){
   <textarea id="tell-in" aria-label="תיאור">שחקן בגיל 50, משחק tight כל הערב. ב-river על בורד K-9-4-2-7 הוא עשה all-in מהר מאוד, ואז הסתכל עליי ישר בעיניים ושאל "כמה יש לך?". הידיים שלו היו יציבות.</textarea>
   <div class="row"><input type="file" id="tell-img" hidden><button class="btn" id="tell-img-btn" hidden>צרף תמונה</button><span class="small muted" id="tell-img-name"></span><button class="btn primary" id="tell-go" ${sample?"":"disabled"}>נתח</button></div>
   <p class="small muted" ${sample?"hidden":""}>המאמן AI לא זמין בתצוגה הזו.</p>
-  <div class="explain" id="tell-out" hidden style="white-space:pre-wrap"></div></div>`;
+  <div class="explain" id="tell-out" hidden></div></div>`;
   const scen=()=>mountMCQ($("#ts-box"),Object.assign(tellItem(rnd(TS)),{label:"תרחיש",feedback:true,onDone:r=>{tsc.n++;if(r.ok)tsc.ok++;store.set("tscore",tsc);scen()}}));scen();
   let file=null;if(imgOK&&sample){$("#tell-img-btn").hidden=false;$("#tell-img").accept=imgOK}
   $("#tell-img-btn").onclick=()=>$("#tell-img").click();$("#tell-img").onchange=e=>{file=e.target.files[0]||null;$("#tell-img-name").textContent=file?file.name:""};
@@ -1044,7 +1071,7 @@ function tellsEnd(end){
 אם יש תמונה שלי, נתח את ה-tells שאני מסגיר ואיך לתקן.
 פרופיל השחקן: ${profileText()}
 התיאור: ${$("#tell-in").value.slice(0,3000)}`;
-    try{const {text}=await sample(p,{images:file||undefined,onText:({text})=>{out.innerHTML=bidi(text)}});out.innerHTML=bidi(text)}
+    try{const {text}=await sample(p,{images:file||undefined,onText:({text})=>{out.innerHTML=md(text)}});out.innerHTML=md(text)}
     catch(e){out.textContent=(e.text?e.text+"\n":"")+errCopy(e.code);if(["not_granted","sampling_disabled"].includes(e.code))disableAI()}
     finally{$("#tell-go").disabled=!sample}};
 }
@@ -1227,7 +1254,7 @@ ${rangesText()}
 דפוסים מהיומן: ${patternsText()}
 ניתוח אחרון ביומן: ${last?last.analysis.summary:"אין"}`}
 const chat=$("#chat");
-function addMsg(role,text){const d=document.createElement("div");d.className="msg "+role;d.innerHTML=bidi(text);chat.appendChild(d);return d}
+function addMsg(role,text){const d=document.createElement("div");d.className="msg "+role;d.innerHTML=role==="coach"?md(text):bidi(text);chat.appendChild(d);return d}
 function renderChat(){chat.innerHTML="";if(!turns.length)addMsg("sys","בחר אחת מהאפשרויות למעלה, או כתוב שאלה. למשל: \"היה לי AQo ב-UTG+1, שלושה עשו call, ב-flop Q-8-3…\"");turns.forEach(t=>addMsg(t.role==="user"?"me":"coach",t.content))}
 function errCopy(c){return ({not_granted:"המאמן לא אושר בדף הזה. אפשר לאשר מתפריט ההרשאות של הדף.",rate_limited:"יותר מדי בקשות. נסה שוב בעוד דקה.",session_expired:"צריך להתחבר מחדש ל-Claude.",refused:"המאמן לא ענה על זה. נסח אחרת.",sampling_disabled:"Claude לא זמין בחשבון הזה."})[c]||"התקשורת נכשלה. נסה שוב."}
 async function send(text){
@@ -1236,8 +1263,8 @@ async function send(text){
   turns.push({role:"user",content:text.slice(0,4000)});addMsg("me",text);$("#chat-in").value="";
   const bubble=addMsg("coach","חושב…");bubble.scrollIntoView({block:"end"});ctl=new AbortController();$("#chat-stop").hidden=false;$("#chat-send").disabled=true;
   const recent=turns.slice(-16);while(recent.length&&recent[0].role!=="user")recent.shift();
-  try{const {text:ans}=await sample([{role:"user",content:rules()},...recent],{cache:false,signal:ctl.signal,onText:({text})=>{bubble.innerHTML=bidi(text)}});turns.push({role:"assistant",content:ans})}
-  catch(e){if(e.text){bubble.innerHTML=bidi(e.text);turns.push({role:"assistant",content:e.text})}else bubble.remove();if(e.code!=="cancelled")addMsg("sys",errCopy(e.code));if(["not_granted","sampling_disabled"].includes(e.code))disableAI()}
+  try{const {text:ans}=await sample([{role:"user",content:rules()},...recent],{cache:false,signal:ctl.signal,onText:({text})=>{bubble.innerHTML=md(text)}});turns.push({role:"assistant",content:ans})}
+  catch(e){if(e.text){bubble.innerHTML=md(e.text);turns.push({role:"assistant",content:e.text})}else bubble.remove();if(e.code!=="cancelled")addMsg("sys",errCopy(e.code));if(["not_granted","sampling_disabled"].includes(e.code))disableAI()}
   finally{ctl=null;$("#chat-stop").hidden=true;$("#chat-send").disabled=!sample;store.set("chat",turns.slice(-30))}
 }
 function disableAI(){sample=null;$("#chat-send").disabled=true;$("#chips").hidden=true;$("#coach-status").textContent="המאמן AI לא זמין בתצוגה הזו. כל שאר האפליקציה עובדת כרגיל.";$("#p-ai").hidden=true;$("#j-save-analyze").hidden=true;const t=$("#tell-go");if(t)t.disabled=true;const pa=$("#pp-ai");if(pa)pa.hidden=true}
