@@ -849,7 +849,7 @@ const SPOTS=[],SPOT={};
 for(const c of DATA.charts){for(const v of (c.vs.length?c.vs:[null])){const s={id:c.id+"|"+(v||""),cid:c.id,kind:c.kind,hero:c.hero,vill:v};SPOTS.push(s);SPOT[s.id]=s}}
 const codeAt=(s,h)=>CHARTS[s.cid].map[h];
 const restricted=s=>s.kind==="rfi_vs_3bet"||s.kind==="sb_limp_vs_raise";
-function drawable(s){const m=CHARTS[s.cid].map;return restricted(s)?ALL.filter(h=>m[h]!=="F"):ALL}
+function drawable(s){const m=CHARTS[s.cid].map;if(!restricted(s))return ALL;const op=s.kind==="rfi_vs_3bet"&&SPOTS.find(x=>x.kind==="rfi"&&x.hero===s.hero),om=op&&CHARTS[op.cid].map;return ALL.filter(h=>m[h]!=="F"&&(!om||om[h]!=="F"))}
 const edgeCache={};
 function edges(s){
   if(edgeCache[s.cid])return edgeCache[s.cid];const m=CHARTS[s.cid].map,out=[];
@@ -941,8 +941,8 @@ const S_3BET={seats:["HJ","CO","BTN","SB","BB"],hero:"BTN",base:{dealt:true,hero
  {c:"אתה ב-BTN עם Q♠ Q♦. ה-raise השני preflop נקרא 3bet.",hl:["hero"]},
  {c:"גודל 3bet in position: פי 3 מה-open.",eq:"{v:2.5} × 3 = {v:7.5}",bets:{BTN:7.5},pills:{BTN:"3bet"}},
  {c:"ה-blinds עושים fold. ה-CO עושה 4bet: raise שלישי, פי 2.5 מה-3bet.",fold:["SB","BB"],bets:{CO:19},pills:{SB:"Fold",BB:"Fold",CO:"4bet"},eq:"{v:7.5} × 2.5 ≈ {v:19}"},
- {c:"3bet בנוי משני סוגי ידיים: value, כמו QQ+ ו-AK, ו-bluffs כמו A5s.",hl:["hero"]},
- {c:"למה A5s? אם האס אצלך, פחות סביר שליריב יש AA או AK. זה נקרא blocker. ואם יגיעו 2-3-4, יש לך straight.",reset:true,hero:"A♠ 5♠",bets:{CO:2.5,BTN:7.5},pills:{BTN:"3bet"},hl:["hero"]},
+ {c:"3bet בנוי משני סוגי ידיים: value, כמו QQ+ ו-AK, ו-bluffs כמו A3s.",hl:["hero"]},
+ {c:"למה A3s? אם האס אצלך, פחות סביר שליריב יש AA או AK. זה נקרא blocker. ואם יגיעו 2-4-5, יש לך straight.",reset:true,hero:"A♠ 3♠",bets:{CO:2.5,BTN:7.5},pills:{BTN:"3bet"},hl:["hero"]},
  {c:"בטבלאות: משבצת שחורה היא value ומשבצת כחולה היא bluff. שתיהן raise."}
 ]};
 const S_POTODDS={seats:["CO","BTN","SB","BB"],hero:"BB",base:{dealt:true,hero:"A♥ 5♥",fold:["CO","SB"],pot:10,done:{BTN:5,BB:5},board:["K♥","9♥","2♣"]},frames:[
@@ -1008,7 +1008,7 @@ const S_TYPES={seats:["UTG","HJ","CO","BTN","SB","BB"],hero:"BTN",base:{dealt:tr
  {c:"Calling station: עושה call להכל. נגדו: value bets גדולים, אפס bluffs.",emote:{SB:"Calling station"},hl:["SB"]},
  {c:"Maniac: עושה raise להכל. נגדו: מהדקים, ונותנים לו לעשות bet לתוך היד החזקה שלך.",emote:{BB:"Maniac"},hl:["BB"]}
 ]};
-const S_TELLS={seats:["CO","BTN","SB","BB"],hero:"BB",base:{dealt:true,hero:"A♣ J♣",fold:["CO","SB"],pot:6.5,done:{BTN:2.5,BB:2.5}},frames:[
+const S_TELLS={seats:["CO","BTN","SB","BB"],hero:"BB",base:{dealt:true,hero:"A♣ 9♣",fold:["CO","SB"],pot:6.5,done:{BTN:2.5,BB:2.5}},frames:[
  {c:"Tell הוא שינוי מההתנהגות הרגילה של השחקן. קודם צופים בו כשהוא לא ב-pot, ורק אז משווים.",emote:{BTN:"רגוע, מדבר"},hl:["BTN"]},
  {c:"Flop: A♦ 8♠ 3♥. הוא מעיף מבט מהיר לצ׳יפים שלו ומסיט את העיניים: בדרך כלל פגע ומתכנן bet.",board:["A♦","8♠","3♥"],emote:{BTN:"מבט לצ׳יפים"},hl:["BTN"]},
  {c:"הוא עושה bet, ואז מסתכל לך ישר בעיניים ומחייך. אצל מתחילים חזק = חלש: ביטחון מוגזם הוא הרבה פעמים bluff.",bets:{BTN:3},emote:{BTN:"חיוך, מבט ישיר"}},
