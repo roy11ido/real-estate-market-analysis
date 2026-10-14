@@ -142,6 +142,50 @@ body.focus nav.tabbar{display:none}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 .st-desc{font-size:.95rem;color:var(--muted);max-width:34ch}
 
+
+/* ===== COACH CARD ===== */
+.cc{display:grid;gap:14px;background:var(--surface);border-radius:24px;padding:18px;box-shadow:var(--shadow-sm)}
+.cc-verdict{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.cc-verdict b{font-size:1.15rem;font-weight:800}
+.cc-verdict .dot{display:inline-block;width:10px;height:10px;border-radius:50%;margin-inline-end:8px;vertical-align:.1em}
+.cc-verdict.ok .dot{background:var(--ok)} .cc-verdict.bad .dot{background:var(--bad)}
+.cc-verdict small{color:var(--muted);font-weight:600}
+.cc-nums{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.cc-num{display:grid;justify-items:center;gap:2px;background:var(--surface-2);border-radius:14px;padding:8px 4px;text-align:center}
+.cc-num span{font-size:.72rem;color:var(--muted);font-weight:600}
+.cc-num b{font-size:1.08rem;font-weight:800;font-variant-numeric:tabular-nums;direction:ltr}
+.cc-num.need b{color:var(--act-raise)} .cc-num.have b{color:var(--act-call)}
+.cc-gauge{position:relative;height:12px;border-radius:999px;background:var(--surface-2);overflow:visible;margin-top:4px}
+.cc-gauge .have{position:absolute;inset-inline-start:0;top:0;bottom:0;border-radius:999px;background:var(--act-call);transition:width .45s var(--ease)}
+.cc-gauge .need{position:absolute;top:-5px;bottom:-5px;width:3px;border-radius:2px;background:var(--act-raise);transition:inset-inline-start .45s var(--ease)}
+.cc-glabel{display:flex;justify-content:space-between;font-size:.78rem;color:var(--muted);font-weight:600;margin-top:2px}
+.cc-seg{display:flex;gap:4px;background:var(--surface-2);border-radius:12px;padding:3px}
+.cc-seg button{flex:1;border:0;background:none;border-radius:9px;padding:7px 4px;font:inherit;font-size:.82rem;font-weight:700;color:var(--muted);cursor:pointer}
+.cc-seg button[aria-pressed="true"]{background:var(--surface);color:var(--fg);box-shadow:var(--shadow-sm)}
+.cc-note{font-size:.88rem;color:var(--fg-2);min-height:1.3em}
+.cc-why{margin:0;padding:0;list-style:none;display:grid;gap:8px;counter-reset:w}
+.cc-why li{display:flex;gap:10px;align-items:baseline;line-height:1.5}
+.cc-why li::before{counter-increment:w;content:counter(w);flex:0 0 22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--surface-2);font-size:.75rem;font-weight:800;color:var(--fg-2)}
+.cc-rule{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--accent-soft);border-radius:16px;padding:12px 14px}
+.cc-rule p{margin:0;font-weight:700;line-height:1.45}
+.cc-rule button{flex:0 0 auto}
+.cc details summary{cursor:pointer;color:var(--muted);font-weight:600;font-size:.88rem}
+.cc details[open] summary{margin-bottom:8px}
+.cc-tag{display:inline-block;font-size:.72rem;font-weight:800;border-radius:999px;padding:2px 9px;background:var(--surface-2);color:var(--fg-2)}
+.cc-tag.ok{background:var(--ok-soft);color:var(--ok)} .cc-tag.bad{background:var(--bad-soft);color:var(--bad)} .cc-tag.mid{background:rgba(245,165,36,.16);color:#d18a0d}
+.cc h4{margin:0;font-size:1rem;font-weight:800}
+.cc-when{font-size:.9rem;color:var(--fg-2)}
+.mic-wrap{position:relative;display:grid}
+.mic-wrap textarea{padding-inline-end:48px}
+.mic{position:absolute;inset-inline-end:8px;bottom:8px;width:36px;height:36px;border-radius:50%;border:0;background:var(--surface-2);color:var(--fg);display:grid;place-items:center;cursor:pointer}
+.mic svg{width:18px;height:18px}
+.mic.on{background:var(--act-raise);color:#fff;animation:pulse2 1.2s infinite}
+@keyframes pulse2{50%{box-shadow:0 0 0 8px rgba(229,72,77,.18)}}
+.mic-hint{font-size:.8rem;color:var(--muted);margin:4px 0 0}
+#p-rules{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+#p-rules li{display:flex;justify-content:space-between;gap:10px;align-items:center;background:var(--surface-2);border-radius:14px;padding:10px 12px}
+#p-rules li button{border:0;background:none;color:var(--muted);cursor:pointer;font-size:1rem}
+
 /* ===== STORIES ===== */
 body.story nav.tabbar{display:none}
 #v-story{position:fixed;inset:0;z-index:25;background:radial-gradient(120% 70% at 50% 0%,#1c3328 0%,#0b0d0c 62%);color:#fff;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:12px;padding:calc(10px + env(safe-area-inset-top,0px)) 14px calc(16px + env(safe-area-inset-bottom,0px));overflow:hidden;animation:fade .25s var(--ease) both}
@@ -332,6 +376,8 @@ button .gl,.ans .gl,.chip .gl,.opt .gl,.choice .gl,h1 .gl,h2 .gl,.score-row .gl{
 .eq{display:inline-block;max-width:100%;font-variant-numeric:tabular-nums;font-weight:600}
 .why p{margin:0 0 6px}
 .why{background:var(--surface);border-radius:22px;padding:20px;font-size:.98rem;box-shadow:var(--shadow-sm);color:var(--fg-2)}
+.why:has(.cc),.reply:has(.cc){background:none;padding:0;box-shadow:none}
+.cc{color:var(--fg)}
 .gridwrap{position:relative;min-width:0;background:var(--surface);border-radius:24px;padding:14px;box-shadow:var(--shadow-sm)}
 .rgrid{display:grid;grid-template-columns:repeat(13,1fr);gap:3px;direction:ltr;font:600 clamp(.46rem,2.1vw,.7rem)/1 var(--mono);width:100%}
 .rgrid button{aspect-ratio:1;border:0;padding:0;border-radius:5px;background:var(--cell);color:var(--cell-fg);cursor:pointer;font:inherit;min-width:0;transition:transform .15s var(--ease)}
@@ -493,7 +539,7 @@ label.fld,.fld{display:grid;gap:6px;font-size:.85rem;color:var(--muted);font-wei
     <div class="chat" id="chat" aria-live="polite"></div>
     <p class="small muted" id="coach-status">המאמן משתמש בחשבון Claude שלך. בפעם הראשונה תתבקש לאשר.</p>
     <div class="composer">
-      <textarea id="chat-in" placeholder="כתוב למאמן…" aria-label="הודעה למאמן"></textarea>
+      <div class="mic-wrap"><textarea id="chat-in" placeholder="כתוב או הקלט למאמן…" aria-label="הודעה למאמן"></textarea></div>
       <div style="display:grid;gap:6px"><button class="btn primary" id="chat-send">שלח</button><button class="btn" id="chat-stop" hidden>עצור</button></div>
     </div>
   </section>
@@ -505,7 +551,7 @@ label.fld,.fld{display:grid;gap:6px;font-size:.85rem;color:var(--muted);font-wei
     <div class="card-box">
       <label class="fld" for="j-text">מה קרה?</label>
       <textarea id="j-text" rows="7" placeholder="לדוגמה: אני משחק בעיקר עם חברים. אחד מאוד loose aggressive, השני tight aggressive. זה משחק friendly ולא כולם משחקים לפי התיאוריה. הרבה פעמים אני עושה raise עם יד חזקה preflop, ואז כשאני לא פוגע ב-flop אני מפחד לעשות bet או call, כי אני חושש שליריב יש יד טובה יותר."></textarea>
-      <p class="small muted" id="j-dictate">אפשר להכתיב במקום להקליד: לחץ על המיקרופון במקלדת של הטלפון.</p>
+      <p class="small muted" id="j-dictate">אפשר להקליט בעברית: לחץ על המיקרופון בתיבה.</p>
       <div id="j-tagbox" hidden style="display:grid;gap:8px"><span class="eyebrow">מי שיחק?</span><div class="chip-row" id="j-tags" style="flex-wrap:wrap;overflow:visible"></div></div>
       <details class="plan"><summary>פרטים נוספים</summary>
         <div style="display:grid;gap:14px;padding-top:12px">
@@ -555,6 +601,7 @@ label.fld,.fld{display:grid;gap:6px;font-size:.85rem;color:var(--muted);font-wei
     <h1>הפרופיל שלי</h1>
     <div class="card-box" id="p-fields"></div>
     <div class="card-box" id="p-history"></div>
+    <div class="card-box"><h2>הכללים שלי</h2><p class="small muted" id="p-rules-empty">כאן נשמרים כללים מהמשוב של המאמן. לחץ ״שמור״ ליד כלל אחרי יד.</p><ul id="p-rules"></ul></div>
     <div class="card-box">
       <h2>תכנית</h2>
       <p class="small muted" id="p-plan-src"></p>
@@ -599,10 +646,11 @@ const rnd=a=>a[Math.floor(Math.random()*a.length)];
 const shuffle=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]);
 /* Wrap every run of Latin words / numbers in <bdi> so English poker terms keep their order inside Hebrew (RTL) text. */
-const LAT=/[A-Za-z0-9♠♥♦♣](?:[A-Za-z0-9♠♥♦♣+\-\/'%–]|[.,](?=[0-9]))*(?: [A-Za-z0-9♠♥♦♣](?:[A-Za-z0-9♠♥♦♣+\-\/'%–]|[.,](?=[0-9]))*)*/g;
+const LAT=/(?<![&#A-Za-z0-9])[A-Za-z0-9♠♥♦♣](?:[A-Za-z0-9♠♥♦♣+\-\/'%–]|[.,](?=[0-9]))*(?: [A-Za-z0-9♠♥♦♣](?:[A-Za-z0-9♠♥♦♣+\-\/'%–]|[.,](?=[0-9]))*)*/g;
 /* [[...]] marks a formula: shown as one left-to-right block so the math reads in order. */
 let glSeen=new Set(),glArm=0;
-const bidi=s=>{if(!glArm){glArm=1;queueMicrotask(()=>{glSeen=new Set();glArm=0})}const seen=glSeen;return u(s).split(/\[\[(.+?)\]\]/).map((part,i)=>i%2?`<bdi dir="ltr" class="eq">${esc(part)}</bdi>`:esc(part).replace(LAT,m=>{const t=termify(m,seen);const bd='<bdi dir="ltr">'+t.html+"</bdi>";return t.gl.length?`<span class="tg">${bd}<span class="gl">${t.gl.join(", ")}</span></span>`:bd})).join("")};
+const gersh=t=>String(t).replace(/&quot;/g,'"').replace(/"/g,"״");
+const bidi=s=>{s=gersh(s);if(!glArm){glArm=1;queueMicrotask(()=>{glSeen=new Set();glArm=0})}const seen=glSeen;return u(s).split(/\[\[(.+?)\]\]/).map((part,i)=>i%2?`<bdi dir="ltr" class="eq">${esc(part)}</bdi>`:esc(part).replace(LAT,m=>{const t=termify(m,seen);const bd='<bdi dir="ltr">'+t.html+"</bdi>";return t.gl.length?`<span class="tg">${bd}<span class="gl">${t.gl.join(", ")}</span></span>`:bd})).join("")};
 /* Light markdown for coach replies: **bold**, "- " bullets, "1." numbered lines, "#" headings. */
 const mdInline=t=>bidi(t).replace(/\*\*(.+?)\*\*/g,"<b>$1</b>").replace(/\*\*/g,"");
 function md(text){return String(text).split("\n").map(line=>{const t=line.trim();let m;
@@ -1008,6 +1056,68 @@ function recordPF(s,h,ch,code){
   store.set("stats",stats);
 }
 
+
+/* ===== NUMBERS ENGINE: every number the coach shows is computed here, never by the AI ===== */
+function spotNums(s){
+  const P=tablePos(),bets={};P.forEach(p=>bets[p]=p==="SB"?.5:p==="BB"?1:0);
+  for(const [p,t,to] of handScript(s))if(t!=="F")bets[p]=to;
+  const vals=Object.values(bets),maxB=Math.max(...vals),heroIn=bets[s.hero]||0,pot=ANTE+vals.reduce((a,b)=>a+b,0),toCall=Math.max(0,maxB-heroIn),fin=pot+toCall;
+  return {pot,toCall,fin,need:toCall>0&&s.kind!=="rfi"?toCall/fin*100:null,spr:(100-maxB)/fin,maxB};
+}
+/* Hand strength order from the charts: hands opened from more positions come first. */
+const STRENGTH=(()=>{const rf=DATA.charts.filter(c=>c.kind==="rfi"),cnt={};ALL.forEach(h=>cnt[h]=rf.filter(c=>CHARTS[c.id].map[h]!=="F").length);
+  const r=x=>12-RK.indexOf(x),heur=h=>h.length===2?40+r(h[0])*2:r(h[0])*2+r(h[1])+(h[2]==="s"?5:0)+(Math.abs(RK.indexOf(h[0])-RK.indexOf(h[1]))===1?2:0);
+  return ALL.slice().sort((x,y)=>cnt[y]-cnt[x]||heur(y)-heur(x))})();
+const combosOf=hs=>hs.reduce((a,h)=>a+combos(h),0);
+/* The villain's range for this spot, straight from the charts. */
+function villRange(s){
+  let sp=null,lbl="";
+  if(s.kind==="facing_rfi"){sp=SPOTS.find(x=>x.kind==="rfi"&&x.hero===s.vill);lbl="open של "+s.vill}
+  if(s.kind==="rfi_vs_3bet"){sp=SPOTS.find(x=>x.kind==="facing_rfi"&&x.hero===s.vill&&x.vill===s.hero);lbl="3bet של "+s.vill}
+  if(!sp)return null;const m=CHARTS[sp.cid].map,base=ALL.filter(h=>m[h]==="R"||m[h]==="B");if(!base.length)return null;
+  const value=ALL.filter(h=>m[h]==="R"),ord=base.slice().sort((a,b)=>STRENGTH.indexOf(a)-STRENGTH.indexOf(b));
+  let tight=s.kind==="rfi_vs_3bet"&&value.length?value:[];if(!tight.length){let c=0;const half=combosOf(base)/2;for(const h of ord){if(c>=half)break;tight.push(h);c+=combos(h)}}
+  const wide=base.slice();let c=combosOf(base);const goal=c*1.6;for(const h of STRENGTH){if(c>=goal)break;if(!wide.includes(h)){wide.push(h);c+=combos(h)}}
+  return {lbl,tight,base,wide,pct:{tight:combosOf(tight)/13.26,base:combosOf(base)/13.26,wide:combosOf(wide)/13.26}};
+}
+/* ===== EQUITY: Monte Carlo, your two cards against a range ===== */
+const RV={"2":0,"3":1,"4":2,"5":3,"6":4,"7":5,"8":6,"9":7,"T":8,"10":8,"J":9,"Q":10,"K":11,"A":12},SV={"♠":0,"♥":1,"♦":2,"♣":3};
+const cardInt=t=>RV[t.slice(0,-1)]*4+SV[t.slice(-1)];
+function straightTop(m){const mm=(m<<1)|((m>>12)&1);for(let t=13;t>=4;t--)if(((mm>>(t-4))&31)===31)return t-1;return -1}
+function eval7(cs){
+  const rc=[0,0,0,0,0,0,0,0,0,0,0,0,0],sc=[0,0,0,0],sm=[0,0,0,0];let all=0;
+  for(let i=0;i<7;i++){const c=cs[i],r=c>>2,u=c&3;rc[r]++;sc[u]++;sm[u]|=1<<r;all|=1<<r}
+  let fs=-1;for(let u=0;u<4;u++)if(sc[u]>=5)fs=u;
+  if(fs>=0){const t=straightTop(sm[fs]);if(t>=0)return 8e6+t}
+  let q=-1,t1=-1,t2=-1,p1=-1,p2=-1;
+  for(let r=12;r>=0;r--){const n=rc[r];if(n===4)q=r;else if(n===3){if(t1<0)t1=r;else if(t2<0)t2=r}else if(n===2){if(p1<0)p1=r;else if(p2<0)p2=r}}
+  const kick=(ex,k)=>{let v=0,c=0;for(let r=12;r>=0&&c<k;r--)if(rc[r]&&ex.indexOf(r)<0){v=v*13+r;c++}return v};
+  if(q>=0)return 7e6+q*13+kick([q],1);
+  if(t1>=0&&(t2>=0||p1>=0))return 6e6+t1*13+Math.max(t2,p1);
+  if(fs>=0){let v=0,c=0;for(let r=12;r>=0&&c<5;r--)if(sm[fs]>>r&1){v=v*13+r;c++}return 5e6+v}
+  const st=straightTop(all);if(st>=0)return 4e6+st;
+  if(t1>=0)return 3e6+t1*169+kick([t1],2);
+  if(p2>=0)return 2e6+p1*169+p2*13+kick([p1,p2],1);
+  if(p1>=0)return 1e6+p1*2197+kick([p1],3);
+  return kick([],5);
+}
+function expand(h){const a=RV[h[0]],b=RV[h[1]],out=[];
+  if(h.length===2){for(let i=0;i<4;i++)for(let j=i+1;j<4;j++)out.push([a*4+i,b*4+j])}
+  else if(h[2]==="s"){for(let i=0;i<4;i++)out.push([a*4+i,b*4+i])}
+  else{for(let i=0;i<4;i++)for(let j=0;j<4;j++)if(i!==j)out.push([a*4+i,b*4+j])}
+  return out}
+function equityVs(hero,hands,iters){
+  iters=iters||5000;const [h0,h1]=hero,cmb=[];for(const h of hands)for(const c of expand(h))if(c[0]!==h0&&c[0]!==h1&&c[1]!==h0&&c[1]!==h1)cmb.push(c);
+  if(!cmb.length)return null;const deck=[];for(let c=0;c<52;c++)if(c!==h0&&c!==h1)deck.push(c);
+  const H=[h0,h1,0,0,0,0,0],V=[0,0,0,0,0,0,0],n=deck.length;let w=0,t=0;
+  for(let it=0;it<iters;it++){const v=cmb[(Math.random()*cmb.length)|0];V[0]=v[0];V[1]=v[1];let k=0;
+    while(k<5){const c=deck[(Math.random()*n)|0];if(c===v[0]||c===v[1])continue;let dup=false;for(let j=0;j<k;j++)if(H[2+j]===c){dup=true;break}if(dup)continue;H[2+k]=c;V[2+k]=c;k++}
+    const a=eval7(H),b=eval7(V);if(a>b)w++;else if(a===b)t++}
+  return (w+t/2)/iters*100;
+}
+const pct=x=>Math.round(x)+"%";
+window.__pc={get SPOTS(){return SPOTS},villRange,spotNums,equityVs,cardInt,CHARTS};
+
 /* ===== COMPONENTS ===== */
 /* ===== TABLE ===== */
 /* Cartoon characters: [skin, hair, style, extra, shirt, bg] */
@@ -1173,6 +1283,61 @@ function renderScene(T,S,st,prev){
   T.innerHTML=html;
   T.querySelectorAll(".bet.fly").forEach(b=>{const a=T.querySelector(`.seat[data-pos="${b.dataset.pos}"] .av`).getBoundingClientRect(),r=b.getBoundingClientRect();if(!r.width)return;b.style.setProperty("--fx",(a.left+a.width/2-r.left-r.width/2)+"px");b.style.setProperty("--fy",(a.top+a.height/2-r.top-r.height/2)+"px")});
 }
+
+/* ===== COACH CARD: verdict, numbers, gauge, 3 reasons, one rule ===== */
+const ACT_HE={R:"Raise",C:"Call",F:"Fold"};
+function ruleFor(s,h,code){
+  const cat=category(h),v=s.vill,big=s.kind==="rfi_vs_3bet"?"4bet":"3bet",bet=s.kind==="rfi_vs_3bet"?"3bet":"open";
+  if(s.kind==="rfi"){const p=chartPct(s.cid),o=Math.round(((p.R||0)+(p.B||0)+(p.C||0))/13.26);return NORM[code]==="F"?`מ-${s.hero} פותחים רק כ-${o}% מהידיים. ${cat} כמו ${h} בחוץ.`:`מ-${s.hero} פותחים כ-${o}% מהידיים, ו-${h} בפנים.`}
+  if(code==="R")return `מול ${bet} מ-${v}: ${cat} כמו ${h} עושה ${big} ל-value.`;
+  if(code==="B")return `${big} כ-bluff: ידיים עם blocker כמו ${h}, לא ידיים שמשחקות טוב ב-call.`;
+  if(code==="C")return `מול ${bet} מ-${v}: ${h} מספיקה ל-call, לא ל-${big}.`;
+  return `מול ${bet} מ-${v} בלי read: ${cat} כמו ${h} עושה fold.`;
+}
+function reasonsFor(s,h,code,N,eq){
+  const cat=category(h),out=[`${h}: ${cat}.`];
+  if(s.kind==="rfi"){const p=chartPct(s.cid),o=Math.round(((p.R||0)+(p.B||0)+(p.C||0))/13.26),after=tablePos().length-1-tablePos().indexOf(s.hero);
+    out.push(NORM[code]==="F"?`מחוץ ל-range של ${s.hero}: פותחים רק ${o}% מהידיים.`:`בתוך ה-range של ${s.hero}: ${o}% מהידיים.`);
+    out.push(s.hero==="SB"?"רק ה-BB אחריך, וחצי blind כבר בפנים.":`${after} שחקנים אחריך יכולים להתעורר עם יד חזקה.`);return out}
+  const pos=ip(s.hero,s.vill)?"in position":"out of position";
+  if(eq!=null&&N.need!=null){
+    if(code==="F")out.push(eq<N.need?`Equity ${pct(eq)} מול ה-range, צריך ${pct(N.need)}. לא מכסה את המחיר.`:`Equity ${pct(eq)} על הנייר, אבל ${pos} וב-SPR ${N.spr.toFixed(1)} מממשים רק חלק ממנו.`);
+    else if(code==="C")out.push(`Equity ${pct(eq)} מול צריך ${pct(N.need)}: call רווחי.`);
+    else out.push(code==="B"?`יש ${pct(eq)} equity, אבל ב-call קשה לממש אותו. ${s.kind==="rfi_vs_3bet"?"4bet":"3bet"} כ-bluff מרוויח יותר: fold equity ו-blocker.`:`מקדימה את ה-range: equity ${pct(eq)}. רוצים pot גדול.`);
+  } else if(N.need!=null) out.push(`צריך ${pct(N.need)} equity כדי לעשות call.`);
+  out.push(code==="F"?`${pos}, מול range ${s.kind==="rfi_vs_3bet"?"3bet":"open"} חזק. Fold.`:code==="C"?`${pos}: ממשיכים ל-flop עם יד שמשחקת טוב.`:`${pos}: לוקחים יוזמה עם ${s.kind==="rfi_vs_3bet"?"4bet":"3bet"}.`);
+  return out.slice(0,3);
+}
+function coachCard(host,{spot:s,hand:h,code,chosen,size,rec,ok,heroCards}){
+  const N=spotNums(s),VR=villRange(s),right=NORM[code],best=codeLabel(s,code).replace(/\s*\(.*?\)/,"");
+  const sizeNote=chosen==="R"&&size&&rec?(size/rec<.8||size/rec>1.3?`הגודל שבחרת ${money(size)}. המקובל: ${money(rec)}.`:""):"";
+  const el=document.createElement("div");el.className="cc";host.appendChild(el);
+  const showEq=VR&&N.need!=null;
+  el.innerHTML=`<div class="cc-verdict ${ok?"ok":"bad"}"><b><span class="dot"></span>${ok?bidi("נכון: "+best):bidi(best+" עדיף")}</b>${ok?"":`<small>${bidi("בחרת "+ACT_HE[chosen])}</small>`}</div>
+  ${sizeNote?`<p class="small" style="margin:0">${bidi(sizeNote)}</p>`:""}
+  <div class="cc-nums">${s.kind==="rfi"
+    ?`<div class="cc-num"><span>Pot</span><b>${chipTxt(N.pot)}</b></div><div class="cc-num"><span>Open</span><b>${chipTxt(rec||openSize(s.hero))}</b></div><div class="cc-num"><span>${bidi("ה-range")}</span><b>${pct(((p=>(p.R||0)+(p.B||0)+(p.C||0))(chartPct(s.cid)))/13.26)}</b></div><div class="cc-num ${right==="F"?"need":"have"}"><span>${bidi("היד שלך")}</span><b>${right==="F"?"בחוץ":"בפנים"}</b></div>`
+    :`<div class="cc-num"><span>${bidi("Pot לפני")}</span><b>${chipTxt(N.pot)}</b></div><div class="cc-num"><span>${bidi("לשלם")}</span><b>${chipTxt(N.toCall)}</b></div><div class="cc-num need"><span>${bidi("צריך")}</span><b>${pct(N.need)}</b></div><div class="cc-num have"><span>${bidi("יש לך")}</span><b class="cc-eq">${showEq?"…":"—"}</b></div>`}</div>
+  ${showEq?`<div><div class="cc-gauge"><i class="have" style="width:0"></i><i class="need" style="inset-inline-start:${N.need}%"></i></div><div class="cc-glabel"><span>${bidi("equity שלך")}</span><span>${bidi("הקו האדום: מה שצריך")}</span></div></div>
+  <div class="cc-seg" role="group" aria-label="range של הנבל">${[["tight","צר"],["base","לפי הטבלה"],["wide","רחב"]].map(([k,l])=>`<button type="button" data-r="${k}" aria-pressed="${k==="base"}">${l}</button>`).join("")}</div>
+  <p class="cc-note"></p>`:""}
+  <ol class="cc-why"></ol>
+  <div class="cc-rule"><p>${bidi("📌 "+ruleFor(s,h,code))}</p><button class="btn" data-x="save-rule">שמור</button></div>
+  <details><summary>פרט עוד</summary><div class="cc-more">${md(explain(s,h,code))}</div></details>`;
+  const why=el.querySelector(".cc-why"),setWhy=eq=>{why.innerHTML=reasonsFor(s,h,code,N,eq).map(r=>`<li><span>${bidi(r)}</span></li>`).join("")};setWhy(null);
+  el.querySelector('[data-x="save-rule"]').onclick=e=>{e.stopPropagation();const t=ruleFor(s,h,code);const R=store.get("rules",[]);if(!R.some(x=>x.t===t)){R.unshift({t,at:Date.now()});store.set("rules",R.slice(0,60))}e.target.textContent="נשמר ✓";e.target.disabled=true};
+  const res={N,VR,eq:{}};
+  if(showEq){
+    const seg=el.querySelector(".cc-seg"),note=el.querySelector(".cc-note"),gauge=el.querySelector(".cc-gauge .have"),eqEl=el.querySelector(".cc-eq");
+    const draw=k=>{const e=res.eq[k];if(e==null)return;eqEl.textContent=pct(e);gauge.style.width=Math.min(100,e)+"%";
+      seg.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.r===k));
+      const lbl={tight:"צר",base:"לפי הטבלה",wide:"רחב"}[k];
+      note.innerHTML=bidi(`מול range ${lbl} (${VR.lbl}, ${pct(VR.pct[k])} מהידיים): equity ${pct(e)} ${e>=N.need?"≥":"<"} צריך ${pct(N.need)}${k!=="base"?(e>=N.need?". על הנייר call סביר.":". עדיין לא מספיק."):"."}`)};
+    seg.onclick=e=>{const b=e.target.closest("[data-r]");if(b){e.stopPropagation();draw(b.dataset.r)}};
+    setTimeout(()=>{if(!el.isConnected)return;for(const k of ["base","tight","wide"])res.eq[k]=equityVs(heroCards,VR[k],5000);setWhy(res.eq.base);draw("base")},30);
+  }
+  res.el=el;return res;
+}
 let activePF=null;
 function mountPF(root,{spot,hand,feedback,onDone,onAsk,record}){
   const code=codeAt(spot,hand),dealt=dealHand(hand),A=answerSet(spot),rec=raiseSize(spot),script=handScript(spot);let done=false,ready=false,t0=performance.now();
@@ -1203,10 +1368,8 @@ function mountPF(root,{spot,hand,feedback,onDone,onAsk,record}){
     const right=codeLabel(spot,code)+((code==="R"||code==="B")&&rec?" ל-"+money(rec):"");
     tbl.result(ok,ok?"✓ נכון":"✗ טעות · נכון: "+bidi(codeLabel(spot,code).replace(/\s*\(.*?\)/,"")));
     bar.hidden=true;after.hidden=false;after.querySelector('[data-x="next"]').focus({preventScroll:true});
-    let why=(ok?"":"**התשובה: "+right+".**\n")+explain(spot,hand,code);
-    if(k==="R"&&size&&rec){const r=size/rec;why+=r<.8||r>1.3?`\nהגודל שבחרת: ${money(size)}. הגודל המקובל כאן: ${money(rec)}.`:`\nגודל ה-raise שבחרת (${money(size)}) מתאים.`}
-    after.querySelector(".why").innerHTML=md(why);
-    followUp(after,ok,`מצב: ${lines.join(" ").replace(/\*\*/g,"")}\nהיד שלי: ${hand}\nאפשרויות: Fold | ${A.rName} | ${A.call}\nבחרתי: ${label(k,size)}\nהתשובה לפי הטבלה (PokerCoaching 9-max, 100bb, שולחן של ${settings.players}): ${right}\nהסבר: ${explain(spot,hand,code)}`);
+    const why=after.querySelector(".why");why.innerHTML="";const card=coachCard(why,{spot,hand,code,chosen:k,size,rec,ok,heroCards:dealt.txt.split(" ").map(cardInt)});
+    followUp(after,ok,`מצב: ${lines.join(" ").replace(/\*\*/g,"")}\nהיד שלי: ${hand}\nאפשרויות: Fold | ${A.rName} | ${A.call}\nבחרתי: ${label(k,size)}\nהתשובה לפי הטבלה (PokerCoaching 9-max, 100bb, שולחן של ${settings.players}): ${right}\nהסבר: ${explain(spot,hand,code)}`,null,()=>coachFacts(spot,card));
     me.next=()=>{clearTimeout(autoT);me.next=()=>{};go(res)};
     if(ok&&settings.autoNext!=="off"){autoT=setTimeout(()=>{if(T.isConnected)me.next()},900);const stop=()=>clearTimeout(autoT);root.addEventListener("pointerdown",stop,{once:true});root.addEventListener("focusin",stop,{once:true})}
   };
@@ -1231,29 +1394,78 @@ function mountMCQ(root,{q,opts,ans,explain:ex,feedback,onDone,label}){
     const nx=r.querySelector("button");nx.focus({preventScroll:true});nx.onclick=()=>onDone({ok,ms})};
 }
 /* Free-text follow-up after any answer: the player explains the decision, the coach explains what was right or wrong and how to fix it. */
-function followUp(host,ok,ctx,before){
+/* Numbers the AI may use. It never computes its own. */
+function coachFacts(s,card){
+  const N=card.N,e=card.eq||{},V=card.VR;
+  return {text:`מספרים מחושבים (השתמש רק בהם, אל תחשב מספרים אחרים): Pot ${chipTxt(N.pot)}. לשלם ${chipTxt(N.toCall)}. צריך equity ${N.need!=null?pct(N.need):"—"}. SPR אחרי call ${N.spr.toFixed(1)}.`+(V&&e.base!=null?` Equity מול ${V.lbl}: לפי הטבלה ${pct(e.base)}, range צר ${pct(e.tight)}, range רחב ${pct(e.wide)}.`:""),
+    nums:[N.need,e.base,e.tight,e.wide,V&&V.pct.base,V&&V.pct.tight,V&&V.pct.wide].filter(x=>x!=null).map(Math.round)};
+}
+const TERMS_OK="fold, call, raise, check, bet, limp, 3bet, 4bet, c-bet, all-in, preflop, flop, turn, river, range, position, in position, out of position, equity, pot, pot odds, SPR, outs, value, bluff, blocker, draw, set, suited, offsuit, read, exploit, showdown, tilt, stack, BTN, CO, HJ, LJ, UTG, SB, BB";
+const WRITE_RULES=`כללי כתיבה: עברית בלבד. באנגלית רק מונחים מהרשימה: ${TERMS_OK}. מרכאות בעברית: ״ ״. בלי פסקאות, בלי מבוא, בלי חזרה על השאלה. משפטים קצרים.`;
+function badPct(obj,allowed){const txt=JSON.stringify(obj);const found=[...txt.matchAll(/(\d+(?:\.\d+)?)\s*%/g)].map(m=>Math.round(+m[1]));return found.filter(x=>!allowed.some(a=>Math.abs(a-x)<=1))}
+function validCoach(o,allowed){
+  if(!o||typeof o!=="object"||!["right","partly","wrong"].includes(o.verdict)||typeof o.headline!=="string"||!Array.isArray(o.points)||!o.points.length||typeof o.rule!=="string")return "מבנה JSON לא תקין";
+  if(o.points.length>3)return "יותר מ-3 נקודות";
+  const words=t=>String(t).trim().split(/\s+/).length;
+  if(words(o.headline)>14||o.points.some(x=>words(x)>18)||words(o.rule)>18)return "משפטים ארוכים מדי";
+  const bad=badPct(o,allowed);if(bad.length)return "אחוזים שלא מהרשימה: "+bad.join(", ");
+  return null;
+}
+function renderCoachReply(o){
+  const tag={right:["ok","החשיבה נכונה"],partly:["mid","חלקית נכון"],wrong:["bad","החשיבה לא מדויקת"]}[o.verdict];
+  return `<div class="cc"><div><span class="cc-tag ${tag[0]}">${tag[1]}</span></div><h4>${bidi(o.headline)}</h4><ol class="cc-why">${o.points.slice(0,3).map(x=>`<li><span>${bidi(x)}</span></li>`).join("")}</ol>${o.when_right?`<p class="cc-when">${bidi("מתי אתה צודק: "+o.when_right)}</p>`:""}<div class="cc-rule"><p>${bidi("📌 "+o.rule)}</p><button class="btn" data-x="save-ai-rule">שמור</button></div></div>`;
+}
+const coachText=o=>`${o.headline}\n`+o.points.map((x,i)=>`${i+1}. ${x}`).join("\n")+(o.when_right?`\nמתי אתה צודק: ${o.when_right}`:"")+`\nכלל: ${o.rule}`;
+function followUp(host,ok,ctx,before,facts){
   if(!sample)return;
   const box=document.createElement("div");box.className="follow";
-  box.innerHTML=`<label class="fld"><span>${ok?"רוצה לבדוק שצדקת מהסיבה הנכונה? כתוב למאמן למה בחרת ככה.":"למה בחרת ככה? כתוב למאמן את החשיבה שלך, והוא יסביר איפה הטעות ואיך לתקן."}</span><textarea rows="3" placeholder="למשל: חשבתי שה-range שלו חזק, ולכן…"></textarea></label><div class="row"><button class="btn" data-f="send">שלח למאמן</button><button class="btn ghost" data-f="chat" hidden>המשך בשיחה עם המאמן</button></div><div class="explain reply" hidden aria-live="polite"></div>`;
+  box.innerHTML=`<label class="fld"><span>${ok?"רוצה לבדוק שצדקת מהסיבה הנכונה? ספר למאמן למה בחרת ככה.":"למה בחרת ככה? ספר למאמן את החשיבה שלך, והוא יגיד איפה הטעות."}</span><div class="mic-wrap"><textarea rows="3" placeholder="למשל: חשבתי שה-range שלו רחב, ולכן…"></textarea></div></label><div class="row"><button class="btn" data-f="send">שלח למאמן</button><button class="btn ghost" data-f="chat" hidden>המשך בשיחה עם המאמן</button></div><div class="reply" hidden aria-live="polite"></div>`;
   before?host.insertBefore(box,before):host.appendChild(box);
   const ta=box.querySelector("textarea"),send=box.querySelector('[data-f="send"]'),more=box.querySelector('[data-f="chat"]'),out=box.querySelector(".reply");let reason="",answer="";
+  attachMic(ta);
   send.onclick=async e=>{e.stopPropagation();reason=ta.value.trim();if(!reason){ta.focus();return}if(!sample)return;
-    send.disabled=true;out.hidden=false;out.textContent="המאמן קורא…";
-    const prompt=`אתה מאמן פוקר. השחקן ענה על שאלת תרגול ${ok?"נכון":"לא נכון"} והסביר את החשיבה שלו.
+    send.disabled=true;out.hidden=false;out.innerHTML=`<p class="muted">המאמן קורא…</p>`;
+    const F=facts?facts():{text:"",nums:[]};
+    const base=`אתה מאמן פוקר. השחקן ענה ${ok?"נכון":"לא נכון"} על החלטה, והסביר למה. תן משוב קצר מאוד.
 ${ctx}
-ההסבר של השחקן: "${reason.slice(0,2000)}"
-ענה בעברית, קצר וברור. מונחי משחק באנגלית באותיות לטיניות (call, check, raise, fold, bet, c-bet, 3bet, flop, range, position, equity, pot odds). מבנה:
-1. מה נכון ומה לא נכון בחשיבה שלו (משפט או שניים).
-2. למה התשובה הנכונה עדיפה, עם מספר אם רלוונטי (pot odds, equity, combos, range).
-3. כלל אחד לפעם הבאה שיוביל לפעולה הנכונה.
-אם השחקן צדק, חזק את החשיבה והוסף ניואנס אחד.
-פרופיל השחקן: ${profileText()}
-${aiStyle()}`;
-    try{const {text}=await sample(prompt,{onText:({text})=>{out.innerHTML=md(text)}});answer=text;out.innerHTML=md(text);more.hidden=false}
-    catch(err){out.innerHTML=md((err.text?err.text+"\n":"")+errCopy(err.code));if(["not_granted","sampling_disabled"].includes(err.code)){disableAI();box.remove()}}
+${F.text}
+ההסבר של השחקן: ״${reason.slice(0,1500)}״
+פרופיל: ${profileText()}
+${aiStyle()}
+${WRITE_RULES}
+החזר JSON בלבד בפורמט:
+{"verdict":"right|partly|wrong","headline":"שורה אחת, עד 10 מילים: מה עיקר הטעות או מה נכון","points":["עד 3 נקודות, כל אחת עד 14 מילים. כל נקודה = עובדה אחת. אחוזים רק מהמספרים המחושבים"],"when_right":"מתי החשיבה שלו כן נכונה, משפט אחד עד 14 מילים, או מחרוזת ריקה","rule":"כלל לפעם הבאה, עד 15 מילים"}`;
+    try{let o=await sample.json(base),err=validCoach(o,F.nums);
+      if(err){o=await sample.json(base+`\nהתשובה הקודמת נפסלה: ${err}. תקן והחזר JSON בלבד.`);err=validCoach(o,F.nums)}
+      if(err&&o&&Array.isArray(o.points)){const bad=new Set(badPct(o,F.nums));o.points=o.points.filter(x=>!badPct({x},F.nums).length).slice(0,3)}
+      if(!o||!Array.isArray(o.points)||!o.points.length||typeof o.headline!=="string")throw {code:"bad_coach"};
+      if(!["right","partly","wrong"].includes(o.verdict))o.verdict=ok?"right":"wrong";o.rule=o.rule||"";
+      answer=coachText(o);out.innerHTML=renderCoachReply(o);more.hidden=false;
+      const sv=out.querySelector('[data-x="save-ai-rule"]');if(sv)sv.onclick=ev=>{ev.stopPropagation();const R=store.get("rules",[]);if(o.rule&&!R.some(x=>x.t===o.rule)){R.unshift({t:o.rule,at:Date.now()});store.set("rules",R.slice(0,60))}sv.textContent="נשמר ✓";sv.disabled=true};
+    }catch(err){const c=err&&err.code;out.innerHTML=`<p>${bidi(c==="bad_coach"||c==="invalid_json"?"המאמן החזיר תשובה לא תקינה. נסה שוב.":errCopy(c))}</p>`;if(["not_granted","sampling_disabled"].includes(c)){disableAI();box.remove()}}
     finally{send.disabled=false}};
   more.onclick=e=>{e.stopPropagation();turns.push({role:"user",content:`${ctx}\nלמה בחרתי ככה: ${reason}`.slice(0,4000)},{role:"assistant",content:answer});store.set("chat",turns.slice(-30));show("coach")};
   box.addEventListener("click",e=>e.stopPropagation());
+}
+/* ===== VOICE: Hebrew dictation into any text box ===== */
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+const MIC_SVG='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>';
+function attachMic(ta){
+  let wrap=ta.parentElement;if(!wrap.classList.contains("mic-wrap")){wrap=document.createElement("div");wrap.className="mic-wrap";ta.parentElement.insertBefore(wrap,ta);wrap.appendChild(ta)}
+  const b=document.createElement("button");b.type="button";b.className="mic";b.innerHTML=MIC_SVG;b.setAttribute("aria-label","הקלטה בעברית");wrap.appendChild(b);
+  const hint=document.createElement("p");hint.className="mic-hint";hint.hidden=true;wrap.after(hint);
+  const say=t=>{hint.textContent=t;hint.hidden=false};
+  let rec=null;
+  b.onclick=e=>{e.preventDefault();e.stopPropagation();
+    if(rec){rec.stop();return}
+    if(!SR){say("ההקלטה לא נתמכת בדפדפן הזה. אפשר להכתיב עם כפתור המיקרופון במקלדת של הטלפון.");return}
+    try{rec=new SR()}catch(_){say("ההקלטה לא זמינה כאן. אפשר להכתיב עם המיקרופון במקלדת של הטלפון.");return}
+    rec.lang="he-IL";rec.interimResults=true;rec.continuous=true;const start=ta.value.trim();
+    rec.onresult=ev=>{let t="";for(let i=0;i<ev.results.length;i++)t+=ev.results[i][0].transcript;ta.value=(start?start+" ":"")+t.trim();ta.dispatchEvent(new Event("input"))};
+    rec.onerror=ev=>{say(ev.error==="not-allowed"||ev.error==="service-not-allowed"?"המיקרופון חסום בתצוגה הזו. אפשר להכתיב עם כפתור המיקרופון במקלדת של הטלפון.":ev.error==="no-speech"?"לא שמעתי כלום. נסה שוב.":"ההקלטה נעצרה. נסה שוב.")};
+    rec.onend=()=>{rec=null;b.classList.remove("on");b.setAttribute("aria-label","הקלטה בעברית")};
+    try{rec.start();b.classList.add("on");b.setAttribute("aria-label","עצור הקלטה");hint.hidden=true}catch(_){rec=null;say("ההקלטה לא זמינה כאן. אפשר להכתיב עם המיקרופון במקלדת של הטלפון.")}
+  };
 }
 function genPotOdds(){
   const pot=rnd([20,30,40,50,60,80,100,120,150,200]),bet=Math.round(pot*rnd([.25,.33,.5,.66,.75,1])),need=Math.round(bet/(pot+2*bet)*100);
@@ -1847,7 +2059,10 @@ function renderSettings(){
 }
 
 /* ===== PROFILE ===== */
+function renderRules(){const R=store.get("rules",[]);$("#p-rules-empty").hidden=R.length>0;$("#p-rules").innerHTML=R.map((r,i)=>`<li><span>${bidi(r.t)}</span><button data-i="${i}" aria-label="מחק">✕</button></li>`).join("")}
+$("#p-rules").onclick=e=>{const b=e.target.closest("[data-i]");if(!b)return;const R=store.get("rules",[]);R.splice(+b.dataset.i,1);store.set("rules",R);renderRules()};
 function renderProfile(){
+  renderRules();
   const p=hasProfile()?profile:{};
   $("#p-fields").innerHTML=`<h2>המשחק שלך</h2>`+PQ.map(q=>q.type==="stakes"
     ?`<label class="fld" for="pf-stakes"><span>${bidi(q.q)}</span></label><div class="row" style="flex-wrap:nowrap"><input type="text" id="pf-stakes" value="${esc(p.stakes||"")}"><select id="pf-currency" style="width:90px" aria-label="מטבע">${["₪","$","€"].map(c=>`<option ${p.currency===c?"selected":""}>${c}</option>`).join("")}</select></div>`
@@ -1874,7 +2089,9 @@ function statsText(){
 const rangesText=()=>DATA.charts.filter(c=>c.kind==="rfi").map(c=>c.hero+": "+ALL.filter((h,k)=>c.grid[k]!=="F").join(" ")).join("\n");
 function rules(){const last=journal.filter(e=>e.analysis).slice(-1)[0];return `אתה מאמן פוקר אישי (טקסס הולדם) באפליקציה poker AI. כללים:
 - עברית. מונחי משחק באנגלית באותיות לטיניות: call, check, raise, fold, bet, limp, 3bet, 4bet, c-bet, all-in, preflop, flop, turn, river, range, position, in position, out of position, equity, pot odds, outs, value, bluff, draw, set, showdown, blinds, buy-in, bankroll, tilt, tell. לדוגמה: "לעשות call", "עשית raise".
-- קצר, חד, ישיר. בלי מוטיבציה ובלי פילוסופיה.
+- פורמט: עד 6 שורות. שורה ראשונה = המסקנה. אחריה עד 3 נקודות ממוספרות, כל אחת עד 15 מילים. בלי פסקאות.
+- ${WRITE_RULES}
+- חישובים: כל חישוב בשורה נפרדת בתוך [[ ]], למשל [[6.3 ÷ 19.6 = 32%]]. Pot odds = כמה משלמים ÷ (ה-pot לפני ה-call + כמה משלמים). ה-pot כולל BB ante של 1bb ואת ה-blinds. בדוק כל חשבון פעמיים.
 - שיטה סוקרטית: לפני שאתה נותן תשובה, שאל שאלה אחת שמכריחה לחשוב. בסימולציית יד, עצור בכל נקודת החלטה וחכה לתשובה.
 - תקן טעויות ואמור בדיוק למה (מתמטיקה, range, position).
 - אל תמציא נתונים. אם אינך בטוח, כתוב "לא בטוח" ואיך לבדוק.
@@ -1906,6 +2123,7 @@ async function send(text){
 }
 function disableAI(){sample=null;$("#chat-send").disabled=true;$("#chips").hidden=true;$("#coach-status").textContent="המאמן AI לא זמין בתצוגה הזו. כל שאר האפליקציה עובדת כרגיל.";$("#p-ai").hidden=true;$("#j-save-analyze").hidden=true;const t=$("#tell-go");if(t)t.disabled=true;const pa=$("#pp-ai");if(pa)pa.hidden=true}
 $("#chat-send").onclick=()=>send($("#chat-in").value);
+attachMic($("#chat-in"));attachMic($("#j-text"));
 $("#chat-in").addEventListener("keydown",e=>{if(e.key==="Enter"&&(e.ctrlKey||e.metaKey)){e.preventDefault();send($("#chat-in").value)}});
 $("#chat-stop").onclick=()=>ctl&&ctl.abort();
 $("#chat-clear").onclick=()=>{turns=[];store.set("chat",[]);renderChat()};
