@@ -234,6 +234,19 @@ ul.cc-why li::before{content:none}
 .tool{border:0;background:var(--surface-2);color:var(--fg-2);border-radius:999px;padding:9px 14px;font:inherit;font-size:.86rem;font-weight:700;cursor:pointer}
 .tool[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent)}
 
+
+.cc-main{display:grid;gap:10px}
+.cc-k{font-size:.75rem;font-weight:800;letter-spacing:.02em;color:var(--muted)}
+.cc-f{display:grid;gap:2px;border-inline-start:3px solid var(--accent);padding-inline-start:10px}
+.cc-f b{font-size:1rem;font-weight:800}
+.cc-f p{margin:0;font-size:.97rem;line-height:1.55;color:var(--fg)}
+.cc-all{margin:0;padding:0;list-style:none;display:grid;gap:10px}
+.cc-all li{display:flex;gap:10px;align-items:flex-start}
+.cc-all .m{flex:0 0 24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:.78rem;font-weight:900;color:#fff;background:var(--muted)}
+.cc-all li.pro .m{background:var(--ok)} .cc-all li.con .m{background:var(--bad)}
+.cc-all b{font-size:.92rem} .cc-all p{margin:2px 0 0;font-size:.9rem;line-height:1.5;color:var(--fg-2)}
+.cc-all li.note p{color:var(--muted);font-size:.82rem}
+
 /* ===== STORIES ===== */
 body.story nav.tabbar{display:none}
 #v-story{position:fixed;inset:0;z-index:25;background:radial-gradient(120% 70% at 50% 0%,#1c3328 0%,#0b0d0c 62%);color:#fff;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:12px;padding:calc(10px + env(safe-area-inset-top,0px)) 14px calc(16px + env(safe-area-inset-bottom,0px));overflow:hidden;animation:fade .25s var(--ease) both}
@@ -1167,7 +1180,7 @@ function equityVs(hero,hands,iters){
   return (w+t/2)/iters*100;
 }
 const pct=x=>Math.round(x)+"%";
-window.__pc={get SPOTS(){return SPOTS},villRange,spotNums,equityVs,cardInt,CHARTS};
+window.__pc={get SPOTS(){return SPOTS},villRange,spotNums,equityVs,cardInt,CHARTS,get factorsFor(){return factorsFor},get pickHand(){return pickHand},get codeAt(){return codeAt}};
 
 /* ===== COMPONENTS ===== */
 /* ===== TABLE ===== */
@@ -1376,26 +1389,29 @@ function coachCard(host,{spot:s,hand:h,code,chosen,size,rec,ok,heroCards}){
   };
   const el=document.createElement("div");el.className="cc";host.appendChild(el);
   el.innerHTML=`<div class="cc-head ${ok?"ok":"bad"}"><span class="cc-ic">${ok?"✓":"✗"}</span><div><b>${ok?bidi("נכון: "+best):bidi(best+" עדיף")}</b>${ok?"":`<small>${bidi("בחרת "+ACT_HE[chosen])}</small>`}</div></div>
-  <p class="cc-line">${bidi(line(null))}</p>
+  <div class="cc-main"></div>
   ${showBar?`<div class="cc-bar" hidden><div class="cc-track"><i class="have"></i><i class="need"></i></div><div class="cc-legend"><span class="g">${bidi("אתה זוכה")} <b class="cc-eq"></b></span><span class="r">${bidi("צריך")} <b>${pct(N.need)}</b></span></div></div>`:""}
   ${sizeNote?`<p class="cc-sub">${bidi(sizeNote)}</p>`:""}
-  ${ok?"":`<ul class="cc-why"></ul>`}
+
   ${ok?"":`<div class="cc-rule"><p>${bidi("📌 "+ruleFor(s,h,code))}</p><button class="cc-save" data-x="save-rule" aria-label="שמור כלל">☆</button></div>`}
-  <details class="cc-more"><summary>עוד פרטים</summary><div class="cc-more-in">
+  <details class="cc-more"><summary>ההסבר המלא: כל מה שמשפיע כאן</summary><div class="cc-more-in"><ul class="cc-all"></ul>
     ${s.kind==="rfi"?"":`<div class="cc-nums"><div class="cc-num"><span>${bidi("Pot לפני")}</span><b>${chipTxt(N.pot)}</b></div><div class="cc-num"><span>${bidi("לשלם")}</span><b>${chipTxt(N.toCall)}</b></div><div class="cc-num"><span>SPR</span><b>${N.spr.toFixed(1)}</b></div></div>`}
     ${VR&&N.need!=null?`<p class="cc-sub">${bidi("ומה אם הנבל משחק אחרת?")}</p><div class="cc-seg" role="group" aria-label="range של הנבל">${[["tight","צר"],["base","לפי הטבלה"],["wide","רחב"]].map(([k,l])=>`<button type="button" data-r="${k}" aria-pressed="${k==="base"}">${l}</button>`).join("")}</div><p class="cc-note"></p>`:""}
-    <div class="cc-exp">${md(explain(s,h,code))}</div></div></details>`;
-  const why=el.querySelector(".cc-why"),setWhy=eq=>{if(why){const R=reasonsFor(s,h,code,N,eq);why.innerHTML=[R[0],R[R.length-1]].map(r=>`<li>${bidi(r)}</li>`).join("")}};setWhy(null);
+    </div></details>`;
+  const res={N,VR,eq:{},fx:null};
+  const setWhy=eq=>{const fx=factorsFor(s,h,heroCards,code,chosen,eq);res.fx=fx;
+    el.querySelector(".cc-main").innerHTML=`<span class="cc-k">${fx.main.length>1?"שתי הסיבות העיקריות":"הסיבה העיקרית"}</span>`+fx.main.map(f=>`<div class="cc-f"><b>${bidi(f.t)}</b><p>${bidi(f.x)}</p></div>`).join("");
+    el.querySelector(".cc-all").innerHTML=fx.all.map(f=>`<li class="${f.sup?"pro":"con"}"><span class="m">${f.sup?"✓":"✗"}</span><div><b>${bidi(f.t)}</b><p>${bidi(f.x)}</p></div></li>`).join("")+`<li class="note"><span class="m">ℹ</span><div><p>${bidi(`✓ = תומך ב-${fx.best}. ✗ = מושך לכיוון השני. ההחלטה לפי הטבלאות: ${fx.best}.`)}</p></div></li>`};
+  setWhy(null);
   const sv=el.querySelector('[data-x="save-rule"]');if(sv)sv.onclick=e=>{e.stopPropagation();const t=ruleFor(s,h,code);const R=store.get("rules",[]);if(!R.some(x=>x.t===t)){R.unshift({t,at:Date.now()});store.set("rules",R.slice(0,60))}e.currentTarget.textContent="★";e.currentTarget.classList.add("on");e.currentTarget.setAttribute("aria-label","נשמר")};
-  const res={N,VR,eq:{}};
   if(VR&&N.need!=null){
     const seg=el.querySelector(".cc-seg"),note=el.querySelector(".cc-note");
     const pick=k=>{const e=res.eq[k];if(e==null)return;seg.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.r===k));
       const lbl={tight:"צר",base:"לפי הטבלה",wide:"רחב"}[k];note.innerHTML=bidi(`מול range ${lbl} (${pct(VR.pct[k])} מהידיים) אתה זוכה ב-${pct(e)}. צריך ${pct(N.need)}.`)};
     seg.onclick=e=>{const b=e.target.closest("[data-r]");if(b){e.stopPropagation();pick(b.dataset.r)}};
     setTimeout(()=>{if(!el.isConnected)return;for(const k of ["base","tight","wide"])res.eq[k]=equityVs(heroCards,VR[k],5000);const e=res.eq.base;
-      el.querySelector(".cc-line").innerHTML=bidi(line(e));setWhy(e);pick("base");
-      const bar=el.querySelector(".cc-bar");if(bar){bar.hidden=false;el.querySelector(".cc-eq").textContent=pct(e);el.querySelector(".cc-track .have").style.width=Math.min(100,e)+"%";el.querySelector(".cc-track .need").style.insetInlineStart=N.need+"%"}},30);
+      setWhy(e);pick("base");
+      const bar=el.querySelector(".cc-bar");if(bar&&res.fx.main.some(f=>f.k==="price")){bar.hidden=false;el.querySelector(".cc-eq").textContent=pct(e);el.querySelector(".cc-track .have").style.width=Math.min(100,e)+"%";el.querySelector(".cc-track .need").style.insetInlineStart=N.need+"%"}},30);
   }
   res.el=el;return res;
 }
@@ -1439,11 +1455,60 @@ function replayStory(spot,hand,heroTxt,code,chosen,card){
       :right==="C"?"אתה זוכה מספיק פעמים כדי שהמחיר ישתלם, אבל לא מספיק חזק כדי להגדיל את הקופה. לכן call."
       :code==="B"?`${best} כ-bluff: הרבה פעמים ${vill} פשוט יוותר, ואז הקופה שלך בלי לראות flop. וכשהוא ממשיך, יש לך עדיין סיכוי.`
       :`היד שלך חזקה מרוב הידיים שלו. רוצים קופה גדולה יותר: ${best}.`;
-    fr.push({c:why,pills:{[spot.hero]:best},hl:["hero"]});
+    const fxm=card.fx&&card.fx.main;fr.push({c:fxm&&fxm.length?`למה ${best}? `+fxm.map(f=>f.x).join(" "):why,pills:{[spot.hero]:best},hl:["hero"]});
   }
   fr.push({c:"📌 "+ruleFor(spot,hand,code)});
   fr[0].reset=true;
   return {id:null,t:"למה "+best+" עדיף",ic:"?",S:{seats:P,hero:spot.hero,base,frames:fr,potTotal:true}};
+}
+
+/* ===== DECISION FACTORS: what actually decides THIS hand =====
+   Each factor: k key, t title, x one-line explanation with this hand's numbers, sup = supports the right action, sc = weight. */
+const liveCombos=(hs,hc)=>hs.reduce((a,h)=>a+expand(h).filter(c=>!hc.includes(c[0])&&!hc.includes(c[1])).length,0);
+function factorsFor(s,h,hc,code,chosen,eq){
+  const right=NORM[code],best=codeLabel(s,code).replace(/\s*\(.*?\)/,""),N=spotNums(s),VR=villRange(s),big=s.kind==="rfi_vs_3bet"?"4bet":"3bet",F=[],P=tablePos();
+  const pair=h.length===2,suited=h[2]==="s",ri=x=>RK.indexOf(x),gap=ri(h[1])-ri(h[0]);
+  const add=(k,t,x,sup,sc)=>F.push({k,t,x,sup,sc,eqDom:null,fe:null});
+  if(s.kind==="rfi"){
+    const p=chartPct(s.cid),o=Math.round(((p.R||0)+(p.B||0)+(p.C||0))/13.26),inR=right!=="F",edge=edges(s).includes(h),after=P.length-1-P.indexOf(s.hero);
+    add("range",inR?"בתוך ה-range":"מחוץ ל-range",inR?`מ-${s.hero} משחקים ${o}% מהידיים, ו-${h} ביניהן${edge?", ממש בקצה":""}.`:`מ-${s.hero} משחקים ${o<35?"רק ":""}${o}% מהידיים, ו-${h} לא ביניהן${edge?". היא ממש על הגבול":""}.`,true,edge?45:55);
+    if(s.hero==="SB")add("behind","רק ה-BB אחריך","רק ה-BB נשאר, וחצי blind שלך כבר בקופה. לכן מה-SB משחקים הרבה ידיים.",right!=="F",right!=="F"?60:15);
+    else add("behind","כמה שחקנים אחריך",after>=4?`עוד ${after} שחקנים אחריך. הסיכוי שלאחד מהם יש יד חזקה גבוה, ולכן מכאן צריך יד חזקה יותר.`:`רק ${after} שחקנים אחריך. הרבה פעמים כולם יוותרו.`,right==="F"?after>=4:after<4,right==="F"?(after>=4?70:15):(after<4?62:15));
+    if(["CO","BTN","SB"].includes(s.hero)&&right!=="F")add("steal","גניבת blinds",`בקופה כבר ${chipTxt(N.pot)}. אם כולם מוותרים, הם שלך בלי לראות flop.`,true,50);
+  }
+  if(!pair&&suited&&gap<=2)add("play","משחקת טוב",code==="B"?`גם כשהוא ממשיך, ${h} לא מתה: straights ו-flushes נותנים לה סיכוי טוב גם ב-pot גדול. לכן היא bluff טוב יותר מיד offsuit.`:`${h} suited ומחוברת: עושה straights ו-flushes, וקל לשחק אותה אחרי ה-flop.`,right!=="F",right==="C"?45:code==="B"?50:right==="R"?20:8);
+  else if(!pair&&!suited&&gap>=3&&ri(h[0])>0)add("play","קשה לשחק",`${h} offsuit ולא מחוברת: כשתפגע זוג, ה-kicker הרבה פעמים חלש, וכמעט אין draws.`,right==="F",right==="F"?42:8);
+  if(s.kind!=="rfi"){
+    const need=N.need;
+    if(eq!=null&&need!=null){const ok=eq>=need,thin=ok&&eq-need<8;
+      if(right==="F"&&thin)add("price","מרווח קטן מדי",`משלם ${chipTxt(N.toCall)} כדי לזכות ב-${chipTxt(N.fin)}: צריך ${pct(need)}, ואתה זוכה ב-${pct(eq)}. רק קצת מעל, ואחרי ה-flop מאבדים את המרווח הזה.`,true,52);
+      else add("price","המחיר מול הסיכוי",`משלם ${chipTxt(N.toCall)} כדי לזכות ב-${chipTxt(N.fin)}, כלומר צריך לזכות ${pct(need)} מהפעמים. מול ה-range שלו אתה זוכה ב-${pct(eq)}.`,right==="F"?!ok:ok,right==="C"?50+Math.min(30,(eq-need)*2):right==="F"&&!ok?55+Math.min(40,(need-eq)*3):12)}
+    else if(need!=null&&right==="C")add("price","מחיר זול",`משלם ${chipTxt(N.toCall)} כדי לזכות ב-${chipTxt(N.fin)}: מספיק לזכות ב-${pct(need)} מהפעמים.`,true,50);
+    if(s.kind==="facing_rfi"&&s.hero!=="BB"){const left=P.slice(P.indexOf(s.hero)+1).length;if(left)add("behind","שחקנים אחריך",`עוד ${left} שחקנים אחריך${left>1?", כולל ה-blinds":""}. כל אחד מהם יכול לעשות 3bet (squeeze), ואז ה-call שלך נזרק לפח.`,right!=="C",right==="F"?38+left*4:right==="R"?20:6)}
+    if(VR&&VR.pct.base<=16&&right!=="R")add("narrow",`range צר של ${s.vill}`,`${s.vill} משחק רק ${pct(VR.pct.base)} מהידיים, כמעט רק ידיים חזקות. ידיים בינוניות מתקשות מולו.`,right==="F",right==="F"?44:8);
+    if(VR){
+      let dom;
+      if(pair)dom=VR.base.filter(v=>v.length===2&&ri(v[0])<ri(h[0]));
+      else{const a=h[0],b=h[1];dom=VR.base.filter(v=>{if(v.length===2)return v[0]===a||v[0]===b;const x=v[0],y=v[1];return (x===a&&ri(y)<ri(b)&&y!==a)||(y===a&&ri(x)<ri(b))||(x===b&&ri(y)<ri(a)&&y!==b)||(y===b&&ri(x)<ri(a)&&x!==b)})}
+      const tot=liveCombos(VR.base,hc),dc=liveCombos(dom,hc),share=tot?dc/tot:0;
+      if(dom.length&&share>=.1){const ed=equityVs(hc,dom,2500);const f={k:"dom",t:pair?"זוגות גבוהים ממך":"נשלטת",x:pair?`${pct(share*100)} מה-range שלו הן זוגות גבוהים ממך (${dom.slice(0,4).join(", ")}). מולם אתה זוכה רק ב-${pct(ed)}.`:`${pct(share*100)} מה-range שלו (${dom.slice(0,4).join(", ")}) מחזיקות קלף שלך עם קלף שני גבוה יותר. מולן אתה זוכה רק ב-${pct(ed)}, ודווקא כשאתה פוגע אתה מפסיד pot גדול.`,sup:right==="F",sc:right==="F"?35+share*120:8,eqDom:ed};F.push(f)}
+      if(h.includes("A")||h.includes("K")){const vals=["AA","KK","AKs","AKo"].filter(x=>VR.base.includes(x));if(vals.length){const full=vals.reduce((a,x)=>a+combos(x),0),left=liveCombos(vals,hc);
+        if(left<full)add("block","blockers",`יש לך ${h.includes("A")?"A":"K"}, ולכן נשארו לו רק ${left} צירופים של ${vals.join(", ")} במקום ${full}. פחות ידיים חזקות אצלו = יותר פעמים הוא יוותר.`,right==="R",code==="B"?78:right==="R"?28:4)}}
+    }
+    if(right==="R"||chosen==="R"){let fe=null,est=false;
+      if(s.kind==="facing_rfi"){const sp=SPOTS.find(x=>x.kind==="rfi_vs_3bet"&&x.hero===s.vill&&x.vill===s.hero);if(sp){const m=CHARTS[sp.cid].map;let f=0,t=0;for(const x of ALL){const c=m[x];if(c==="F")continue;const n=combos(x);t+=n;if(c==="X")f+=n}if(t)fe=f/t*100}}
+      if(s.kind==="rfi_vs_3bet"&&VR){const sp=SPOTS.find(x=>x.kind==="facing_rfi"&&x.hero===s.vill&&x.vill===s.hero),m=sp&&CHARTS[sp.cid].map;if(m){let v=0,b=0;for(const x of ALL){if(m[x]==="R")v+=combos(x);if(m[x]==="B")b+=combos(x)}if(v+b){fe=b/(v+b)*100;est=true}}}
+      if(fe!=null){const f={k:"fe","t":"fold equity",x:est?`בערך ${pct(fe)} מה-3bet שלו הם bluffs, ומול ${big} הם בדרך כלל מוותרים (הערכה). כל fold כזה = הקופה שלך בלי לראות flop.`:`לפי הטבלאות, מול ${big} ${s.vill} מוותר ב-${pct(fe)} מהפעמים${fe<30?". לא הרבה, אבל כל fold כזה = הקופה שלך בלי לראות flop":". כל fold כזה = הקופה שלך בלי לראות flop"}.`,sup:right==="R",sc:code==="B"?30+fe*.8:right==="R"?22:6,eqDom:null,fe};F.push(f)}}
+    if(right==="R"&&code!=="B"&&eq!=null)add("value","חזקה מה-range שלו",`מול ה-range שלו אתה זוכה ב-${pct(eq)}. כשאתה מקדים, רוצים שהוא ישים עוד כסף: ${best} ל-value.`,true,eq>=55?82:48);
+    if(pair&&ri(h[0])>=5&&right!=="R")add("set","מחפשת set",`${h} מרוויחה בעיקר כשהיא פוגעת set, בערך פעם ב-8 flops. אחרי ה-call נשארים ${chipTxt(100-N.maxB)}, ${right==="C"?"מספיק כדי לזכות בהרבה כשפוגעים":"וזה לא מספיק כדי לפצות על 7 הפעמים שמחטיאים"}.`,true,48);
+    if(s.vill){const isIP=ip(s.hero,s.vill);add("pos",isIP?"in position":"out of position",isIP?`אחרי ה-flop ${s.vill} פועל לפניך בכל רחוב. אתה רואה מה הוא עשה לפני שאתה מחליט.`:`אחרי ה-flop אתה פועל ראשון בכל רחוב. קשה לממש את ה-equity, במיוחד עם יד שמחטיאה הרבה.`,isIP?right!=="F":right==="F",isIP?(right==="C"?32:8):(right==="F"&&eq!=null&&need!=null&&eq>=need?58:18))}
+  }
+  F.sort((a,b)=>b.sc-a.sc);
+  const sup=F.filter(f=>f.sup);
+  /* The price is the same arithmetic in every call spot: lead with what is specific to this hand when there is one. */
+  if(sup[0]&&sup[0].k==="price"){const j=sup.findIndex(f=>f.k!=="price"&&f.sc>=35);if(j>0)sup.unshift(sup.splice(j,1)[0])}
+  const main=sup.slice(0,2);if(main.length===2&&main[1].sc<Math.max(main[0].sc,50)*.55)main.pop();
+  return {main:main.length?main:F.slice(0,1),all:F,best};
 }
 let activePF=null;
 function mountPF(root,{spot,hand,feedback,onDone,onAsk,record}){
@@ -1509,8 +1574,11 @@ function mountMCQ(root,{q,opts,ans,explain:ex,feedback,onDone,label}){
 /* Numbers the AI may use. It never computes its own. */
 function coachFacts(s,card){
   const N=card.N,e=card.eq||{},V=card.VR;
-  return {text:`מספרים מחושבים (השתמש רק בהם, אל תחשב מספרים אחרים): Pot ${chipTxt(N.pot)}. לשלם ${chipTxt(N.toCall)}. צריך equity ${N.need!=null?pct(N.need):"—"}. SPR אחרי call ${N.spr.toFixed(1)}.`+(V&&e.base!=null?` Equity מול ${V.lbl}: לפי הטבלה ${pct(e.base)}, range צר ${pct(e.tight)}, range רחב ${pct(e.wide)}.`:""),
-    nums:[N.need,e.base,e.tight,e.wide,V&&V.pct.base,V&&V.pct.tight,V&&V.pct.wide].filter(x=>x!=null).map(Math.round)};
+  const fxT=card.fx?`
+הגורמים שמכריעים את היד הזו (מחושבים, מהחזק לחלש): `+card.fx.all.map(f=>`${f.t}: ${f.x}`).join(" | "):"";
+  return {text:fxT+`
+מספרים מחושבים (השתמש רק בהם, אל תחשב מספרים אחרים): Pot ${chipTxt(N.pot)}. לשלם ${chipTxt(N.toCall)}. צריך equity ${N.need!=null?pct(N.need):"—"}. SPR אחרי call ${N.spr.toFixed(1)}.`+(V&&e.base!=null?` Equity מול ${V.lbl}: לפי הטבלה ${pct(e.base)}, range צר ${pct(e.tight)}, range רחב ${pct(e.wide)}.`:""),
+    nums:[N.need,e.base,e.tight,e.wide,V&&V.pct.base,V&&V.pct.tight,V&&V.pct.wide].concat((card.fx?card.fx.all:[]).flatMap(f=>[f.eqDom,f.fe])).filter(x=>x!=null).map(Math.round)};
 }
 const TERMS_OK="fold, call, raise, check, bet, limp, 3bet, 4bet, c-bet, all-in, preflop, flop, turn, river, range, position, in position, out of position, equity, pot, pot odds, SPR, outs, value, bluff, blocker, draw, set, suited, offsuit, read, exploit, showdown, tilt, stack, BTN, CO, HJ, LJ, UTG, SB, BB";
 const WRITE_RULES=`כללי כתיבה: עברית בלבד. באנגלית רק מונחים מהרשימה: ${TERMS_OK}. מרכאות בעברית: ״ ״. בלי פסקאות, בלי מבוא, בלי חזרה על השאלה. משפטים קצרים.`;
