@@ -798,6 +798,15 @@ const GLOSS=[
  [["bluff","bluffs"],"בלוף","להמר עם יד חלשה כדי שהיריב יעשה fold.","bet גדול ב-river בלי כלום ביד."],
  [["value","value bet","value bets"],"הימור לרווח","להמר עם יד חזקה כדי שהיריב ישלם לך עם יד חלשה יותר.","יש לך top pair, ואתה עושה bet כדי שיד חלשה תעשה call."],
  [["blockers","blocker"],"קלפים חוסמים","קלף ביד שלך שמקטין את הסיכוי שליריב יש יד מסוימת.","אם יש לך A, פחות סביר שיש ליריב AA."],
+ [["range advantage"],"יתרון טווח","למי יש range חזק יותר בממוצע בבורד הזה. זה קובע כמה פעמים מהמרים.","BTN מול BB בבורד K-7-2: ל-BTN יש range advantage."],
+ [["nut advantage","nuts"],"יתרון בידיים החזקות","למי יש יותר מהידיים הכי חזקות בבורד. זה קובע עד כמה גדול אפשר להמר.","בבורד K-7-2 ל-BTN יש KK ו-AK, ול-BB כמעט אין."],
+ [["mdf"],"הגנה מינימלית","כמה מה-range שלך צריך להמשיך מול bet, כדי שכל bluff של היריב לא ירוויח אוטומטית. s הוא ה-bet ביחס ל-pot.","מול bet של pot מלא: [[1 ÷ (1 + 1) = 50%]]."],
+ [["alpha"],"כמה bluff צריך לעבוד","כמה פעמים bluff צריך לעבוד כדי להרוויח: הסיכון חלקי הסיכון ועוד ה-pot.","Bet של 5 לתוך 10: [[5 ÷ 15 = 33%]]."],
+ [["probe"],"הימור בדיקה","Bet ראשון ב-turn של מי שפועל ראשון, אחרי שהיריב עשה check ב-flop.","ה-BTN עשה check ב-flop, וב-turn ה-BB עושה bet."],
+ [["brick"],"קלף ריק","קלף שלא משנה כלום: לא משלים draws ולא יוצר ידיים חזקות.","Flop J-8-3 ו-turn 3."],
+ [["polarized"],"קצוות","מהמרים רק עם ידיים חזקות מאוד ועם bluffs, בלי ידיים בינוניות.","Bet גדול ב-river הוא בדרך כלל polarized."],
+ [["sizing"],"גודל הימור","כמה גדול ה-bet ביחס ל-pot.","C-bet של שליש pot הוא sizing קטן."],
+ [["ev"],"רווח צפוי","כמה מרוויחים בממוצע מפעולה, אם חוזרים עליה הרבה פעמים.","Call עם EV חיובי מרוויח לאורך זמן, גם אם הפסדת הפעם."],
  [["tilt"],"עצבים","משחק גרוע אחרי הפסד או עצבים: יותר ידיים, פחות סבלנות.","הפסדת יד גדולה ופתאום אתה עושה call להכל: זה tilt."],
  [["tell","tells"],"סימן גוף","התנהגות שמסגירה מה היריב מרגיש עכשיו: לחץ, ביטחון או התרגשות. היא לא מגלה קלפים מסוימים.","ידיים רועדות אחרי bet גדול הן לרוב התרגשות, בדרך כלל כי הוא אוהב את היד שלו."],
  [["bankroll"],"תקציב פוקר","הכסף שהקצית רק לפוקר.","עם תקציב של 2,000 ₪ לא משחקים במשחק של 500 ₪ ליד."],
@@ -909,6 +918,7 @@ function explain(s,h,code){
 /* ===== CONTENT (game terms in English) ===== */
 const THEORY=[
  {t:"GTO מול exploit",q:"Exploit",c:["GTO: אסטרטגיה מאוזנת שאי אפשר לנצל.","Exploit: סטייה מ-GTO כדי להרוויח מהטעויות של יריב מסוים.","בסיס: הטבלאות. התאמה: לפי היריבים בשולחן.","בסטייקים נמוכים מרוויחים יותר מ-exploit: פחות bluffs מול שחקנים שעושים call להכל, יותר value bets דקים.","שולחן passive: לשחק יותר ידיים ולבודד. שולחן aggressive: להדק."]},
+ {t:"טעויות נפוצות",q:"מתקדם",c:["5 טעויות שעולות כסף גם לשחקנים טובים.","1. לשנן תדירויות בלי להבין למה. מספר בלי סיבה נשכח ליד השולחן.","2. MDF עיוור out of position: להגן עם ידיים שלא יממשו equity. עדיף fold.","3. להעתיק ranges בין פורמטים: עם ante או בלי, rake גבוה או נמוך, 6 או 9 שחקנים. כל שינוי מזיז את הטבלה.","4. לפחד מ-bet גדול: עם nut advantage, bet גדול מרוויח יותר.","5. Bluff ב-river בלי לבדוק blockers: בוחרים יד שלא חוסמת את הידיים שעושות fold."]},
  {t:"Bankroll ו-tilt",q:"מנטלי",c:["קאש: לפחות 20–30 buy-ins לרמה. טורנירים: 50–100.","Stop-loss: 3 buy-ins לסשן, ואז קמים.","סימני tilt: משחק יותר ידיים אחרי הפסד, call \"רק כדי לראות\", רצון להחזיר מהר.","לפני סשן: 5 דקות תרגול preflop ומטרה אחת לסשן."]}
 ];
 /* ===== LESSON STORIES =====
@@ -1019,6 +1029,81 @@ const S_TELLS={seats:["CO","BTN","SB","BB"],hero:"BB",base:{dealt:true,hero:"A�
  {c:"הטבלאות מראות עם אילו ידיים שחקן מאוזן אמור לעשות bluff. זו נקודת ייחוס טובה. אבל הרבה שחקנים לא מכירים אותן ולא משחקים לפיהן, ומולם ה-bluff יכול להיות כל יד."},
  {c:"הכלל: ה-tell אומר מה הוא מרגיש, ה-range אומר מה הגיוני שיש לו, וה-pot odds אומרים כמה זה עולה. tell רק מזיז החלטות גבוליות."}
 ]};
+/* Postflop framework: range vs nut advantage, board classes, 3bet pots, turn, river, MDF/alpha. Examples checked against the charts. */
+const S_ADV={seats:["CO","BTN","SB","BB"],hero:"BTN",base:{dealt:true,hero:"A♠ J♠",fold:["CO","SB"],pot:6.5,done:{BTN:2.5,BB:2.5}},frames:[
+ {c:"עשית open מה-BTN, וה-BB עשה call. לפני שמסתכלים על היד שלך שואלים: מה יש לכל אחד ב-range?",hl:["BTN","BB"]},
+ {c:"לפי הטבלאות ה-BB עושה 3bet עם AA, KK, QQ ו-AK. אחרי call כמעט אין לו אותן, ואצלך כולן ב-range.",rng:["AA","KK","QQ","AK"],hl:["BB"]},
+ {c:"Flop: K♠ 7♦ 2♣.",board:["K♠","7♦","2♣"],hl:["board"]},
+ {c:"Range advantage: מי פוגע בבורד יותר טוב בממוצע. כאן זה אתה: יותר Kx חזקים ויותר זוגות גבוהים.",hl:["hero"]},
+ {c:"Nut advantage: למי יש יותר מהידיים הכי חזקות. KK ו-AK יש רק לך. Set של 7 ושל 2 יש לשניכם.",rng:["KK","AK","77","22"]},
+ {c:"חוק 1: range advantage קובע כמה פעמים מהמרים. חוק 2: nut advantage קובע עד כמה גדול אפשר להמר."},
+ {c:"כאן: c-bet הרבה פעמים, וקטן. ל-BB אין כמעט ידיים חזקות שימשיכו, אז bet קטן כבר מוציא fold מהחלשות ועולה מעט כשהוא נכשל.",bets:{BTN:2},pills:{BTN:"C-bet"}},
+ {c:"עכשיו flop אחר: 7♥ 6♥ 5♠.",reset:true,board:["7♥","6♥","5♠"],hl:["board"]},
+ {c:"ה-range שלך מלא קלפים גבוהים שהחטיאו. ל-BB יש הרבה ידיים נמוכות ומחוברות כמו 8-6, 7-6 ו-9-8. היתרון נעלם.",hl:["BB"]},
+ {c:"בלי יתרון: פחות c-bet. מהמרים עם ידיים חזקות ו-draws טובים, וכשמהמרים, bet גדול יותר. עם השאר: check."},
+ {c:"חוק 3: אותה יד יכולה פעם bet ופעם check. זו לא טעות: לשתי הפעולות כמעט אותו EV."},
+ {c:"חוק 4: in position מהמרים יותר. אתה רואה מה הוא עושה לפני שאתה מחליט, ומממש יותר מה-equity שלך."}
+]};
+const S_CHECK4={seats:["CO","BTN","SB","BB"],hero:"BTN",base:{dealt:true,hero:"6♥ 5♥",fold:["CO","SB"],pot:6.5,done:{BTN:2.5,BB:2.5},board:["K♠","7♦","2♣"]},frames:[
+ {c:"4 שאלות לכל יד אחרי ה-flop. נעבור עליהן ביד אחת: 6♥ 5♥ מה-BTN, וה-BB עושה check.",pills:{BB:"Check"},hl:["hero","board"]},
+ {c:"שאלה 1: איך נראים ה-ranges מה-preflop? אתה פתחת רחב מה-BTN. ה-BB עשה call, ולכן AA, KK ו-AK כמעט לא אצלו.",hl:["BTN","BB"]},
+ {c:"שאלה 2: למי יש range advantage ו-nut advantage בבורד הזה? לך, בשניהם.",hl:["board"]},
+ {c:"שאלה 3: מה האסטרטגיה הכללית? c-bet קטן והרבה פעמים."},
+ {c:"שאלה 4: מה היד שלך רוצה? ל-6♥ 5♥ אין זוג ואין draw. ב-showdown היא תפסיד כמעט תמיד.",hl:["hero"]},
+ {c:"לכן bet קטן: הוא מוציא fold מ-Q-high ו-J-high שמנצחות אותך. Bet של {bb:2}.",bets:{BTN:2},pills:{BTN:"C-bet"}},
+ {c:"הסדר חשוב: קודם ה-ranges והבורד, ורק בסוף היד שלך. מי שמתחיל מהיד שלו מפספס את התמונה."}
+]};
+const S_BOARDS={seats:["CO","BTN","SB","BB"],hero:"BTN",base:{dealt:true,hero:"A♣ 10♣",fold:["CO","SB"],pot:6.5,done:{BTN:2.5,BB:2.5}},frames:[
+ {c:"BTN מול BB, pot אחרי open ו-call. 5 סוגי flop, ומה עושים בכל אחד. אלה כיוונים, לא אחוזים מדויקים.",hl:["BTN","BB"]},
+ {c:"1. בורד יבש עם K: K♠ 7♦ 2♣. ל-BTN יש יתרון ברור. c-bet הרבה, וקטן.",board:["K♠","7♦","2♣"],hl:["board"]},
+ {c:"2. בורד יבש עם A: A♦ 8♣ 3♥. ל-BB יש הרבה Ax חלשים, אבל את AK ו-AQ הוא היה עושה 3bet. ה-A החזקים אצלך: גם כאן c-bet הרבה, וקטן.",reset:true,board:["A♦","8♣","3♥"],hl:["board"]},
+ {c:"3. בורד עם זוג: 8♠ 8♦ 3♣. קשה לפגוע בו, ולרוב אף אחד לא פגע. c-bet הרבה, וקטן.",reset:true,board:["8♠","8♦","3♣"],hl:["board"]},
+ {c:"4. בורד נמוך ומחובר: 7♥ 6♥ 5♠. ה-BB פוגע בו יותר טוב. פחות c-bet, וכשמהמרים, bet גדול.",reset:true,board:["7♥","6♥","5♠"],hl:["board"]},
+ {c:"5. בורד בצבע אחד: Q♦ 9♦ 4♦. כל יד עם יהלום אחד משנה את התמונה. פחות c-bet, וכשמהמרים, bet קטן.",reset:true,board:["Q♦","9♦","4♦"],hl:["board"]},
+ {c:"הכלל: בורד גבוה, יבש או עם זוג: c-bet הרבה וקטן. בורד נמוך ומחובר: פחות, וגדול. בורד בצבע אחד: פחות, וקטן."}
+]};
+const S_3BP={seats:["CO","BTN","SB","BB"],hero:"SB",base:{dealt:true,hero:"A♠ K♦",fold:["CO"],pot:1,bets:{SB:.5,BB:1}},frames:[
+ {c:"ה-BTN עושה open ל-{bb:2.5}. יש לך A♠ K♦ ב-SB.",bets:{BTN:2.5},pills:{BTN:"Raise"},hl:["hero"]},
+ {c:"3bet ל-{bb:9}.",bets:{SB:9},pills:{SB:"3bet"}},
+ {c:"ה-BB עושה fold וה-BTN עושה call.",bets:{BTN:9},fold:["BB"],pills:{BB:"Fold",BTN:"Call"}},
+ {c:"Flop: K♣ 8♦ 3♠. ב-pot יש {bb:20}, ולכל אחד נשארו {bb:91}. [[91 ÷ 20 ≈ 4.5]] זה ה-SPR. ב-pot רגיל אחרי open ו-call הוא בערך 15.",collect:true,board:["K♣","8♦","3♠"],hl:["pot","board"]},
+ {c:"ה-BTN עושה 4bet עם AA, KK, QQ ו-AK, אז אחרי call אין לו אותן. אצלך הן כולן: יתרון ברור.",rng:["AA","KK","QQ","AK"],hl:["BTN"]},
+ {c:"C-bet קטן של {bb:7}, בערך שליש pot. ב-SPR נמוך גם bet קטן בונה pot: עוד שני bets וה-stack בפנים.",bets:{SB:7},pills:{SB:"C-bet"}},
+ {c:"ה-BTN עושה call. עם top pair ו-kicker הכי טוב, ב-SPR כזה מוכנים להכניס הכל.",bets:{BTN:7},pills:{BTN:"Call"},hl:["hero"]},
+ {c:"הכלל בקופות 3bet: SPR נמוך, c-bet קטן מספיק, ו-top pair טוב שווה את כל ה-stack."}
+]};
+const S_TURN={seats:["CO","BTN","SB","BB"],hero:"BB",base:{dealt:true,hero:"9♣ 8♣",fold:["CO","SB"],pot:6.5,done:{BTN:2.5,BB:2.5},board:["J♠","8♦","3♣"]},frames:[
+ {c:"אתה ב-BB עם 9♣ 8♣. ה-BTN עשה open ועשית call. Flop: J♠ 8♦ 3♣. יש לך זוג אמצעי.",hl:["hero","board"]},
+ {c:"עשית check, וה-BTN עשה c-bet קטן. עשית call.",bets:{BTN:2,BB:2},pills:{BB:"Call",BTN:"C-bet"}},
+ {c:"Turn: 3♥. זה brick: קלף שלא משנה כלום. שום יד חזקה לא נוצרה.",collect:true,board:["J♠","8♦","3♣","3♥"],hl:["board"]},
+ {c:"אחרי brick היתרון נשאר אצל מי שהיה לו ב-flop. ה-BTN ממשיך להמר, ואתה ממשיך להגן בזהירות.",hl:["BTN"]},
+ {c:"עכשיו אותו flop, אבל ה-BTN עשה check אחריך. בלי c-bet.",reset:true,pills:{BB:"Check",BTN:"Check"},hl:["BTN"]},
+ {c:"מה זה אומר? עם ידיים חזקות הוא היה מהמר הרבה פעמים. אחרי check נשארו לו בעיקר ידיים בינוניות וחלשות."},
+ {c:"Turn: 9♥. הקלף הזה משנה את ה-nuts: Q-10 ו-10-7 עושות straight, ו-9-8 עושה two pair. 10-7 offsuit יש רק לך: ה-BTN לא פותח אותה.",board:["J♠","8♦","3♣","9♥"],hl:["board"]},
+ {c:"ולך עכשיו two pair. Probe: אתה מהמר ראשון ב-turn אחרי שהוא ויתר על c-bet. Bet של {bb:4}.",bets:{BB:4},pills:{BB:"Bet"},hl:["hero"]},
+ {c:"הכלל: brick משאיר את היתרון במקום. קלף שמשנה את ה-nuts מעביר אותו. ואחרי check שלו ב-flop, probe ב-turn."}
+]};
+const S_RIVER={seats:["CO","BTN","SB","BB"],hero:"BTN",base:{dealt:true,hero:"A♦ K♣",fold:["CO","SB"],board:["K♠","8♠","4♥","2♦","2♣"],pot:20,done:{BTN:10,BB:10}},frames:[
+ {c:"River. בורד K♠ 8♠ 4♥ 2♦ 2♣, ה-BB עושה check. יש לך A♦ K♣.",pills:{BB:"Check"},hl:["hero","board"]},
+ {c:"השאלה ל-value: אם הוא עושה call, אתה מנצח יותר מחצי מהפעמים? ידיים שיעשו call: K-J, K-10, K-9 ו-8x. את כולן אתה מנצח."},
+ {c:"לכן bet ל-value: {bb:13}.",bets:{BTN:13},pills:{BTN:"Bet"}},
+ {c:"יד אחרת: K♥ 5♥. מי יעשה call? K-J, K-10 ו-K-9, וכולן מנצחות אותך. 8x ו-4x שאתה מנצח יעשו fold.",reset:true,hero:"K♥ 5♥",pills:{BB:"Check"},hl:["hero"]},
+ {c:"מול ה-call אתה מנצח פחות מחצי. Check.",pills:{BTN:"Check"}},
+ {c:"ועכשיו bluff. ב-flop היו שני ♠: הידיים שיעשו fold הן בעיקר flush draws שהחטיאו.",reset:true,hero:"J♠ 10♠",pills:{BB:"Check"},hl:["board"]},
+ {c:"עם J♠ 10♠ אתה מחזיק בעצמך שני ♠. נשארים לו פחות draws שהחטיאו, כלומר פחות ידיים שיעשו fold. Bluff גרוע.",hl:["hero"]},
+ {c:"עם Q♥ J♥ אין לך ♠. ה-draws שלו שלמים, וה-bluff יעבוד יותר. Bet של {bb:15}.",reset:true,hero:"Q♥ J♥",bets:{BTN:15},pills:{BB:"Check",BTN:"Bet"},hl:["hero"]},
+ {c:"הכלל: value כשאתה מנצח יותר מחצי מה-call. Bluff עם יד שלא חוסמת את הידיים שעושות fold."}
+]};
+const S_MDF={raw:true,seats:["BTN","BB"],hero:"BB",base:{dealt:true,hero:"Q♥ J♣",pot:10},frames:[
+ {c:"ב-pot יש 10. הנבל עושה bet של 10, pot מלא.",bets:{BTN:10},pills:{BTN:"Bet"},hl:["pot","bet:BTN"]},
+ {c:"שתי שאלות שונות: כמה פעמים ה-bluff שלו צריך לעבוד? וכמה מה-range שלך צריך להמשיך?"},
+ {c:"Alpha: סיכון ÷ (סיכון + פרס). הוא מסכן 10 כדי לזכות ב-10. [[10 ÷ (10 + 10) = 50%]] ה-bluff שלו צריך לעבוד חצי מהפעמים.",hl:["bet:BTN"]},
+ {c:"MDF: כמה מה-range שלך ממשיך (call או raise), כדי שכל bluff שלו לא ירוויח אוטומטית. s = גודל ה-bet ביחס ל-pot. [[1 ÷ (1 + 1) = 50%]]",hl:["hero"]},
+ {c:"Bet של חצי pot: [[5 ÷ (5 + 10) = 33%]] alpha, ו-[[1 ÷ (1 + 0.5) = 67%]] MDF. Bet קטן יותר = צריך להמשיך עם יותר ידיים.",reset:true,bets:{BTN:5},pills:{BTN:"Bet"},hl:["bet:BTN"]},
+ {c:"זהירות: MDF הוא נקודת ייחוס, לא פקודה. Out of position אתה מממש פחות equity, ובסטייקים נמוכים רוב השחקנים מבלפים פחות. אז עושים יותר fold, לא call ״כי MDF אמר״."},
+ {c:"Sizing גאומטרי: אותו אחוז מה-pot בכל רחוב, כך שב-river נכנס כל ה-stack. Pot של 10 ו-stack של 130: bet של pot מלא בכל רחוב.",reset:true,hl:["pot"]},
+ {c:"[[10 + 30 + 90 = 130]] Bet של 10 ב-flop, 30 ב-turn ו-90 ב-river: כל ה-stack בפנים ב-river, בלי bet ענק ופתאומי."}
+]};
 const fromTheory=t=>{const T=THEORY.find(x=>x.t===t);return {seats:["UTG","HJ","CO","BTN","SB","BB"],hero:"BTN",base:{dealt:true,hero:"A♣ Q♦",pot:1,bets:{SB:.5,BB:1}},frames:T.c.map(c=>({c}))}};
 const LESSONS=[
  {id:"position",t:"Position",ic:"BTN",g:"Preflop",q:"Position",S:S_POSITION},
@@ -1027,16 +1112,36 @@ const LESSONS=[
  {id:"3bet",t:"3bet ו-4bet",ic:"3bet",g:"Preflop",q:"Preflop",S:S_3BET},
  {id:"potodds",t:"Pot odds",ic:"%",g:"מתמטיקה",end:"math",S:S_POTODDS},
  {id:"outs",t:"Outs וחוק 2/4",ic:"×4",g:"מתמטיקה",end:"math",S:S_OUTS},
+ {id:"mdf",tag:"mdf",t:"MDF ו-alpha",ic:"MDF",g:"מתמטיקה",q:"מתקדם",S:S_MDF},
  {id:"spr",t:"Implied odds ו-SPR",ic:"SPR",g:"מתמטיקה",q:"Postflop",S:S_SPR},
  {id:"cbet",t:"C-bet ומרקם בורד",ic:"C-bet",g:"Postflop",q:"Postflop",S:S_CBET},
  {id:"missed",t:"החטאת את ה-flop",ic:"AK",g:"Postflop",q:"החטאת flop",S:S_MISSED},
  {id:"value",t:"Value מול bluff",ic:"$",g:"Postflop",q:"Postflop",S:S_VALUE},
+ {id:"adv",tag:"adv",t:"Range ו-nut advantage",ic:"Nuts",g:"Postflop מתקדם",q:"מתקדם",S:S_ADV},
+ {id:"check4",tag:"adv",t:"4 שאלות לכל יד",ic:"4?",g:"Postflop מתקדם",q:"מתקדם",S:S_CHECK4},
+ {id:"boards",tag:"boards",t:"5 סוגי בורדים",ic:"K72",g:"Postflop מתקדם",q:"מתקדם",S:S_BOARDS},
+ {id:"3bp",tag:"3bp",t:"קופות 3bet",ic:"3BP",g:"Postflop מתקדם",q:"מתקדם",S:S_3BP},
+ {id:"turn",tag:"turn",t:"Turn: brick ו-probe",ic:"Turn",g:"Postflop מתקדם",q:"מתקדם",S:S_TURN},
+ {id:"river",tag:"river",t:"River: value ו-blockers",ic:"River",g:"Postflop מתקדם",q:"מתקדם",S:S_RIVER},
+ {id:"mistakes",t:"טעויות נפוצות",ic:"Leak",g:"Postflop מתקדם",q:"מתקדם",S:fromTheory("טעויות נפוצות")},
  {id:"types",t:"סוגי שחקנים",ic:"LAG",g:"יריבים וראש",q:"Exploit",S:S_TYPES},
  {id:"tells",t:"שפת גוף",ic:"Tell",g:"יריבים וראש",end:"tells",S:S_TELLS},
  {id:"gto",t:"GTO מול exploit",ic:"GTO",g:"יריבים וראש",q:"Exploit",S:fromTheory("GTO מול exploit")},
  {id:"tilt",t:"Bankroll ו-tilt",ic:"Tilt",g:"יריבים וראש",q:"מנטלי",S:fromTheory("Bankroll ו-tilt")}
 ];
 const QUIZ=[
+ ["מתקדם","BTN מול BB, flop K♠ 7♦ 2♣. למי יש nut advantage?",["ל-BTN","ל-BB","לאף אחד"],0,"KK ו-AK כמעט רק אצל ה-BTN: ה-BB היה עושה איתן 3bet.","adv"],
+ ["מתקדם","מה קובע עד כמה גדול להמר?",["Range advantage","Nut advantage","Position","רק גודל ה-stack"],1,"Nut advantage: כשיש לך יותר מהידיים הכי חזקות, bet גדול מרוויח יותר. Range advantage קובע כמה פעמים מהמרים.","adv"],
+ ["מתקדם","BTN מול BB, flop 7♥ 6♥ 5♠. מה האסטרטגיה הכללית של ה-BTN?",["C-bet קטן עם כל ה-range","פחות c-bet, וכשמהמרים bet גדול","All-in"],1,"בורד נמוך ומחובר פוגע ב-range של ה-BB. בלי יתרון מהמרים פחות, וכשמהמרים, גדול.","boards"],
+ ["מתקדם","BTN מול BB, flop A♦ 8♣ 3♥. מה ה-BTN עושה ברוב הידיים?",["C-bet קטן","Check","Bet של pot מלא"],0,"ל-BB יש Ax חלשים, אבל AK ו-AQ הוא היה עושה 3bet. ה-A החזקים אצל ה-BTN: c-bet הרבה, וקטן.","boards"],
+ ["מתקדם","Bet של pot מלא. מה ה-MDF?",["33%","50%","67%","75%"],1,"[[1 ÷ (1 + 1) = 50%]]","mdf"],
+ ["מתקדם","Bet של חצי pot. כמה פעמים ה-bluff צריך לעבוד (alpha)?",["25%","33%","50%","67%"],1,"מסכנים 5 כדי לזכות ב-10: [[5 ÷ (5 + 10) = 33%]]","mdf"],
+ ["מתקדם","Pot של 10 ו-stack של 130. איזה sizing קבוע מכניס הכל ב-river?",["חצי pot","שני שליש pot","Pot מלא","פי 2 pot"],2,"[[10 + 30 + 90 = 130]]","mdf"],
+ ["מתקדם","3bet pot, SPR של 4.5, flop K♣ 8♦ 3♠ ויש לך AK. מה בדרך כלל?",["C-bet קטן","Check-fold","Bet של פי 2 pot"],0,"SPR נמוך: bet קטן כבר בונה pot, ו-top pair טוב שווה את כל ה-stack.","3bp"],
+ ["מתקדם","היריב עשה check ב-flop אחרי ה-check שלך. ב-turn נפתח קלף שעוזר ל-range שלך. מה המהלך?",["Probe","Check-fold","Check-raise תמיד"],0,"אחרי ה-check שלו נשארו לו בעיקר ידיים בינוניות. קלף שעוזר לך = probe.","turn"],
+ ["מתקדם","River. מתי עושים bet ל-value?",["כשיש לך top pair","כשמנצחים יותר מחצי מהידיים שיעשו call","כשהוא עשה check","תמיד in position"],1,"קובעות רק הידיים שיעשו call. אם רובן מנצחות אותך: check.","river"],
+ ["מתקדם","ב-flop היו שני ♠, ושום ♠ לא הגיע. איזו יד עדיפה ל-bluff ב-river?",["J♠ 10♠","Q♥ J♥"],1,"J♠ 10♠ חוסמת את ה-flush draws שהחטיאו, כלומר את הידיים שהיו עושות fold.","river"],
+ ["מתקדם","עם אותה יד באותו מצב אתה עושה פעם bet ופעם check. מה נכון?",["טעות, צריך להחליט","תקין: לשתי הפעולות כמעט אותו EV"],1,"אסטרטגיה מעורבת: כששתי פעולות שוות בערך, מערבבים.","adv"],
  ["Position","איזו עמדה עושה open עם ה-range הרחב ביותר בטבלאות?",["UTG","CO","BTN","BB"],2,"ה-BTN עושה open עם כ-51% מהידיים, כי הוא תמיד פועל אחרון אחרי ה-flop."],
  ["Position","למה ה-SB משחק הרבה ידיים למרות שהוא out of position?",["חצי blind כבר ב-pot ורק ה-BB אחריו","זו העמדה הכי טובה","ה-BB לא יכול לעשות 3bet","ה-BB תמיד עושה fold"],0,"רק ה-BB נשאר, וחצי blind כבר ב-pot. לכן ה-SB משחק הרבה ידיים, חלקן ב-raise וחלקן ב-limp."],
  ["Preflop","אתה ב-UTG, כולם לפניך עשו fold. יש לך KQo. מה עושים?",["Raise ל-{bb:2.5}","Fold"],1,"מ-UTG עושים open רק עם AKo ו-AQo מבין ידיים offsuit. KQo נשלט ע״י AK, AQ ו-KK."],
@@ -1585,7 +1690,7 @@ function coachFacts(s,card){
 מספרים מחושבים (השתמש רק בהם, אל תחשב מספרים אחרים): Pot ${chipTxt(N.pot)}. לשלם ${chipTxt(N.toCall)}. צריך equity ${N.need!=null?pct(N.need):"—"}. SPR אחרי call ${N.spr.toFixed(1)}.`+(V&&e.base!=null?` Equity מול ${V.lbl}: לפי הטבלה ${pct(e.base)}, range צר ${pct(e.tight)}, range רחב ${pct(e.wide)}.`:""),
     nums:[N.need,e.base,e.tight,e.wide,V&&V.pct.base,V&&V.pct.tight,V&&V.pct.wide].concat((card.fx?card.fx.all:[]).flatMap(f=>[f.eqDom,f.fe])).filter(x=>x!=null).map(Math.round)};
 }
-const TERMS_OK="fold, call, raise, check, bet, limp, 3bet, 4bet, c-bet, all-in, preflop, flop, turn, river, range, position, in position, out of position, equity, pot, pot odds, SPR, outs, value, bluff, blocker, draw, set, suited, offsuit, read, exploit, showdown, tilt, stack, BTN, CO, HJ, LJ, UTG, SB, BB";
+const TERMS_OK="fold, call, raise, check, bet, limp, 3bet, 4bet, c-bet, all-in, preflop, flop, turn, river, range, position, in position, out of position, equity, pot, pot odds, SPR, outs, value, bluff, blocker, draw, set, range advantage, nut advantage, MDF, alpha, probe, brick, sizing, EV, suited, offsuit, read, exploit, showdown, tilt, stack, BTN, CO, HJ, LJ, UTG, SB, BB";
 const WRITE_RULES=`כללי כתיבה: עברית בלבד. באנגלית רק מונחים מהרשימה: ${TERMS_OK}. מרכאות בעברית: ״ ״. בלי פסקאות, בלי מבוא, בלי חזרה על השאלה. משפטים קצרים.`;
 function badPct(obj,allowed){const txt=JSON.stringify(obj);const found=[...txt.matchAll(/(\d+(?:\.\d+)?)\s*%/g)].map(m=>Math.round(+m[1]));return found.filter(x=>!allowed.some(a=>Math.abs(a-x)<=1))}
 function validCoach(o,allowed){
@@ -2012,7 +2117,7 @@ $("#c-vills").onclick=e=>{const b=e.target.closest("[data-v]");if(b){cv.vill=b.d
 
 /* ===== LEARN ===== */
 let seenL=store.get("seen",[]);if(!Array.isArray(seenL))seenL=[];
-const L_GROUPS=["Preflop","מתמטיקה","Postflop","יריבים וראש"];
+const L_GROUPS=["Preflop","מתמטיקה","Postflop","Postflop מתקדם","יריבים וראש"];
 const stoRing=(L,cls)=>`<span class="sto-ring${seenL.includes(L.id)?" seen":""}${cls||""}"><span class="sto-ic" dir="ltr">${esc(L.ic)}</span></span>`;
 function renderLearn(){
   $("#l-sub").innerHTML=bidi("כל שיעור הוא יד אמיתית על השולחן, שלב אחרי שלב. לחץ כדי להתקדם, החזק כדי לעצור. בסוף: תרגול.");
@@ -2061,7 +2166,7 @@ function finishStory(){
   end.innerHTML=`<div class="card-box lesson-done">${stoRing(L)}<p>${bidi(L.end?"עכשיו תורך: תרגול קצר על מה שראית.":"עכשיו תורך: שאלה על מה שראית.")}</p><div class="row" style="justify-content:center"><button class="btn" id="se-again">לצפות שוב</button>${nx?`<button class="btn primary" id="se-next">${bidi("הבא: "+nx.t)}</button>`:""}</div></div><div class="view" id="se-pr"></div>`;
   $("#se-again").onclick=()=>openStory(L.id,backTo);if(nx)$("#se-next").onclick=()=>openStory(nx.id,backTo);
   show("deck");
-  const pr=$("#se-pr");if(L.end==="math")mathEnd(pr);else if(L.end==="tells")tellsEnd(pr);else theoryEnd(pr,{q:L.q});
+  const pr=$("#se-pr");if(L.end==="math")mathEnd(pr);else if(L.end==="tells")tellsEnd(pr);else theoryEnd(pr,{q:L.q,tag:L.tag});
 }
 (()=>{
   let downAt=0,timer=null;
@@ -2075,7 +2180,7 @@ function finishStory(){
     if(e.key==="ArrowLeft"){e.preventDefault();storyNext()}else if(e.key==="ArrowRight"){e.preventDefault();storyPrev()}else if(e.key===" "&&!e.target.matches("button")){e.preventDefault();setPaused(!story.paused)}else if(e.key==="Escape"){$("#sb-x").click()}});
 })();
 function theoryEnd(end,t){
-  const pool=QUIZ.filter(q=>q[0]===t.q);
+  let pool=QUIZ.filter(q=>q[0]===t.q&&(!t.tag||q[5]===t.tag));if(!pool.length)pool=QUIZ.filter(q=>q[0]===t.q);
   const ask=()=>{end.innerHTML="";const box=document.createElement("div");box.className="view";end.appendChild(box);
     mountMCQ(box,Object.assign(quizItem(rnd(pool)),{label:"שאלה על הנושא",feedback:true,onDone:r=>{qs.n++;if(r.ok)qs.ok++;store.set("qscore",qs);
       box.querySelector(":scope > .row").innerHTML=`<button class="btn" data-a="more">שאלה נוספת</button><button class="btn primary" data-a="back">לשיעורים</button>`;
@@ -2320,6 +2425,7 @@ function rules(){const last=journal.filter(e=>e.analysis).slice(-1)[0];return `�
 - תקן טעויות ואמור בדיוק למה (מתמטיקה, range, position).
 - אל תמציא נתונים. אם אינך בטוח, כתוב "לא בטוח" ואיך לבדוק.
 - התאם דוגמאות לסטייק, לסוג היריבים, ליריבים הקבועים ולפורמט של השחקן. תעדף את הדליפות ואת הדפוסים מהיומן.
+- Postflop: חשוב לפי 4 שאלות: איך נראים ה-ranges מה-preflop; למי range advantage ולמי nut advantage בבורד; מה האסטרטגיה הכללית (bet קטן, גדול או check); מה היד הספציפית רוצה. Range advantage קובע כמה פעמים מהמרים, nut advantage עד כמה גדול. MDF הוא ייחוס, לא חוק, ובמיוחד out of position. Value ב-river רק אם מנצחים יותר מחצי מהידיים שעושות call. Bluff ב-river עם יד שלא חוסמת את הידיים שעושות fold. אל תמציא אחוזי solver מדויקים.
 - Tells: tell מעיד על מה שהשחקן מרגיש (לחץ, ביטחון, התרגשות), לא על קלפים מסוימים. bluff אפשר לעשות עם כל יד. צריך בסיס לפני tell, והוא רק מזיז החלטות גבוליות.
 - Ranges לפי הטבלאות הן נקודת ייחוס בלבד: תמיד לסייג שהרבה שחקנים לא מכירים אותן ולא משחקים לפיהן, ומשחקן רחב אפשר לצפות לכל יד.
 - סיים כל תשובה בשורה "צעד הבא:" עם פעולה אחת לתרגול.
