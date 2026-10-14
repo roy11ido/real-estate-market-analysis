@@ -143,6 +143,8 @@ body.focus nav.tabbar{display:none}
 .st-desc{font-size:.95rem;color:var(--muted);max-width:34ch}
 
 
+.rng{display:flex;flex-wrap:wrap;justify-content:center;gap:4px;direction:ltr;max-width:240px}
+.rng span{background:rgba(255,255,255,.92);color:#1F2937;border-radius:6px;padding:2px 6px;font:800 .72rem/1.3 var(--display);animation:pop2 .3s var(--ease) both;animation-delay:calc(var(--j) * 40ms)}
 /* ===== COACH CARD ===== */
 .cc{display:grid;gap:14px;background:var(--surface);border-radius:24px;padding:18px;box-shadow:var(--shadow-sm)}
 .cc-verdict{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
@@ -590,6 +592,7 @@ label.fld,.fld{display:grid;gap:6px;font-size:.85rem;color:var(--muted);font-wei
     <div class="card-box"><h2>תצוגה</h2><div class="choices" id="st-theme"></div></div>
     <div class="card-box"><h2>קלפים</h2><div class="choices" id="st-deck"></div></div>
     <div class="card-box"><h2>מעבר ליד הבאה</h2><div class="choices" id="st-auto"></div></div>
+    <div class="card-box"><h2>הסבר אחרי טעות</h2><div class="choices" id="st-replay"></div></div>
     <div class="card-box"><h2>אנימציות</h2><div class="choices" id="st-anim"></div></div>
     <div class="card-box"><h2>שחקנים בשולחן</h2><div class="seats" id="st-players"></div><p class="small muted" id="st-players-note"></p></div>
     <p class="small muted">השינויים נשמרים מיד.</p>
@@ -664,7 +667,7 @@ const todayKey=(d=new Date())=>d.getFullYear()+"-"+String(d.getMonth()+1).padSta
 
 /* ===== SETTINGS + UNITS ===== */
 /* v2: one audience, players who know the game and want to improve. */
-const SET_DEFAULT={v:2,units:"bb",lang:"pro",players:6,anim:"fast",theme:"dark",deck:"4",autoNext:"on"};
+const SET_DEFAULT={v:2,units:"bb",lang:"pro",players:6,anim:"fast",theme:"dark",deck:"4",autoNext:"on",replay:"auto"};
 let settings=store.get("settings",null)||{};
 if(settings.v!==2)settings=Object.assign({},settings,{v:2,units:"bb",lang:"pro",anim:"fast",theme:"dark",deck:"4",autoNext:"on"});
 settings=Object.assign({},SET_DEFAULT,settings);settings.lang="pro";
@@ -1246,11 +1249,11 @@ function renderGrid(wrap,s,hl){
 const STACK=100;
 const cardHTML=(c,cls,j)=>{const r=c.slice(0,-1),su=c.slice(-1);return `<div class="${cls}${"♥♦".includes(su)?" red":""} ${SUIT_CLS[su]}"${j!=null?` style="--j:${j}"`:""}>${r}<small>${su}</small></div>`};
 const pillCls=t=>/^Fold/.test(t)?"f":/^(Raise|Bet|C-bet|3bet|4bet|All-in)/.test(t)?"r":/^(Call|Check|Limp)/.test(t)?"c":"w";
-function sceneState(){return {bets:{},done:{},pot:0,board:[],fold:[],dealt:false,hero:null,show:{},pills:{},emote:{},hl:[],eq:null,outs:null}}
+function sceneState(){return {bets:{},done:{},pot:0,board:[],fold:[],dealt:false,hero:null,show:{},pills:{},emote:{},hl:[],eq:null,outs:null,rng:null}}
 function applyDelta(st,d){
-  st=JSON.parse(JSON.stringify(st));st.pills={};st.emote={};st.hl=[];st.eq=null;st.outs=null;
+  st=JSON.parse(JSON.stringify(st));st.pills={};st.emote={};st.hl=[];st.eq=null;st.outs=null;st.rng=null;
   if(d.collect){for(const [p,b] of Object.entries(st.bets)){st.done[p]=(st.done[p]||0)+b;st.pot+=b}st.bets={}}
-  for(const k of ["pot","board","dealt","hero","pills","emote","hl","eq","outs"])if(d[k]!==undefined)st[k]=JSON.parse(JSON.stringify(d[k]));
+  for(const k of ["pot","board","dealt","hero","pills","emote","hl","eq","outs","rng"])if(d[k]!==undefined)st[k]=JSON.parse(JSON.stringify(d[k]));
   if(d.done)st.done=Object.assign({},d.done);
   if(d.bets)Object.assign(st.bets,d.bets);
   if(d.show)Object.assign(st.show,d.show);
@@ -1263,9 +1266,10 @@ function storyStates(S){
 }
 function renderScene(T,S,st,prev){
   const P=S.seats,N=P.length,hi=P.indexOf(S.hero),G=seatGeom(N),hl=new Set(st.hl),fmt=bb=>S.raw?String(bb):chipTxt(bb);
-  let html=`<div class="felt"><div class="t-center"><div class="pot${hl.has("pot")?" hl":""}"><span>Pot</span><b>${fmt(Math.round(st.pot*10)/10)}</b></div>`;
+  let html=`<div class="felt"><div class="t-center"><div class="pot${hl.has("pot")?" hl":""}"><span>Pot</span><b>${fmt(Math.round((st.pot+(S.potTotal?Object.values(st.bets).reduce((a,b)=>a+b,0):0))*10)/10)}</b></div>`;
   if(st.board.length)html+=`<div class="board${hl.has("board")?" hl":""}">${st.board.map((c,j)=>cardHTML(c,"bcard"+(prev&&j>=prev.board.length?" new":""),prev?j-prev.board.length:0)).join("")}</div>`;
   if(st.eq)html+=`<div class="s-eq"><bdi dir="ltr">${esc(u(st.eq))}</bdi></div>`;
+  if(st.rng)html+=`<div class="rng">${st.rng.map((h,j)=>`<span style="--j:${j}">${h}</span>`).join("")}</div>`;
   if(st.outs)html+=`<div class="outs">${st.outs.map((c,j)=>cardHTML(c,"ocard",j)).join("")}</div>`;
   html+=`</div></div>`;let vi=0,btn=null;
   for(let k=0;k<N;k++){
@@ -1329,26 +1333,73 @@ function coachCard(host,{spot:s,hand:h,code,chosen,size,rec,ok,heroCards}){
   const res={N,VR,eq:{}};
   if(showEq){
     const seg=el.querySelector(".cc-seg"),note=el.querySelector(".cc-note"),gauge=el.querySelector(".cc-gauge .have"),eqEl=el.querySelector(".cc-eq");
-    const draw=k=>{const e=res.eq[k];if(e==null)return;eqEl.textContent=pct(e);gauge.style.width=Math.min(100,e)+"%";
+    const draw=k=>{const e=res.eq[k];if(e==null)return;eqEl.textContent=pct(e);gauge.style.width=Math.min(100,e)+"%";setWhy(e);
       seg.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.r===k));
       const lbl={tight:"צר",base:"לפי הטבלה",wide:"רחב"}[k];
-      note.innerHTML=bidi(`מול range ${lbl} (${VR.lbl}, ${pct(VR.pct[k])} מהידיים): equity ${pct(e)} ${e>=N.need?"≥":"<"} צריך ${pct(N.need)}${k!=="base"?(e>=N.need?". על הנייר call סביר.":". עדיין לא מספיק."):"."}`)};
+      const enough=e>=N.need,tail=right==="R"?(enough?` Call לא הפסד גדול, אבל ${best} מרוויח יותר.`:` לכן call לא משתלם, ו-${best} עדיף.`):right==="C"?(enough?" לכן call.":" כאן גם call כבר לא משתלם."):(enough?" על הנייר call סביר, אבל קשה לממש את ה-equity.":" לכן fold.");
+      note.innerHTML=bidi(`מול range ${lbl} (${VR.lbl}, ${pct(VR.pct[k])} מהידיים): equity ${pct(e)} ${enough?"≥":"<"} צריך ${pct(N.need)}.${tail}`)};
     seg.onclick=e=>{const b=e.target.closest("[data-r]");if(b){e.stopPropagation();draw(b.dataset.r)}};
-    setTimeout(()=>{if(!el.isConnected)return;for(const k of ["base","tight","wide"])res.eq[k]=equityVs(heroCards,VR[k],5000);setWhy(res.eq.base);draw("base")},30);
+    setTimeout(()=>{if(!el.isConnected)return;for(const k of ["base","tight","wide"])res.eq[k]=equityVs(heroCards,VR[k],5000);draw("base")},30);
   }
   res.el=el;return res;
+}
+
+/* ===== MISTAKE REPLAY: the same hand as a short story, plain language ===== */
+const C_TXT=["2","3","4","5","6","7","8","9","10","J","Q","K","A"],S_TXT=["♠","♥","♦","♣"];
+const intCard=c=>C_TXT[c>>2]+S_TXT[c&3];
+function sampleRange(hs,n){const o=hs.slice().sort((a,b)=>STRENGTH.indexOf(a)-STRENGTH.indexOf(b));if(o.length<=n)return o;const out=[];for(let i=0;i<n;i++)out.push(o[Math.round(i*(o.length-1)/(n-1))]);return out}
+function replayStory(spot,hand,heroTxt,code,chosen,card){
+  const P=tablePos(),N=spotNums(spot),V=card.VR,eq=card.eq&&card.eq.base,heroCards=heroTxt.split(" ").map(cardInt);
+  const right=NORM[code],best=codeLabel(spot,code).replace(/\s*\(.*?\)/,""),bets={};P.forEach(p=>bets[p]=p==="SB"?.5:p==="BB"?1:0);
+  const sc=handScript(spot),fold=[];for(const [p,t,to] of sc){if(t==="F")fold.push(p);else bets[p]=to}
+  const pills={};for(const [p,t,to,lb] of sc)if(t!=="F")pills[p]=(lb||(t==="R"?"Raise":"Call"))+" "+chipTxt(to);
+  const base={dealt:true,hero:heroTxt,pot:ANTE,bets,fold},fr=[],vill=spot.vill,cat=category(hand);
+  if(spot.kind==="rfi"){
+    const p=chartPct(spot.cid),o=Math.round(((p.R||0)+(p.B||0)+(p.C||0))/13.26),after=P.length-1-P.indexOf(spot.hero),m=CHARTS[spot.cid].map,inR=ALL.filter(h=>m[h]!=="F");
+    fr.push({c:`כולם לפניך עשו fold. אתה ב-${spot.hero} עם ${heroTxt}.`,hl:["hero"]});
+    fr.push({c:spot.hero==="SB"?"רק ה-BB נשאר אחריך, והוא כבר שם {bb:1} בקופה.":`אחריך עוד ${after} שחקנים. כל אחד מהם יכול להחזיק יד חזקה.`,hl:P.slice(P.indexOf(spot.hero)+1)});
+    fr.push({c:spot.hero==="SB"?`מה-SB משחקים כ-${o}% מהידיים, חלק ב-raise וחלק ב-limp. דוגמאות מהטבלה:`:`לכן מ-${spot.hero} פותחים רק כ-${o}% מהידיים. הנה דוגמאות מהטבלה:`,rng:sampleRange(inR,12)});
+    fr.push({c:`${hand} היא ${cat}. ${right==="F"?"היא מחוץ לרשימה":"היא בתוך הרשימה"}.`,hl:["hero"],rng:right==="F"?sampleRange(inR,12):sampleRange(inR,12).concat(inR.includes(hand)?[]:[])});
+    fr.push({c:right==="F"?`לכן fold. ${chosen==="R"?"Raise כאן מכניס כסף עם יד שתפגוש לעתים קרובות יד חזקה יותר.":"Limp עולה כסף בלי יוזמה."}`:right==="R"&&chosen!=="R"?`לכן ${best}. ${chosen==="C"?"Limp נותן לשחקנים אחריך לראות flop בזול. Raise לוקח יוזמה, ולפעמים את הקופה מיד.":"Fold כאן מוותר על יד רווחית."}`:`לכן ${best}.`,pills:{[spot.hero]:best}});
+  } else {
+    const k=(N.fin/N.toCall).toFixed(1);
+    fr.push({c:spot.kind==="rfi_vs_3bet"?`עשית raise, ו-${vill} החזיר raise גדול יותר (3bet). אתה עם ${heroTxt}.`:spot.kind==="sb_limp_vs_raise"?`עשית limp מה-SB, וה-BB העלה. אתה עם ${heroTxt}.`:`${vill} העלה. אתה ב-${spot.hero} עם ${heroTxt}.`,pills,hl:[vill,"hero"].filter(Boolean)});
+    fr.push({c:`בקופה יש ${chipTxt(N.pot)}. כדי להמשיך אתה שם עוד ${chipTxt(N.toCall)}.`,hl:["pot",vill?"bet:"+vill:"pot"]});
+    fr.push({c:`אתה משלם ${chipTxt(N.toCall)} כדי לזכות ב-${chipTxt(N.fin)}. כמו כרטיס הגרלה: צריך לזכות לפחות פעם אחת מכל ${k}.`,eq:`${chipTxt(N.toCall)} ÷ ${chipTxt(N.fin)} = ${pct(N.need)}`,hl:["pot"]});
+    if(V&&eq!=null){
+      fr.push({c:`אילו ידיים יש ל-${vill} כשהוא עושה את זה? לפי הטבלאות, בערך ${pct(V.pct.base)} מהידיים. למשל:`,rng:sampleRange(V.base,12),hl:[vill]});
+      // one example run-out
+      const cmb=[];for(const h of V.base)for(const c of expand(h))if(!heroCards.includes(c[0])&&!heroCards.includes(c[1]))cmb.push(c);
+      if(cmb.length){const v=cmb[(Math.random()*cmb.length)|0],deck=[];for(let c=0;c<52;c++)if(!heroCards.includes(c)&&c!==v[0]&&c!==v[1])deck.push(c);
+        for(let i=deck.length-1;i>0;i--){const j=(Math.random()*(i+1))|0;[deck[i],deck[j]]=[deck[j],deck[i]]}
+        const b=deck.slice(0,5),a=eval7(heroCards.concat(b)),z=eval7(v.concat(b)),vt=v.map(intCard).join(" ");
+        fr.push({c:`נשחק את זה פעם אחת עד הסוף. ל-${vill} יש ${vt}.`,show:{[vill]:vt},board:b.slice(0,3).map(intCard),hl:[vill]});
+        fr.push({c:`Turn ו-river. ${a>z?"הפעם אתה זוכה":a<z?"הפעם הוא זוכה":"הפעם תיקו"}. אבל פעם אחת לא אומרת כלום.`,board:b.map(intCard),pills:a>z?{[spot.hero]:"זוכה"}:a<z?{[vill]:"זוכה"}:{}});}
+      fr.push({c:`אם משחקים את זה הרבה פעמים מול כל הידיים שלו, אתה זוכה בערך ב-${pct(eq)} מהפעמים, כלומר כ-${Math.round(eq/10)} מכל 10.`,eq:`${pct(eq)}`,board:[]});
+      fr.push({c:`צריך ${pct(N.need)}, ויש לך ${pct(eq)}.`,eq:`${pct(eq)} ${eq>=N.need?"≥":"<"} ${pct(N.need)}`});
+    }
+    const pos=ip(spot.hero,vill)?"אתה פועל אחרון בכל רחוב, וזה עוזר":"אתה פועל ראשון בכל רחוב, וזה מקשה";
+    const why=right==="F"?(eq!=null&&eq<N.need?"אתה זוכה פחות ממה שאתה משלם. לכן fold.":`על הנייר זה מספיק, אבל ${pos}. היד מחטיאה את רוב ה-flops, ובפועל מממשים רק חלק מה-equity. לכן fold.`)
+      :right==="C"?"אתה זוכה מספיק פעמים כדי שהמחיר ישתלם, אבל לא מספיק חזק כדי להגדיל את הקופה. לכן call."
+      :code==="B"?`${best} כ-bluff: הרבה פעמים ${vill} פשוט יוותר, ואז הקופה שלך בלי לראות flop. וכשהוא ממשיך, יש לך עדיין סיכוי.`
+      :`היד שלך חזקה מרוב הידיים שלו. רוצים קופה גדולה יותר: ${best}.`;
+    fr.push({c:why,pills:{[spot.hero]:best},hl:["hero"]});
+  }
+  fr.push({c:"📌 "+ruleFor(spot,hand,code)});
+  fr[0].reset=true;
+  return {id:null,t:"למה "+best+" עדיף",ic:"?",S:{seats:P,hero:spot.hero,base,frames:fr,potTotal:true}};
 }
 let activePF=null;
 function mountPF(root,{spot,hand,feedback,onDone,onAsk,record}){
   const code=codeAt(spot,hand),dealt=dealHand(hand),A=answerSet(spot),rec=raiseSize(spot),script=handScript(spot);let done=false,ready=false,t0=performance.now();
-  let autoT=0;const callTo=Math.max(1,...script.filter(x=>x[1]!=="F").map(x=>x[2])),lines=situation(spot,dealt.txt),kindLbl=(A.rName.match(/\((\w+)\)/)||[])[1];
+  let autoT=0,replay=null;const callTo=Math.max(1,...script.filter(x=>x[1]!=="F").map(x=>x[2])),lines=situation(spot,dealt.txt),kindLbl=(A.rName.match(/\((\w+)\)/)||[])[1];
   const step=settings.units==="chips"?5:.5;
   root.innerHTML=`<div class="tbl-host"></div><div class="st-cap wait">${lines.map((l,i)=>`<p class="${i<2?"st-line":"st-desc"}">${mdInline(l)}</p>`).join("")}</div>
   <div class="answers game" role="group" aria-label="מה אתה עושה?">
     <div class="raise-row"><span class="rl">${bidi("גודל ה-"+(kindLbl||"raise"))}</span><div class="size"><button type="button" class="stp" data-s="-1" aria-label="פחות">−</button><input type="number" inputmode="decimal" step="${step}" min="1" ${rec?`value="${toUnit(rec)}"`:'placeholder="?"'} aria-label="גודל ה-raise ב-${unitName()}"><button type="button" class="stp" data-s="1" aria-label="יותר">+</button><span class="un">${unitName()}</span></div></div>
     <div class="abtns"><button class="abtn a-F" data-k="F" disabled><b>Fold</b><kbd>F</kbd></button><button class="abtn a-C" data-k="C" disabled><b>${spot.kind==="rfi"?"Limp":"Call"}</b><small>${chipTxt(callTo)}</small><kbd>C</kbd></button><button class="abtn a-R" data-k="R" disabled><b>Raise</b><small class="r-amt">${rec?chipTxt(rec):kindLbl||""}</small><kbd>R</kbd></button></div>
   </div>
-  <div class="after" hidden><div class="row" style="justify-content:center"><button class="btn primary" data-x="next">הבא ←<kbd>Enter</kbd></button><button class="btn" data-x="grid">הצג טבלה</button>${onAsk?'<button class="btn ghost" data-x="ask">שאל את המאמן</button>':""}</div><div class="why"></div><div class="gridwrap" hidden></div><div class="legend" hidden></div></div>`;
+  <div class="after" hidden><div class="row" style="justify-content:center"><button class="btn primary" data-x="next">הבא ←<kbd>Enter</kbd></button><button class="btn" data-x="replay" hidden>▶ הסבר על השולחן</button><button class="btn" data-x="grid">הצג טבלה</button>${onAsk?'<button class="btn ghost" data-x="ask">שאל את המאמן</button>':""}</div><div class="why"></div><div class="gridwrap" hidden></div><div class="legend" hidden></div></div>`;
   const tbl=mountTable(spot,dealt),T=tbl.el;root.querySelector(".tbl-host").appendChild(T);
   const cap=root.querySelector(".st-cap"),bar=root.querySelector(".answers"),after=root.querySelector(".after"),sizeIn=bar.querySelector(".size input"),rAmt=bar.querySelector(".r-amt");
   const curSize=()=>{const v=parseFloat(sizeIn.value);return v>0?fromUnit(v):null};
@@ -1369,6 +1420,9 @@ function mountPF(root,{spot,hand,feedback,onDone,onAsk,record}){
     tbl.result(ok,ok?"✓ נכון":"✗ טעות · נכון: "+bidi(codeLabel(spot,code).replace(/\s*\(.*?\)/,"")));
     bar.hidden=true;after.hidden=false;after.querySelector('[data-x="next"]').focus({preventScroll:true});
     const why=after.querySelector(".why");why.innerHTML="";const card=coachCard(why,{spot,hand,code,chosen:k,size,rec,ok,heroCards:dealt.txt.split(" ").map(cardInt)});
+    const rb=after.querySelector('[data-x="replay"]');rb.hidden=false;
+    replay=()=>{const go2=()=>playStory(replayStory(spot,hand,dealt.txt,code,k,card),{overlay:true,onClose:()=>rb.focus({preventScroll:true})});if(card.VR&&card.N.need!=null&&card.eq.base==null)setTimeout(go2,120);else go2()};
+    if(!ok&&settings.replay!=="button")setTimeout(()=>{if(T.isConnected&&!storyOpen())replay()},700);
     followUp(after,ok,`מצב: ${lines.join(" ").replace(/\*\*/g,"")}\nהיד שלי: ${hand}\nאפשרויות: Fold | ${A.rName} | ${A.call}\nבחרתי: ${label(k,size)}\nהתשובה לפי הטבלה (PokerCoaching 9-max, 100bb, שולחן של ${settings.players}): ${right}\nהסבר: ${explain(spot,hand,code)}`,null,()=>coachFacts(spot,card));
     me.next=()=>{clearTimeout(autoT);me.next=()=>{};go(res)};
     if(ok&&settings.autoNext!=="off"){autoT=setTimeout(()=>{if(T.isConnected)me.next()},900);const stop=()=>clearTimeout(autoT);root.addEventListener("pointerdown",stop,{once:true});root.addEventListener("focusin",stop,{once:true})}
@@ -1378,6 +1432,7 @@ function mountPF(root,{spot,hand,feedback,onDone,onAsk,record}){
   sizeIn.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();answer("R")}});
   after.onclick=e=>{const x=e.target.closest("[data-x]");if(!x)return;const a=x.dataset.x;
     if(a==="next")me.next();
+    if(a==="replay"&&replay)replay();
     if(a==="grid"){const gw=after.querySelector(".gridwrap"),lg=after.querySelector(".legend");gw.hidden=!gw.hidden;lg.hidden=gw.hidden;if(!gw.hidden){renderGrid(gw,spot,hand);lg.innerHTML=legendHTML(spot)}}
     if(a==="ask"&&onAsk)onAsk(spot,hand,code)};
   T.onclick=()=>{if(!ready)tbl.skipNow();else if(done)me.next()};
@@ -1454,17 +1509,18 @@ function attachMic(ta){
   let wrap=ta.parentElement;if(!wrap.classList.contains("mic-wrap")){wrap=document.createElement("div");wrap.className="mic-wrap";ta.parentElement.insertBefore(wrap,ta);wrap.appendChild(ta)}
   const b=document.createElement("button");b.type="button";b.className="mic";b.innerHTML=MIC_SVG;b.setAttribute("aria-label","הקלטה בעברית");wrap.appendChild(b);
   const hint=document.createElement("p");hint.className="mic-hint";hint.hidden=true;wrap.after(hint);
-  const say=t=>{hint.textContent=t;hint.hidden=false};
+  const say=t=>{hint.textContent=t;hint.hidden=false;ta.focus()};
+  const KB="לחץ על 🎤 במקלדת של הטלפון והקלט בעברית. לא רואה אותו? ב-iPhone: הגדרות ← כללי ← מקלדת ← הפעל ״הכתבה״.";
   let rec=null;
   b.onclick=e=>{e.preventDefault();e.stopPropagation();
     if(rec){rec.stop();return}
-    if(!SR){say("ההקלטה לא נתמכת בדפדפן הזה. אפשר להכתיב עם כפתור המיקרופון במקלדת של הטלפון.");return}
-    try{rec=new SR()}catch(_){say("ההקלטה לא זמינה כאן. אפשר להכתיב עם המיקרופון במקלדת של הטלפון.");return}
+    if(!SR){say(KB);return}
+    try{rec=new SR()}catch(_){say(KB);return}
     rec.lang="he-IL";rec.interimResults=true;rec.continuous=true;const start=ta.value.trim();
     rec.onresult=ev=>{let t="";for(let i=0;i<ev.results.length;i++)t+=ev.results[i][0].transcript;ta.value=(start?start+" ":"")+t.trim();ta.dispatchEvent(new Event("input"))};
-    rec.onerror=ev=>{say(ev.error==="not-allowed"||ev.error==="service-not-allowed"?"המיקרופון חסום בתצוגה הזו. אפשר להכתיב עם כפתור המיקרופון במקלדת של הטלפון.":ev.error==="no-speech"?"לא שמעתי כלום. נסה שוב.":"ההקלטה נעצרה. נסה שוב.")};
+    rec.onerror=ev=>{say(ev.error==="no-speech"?"לא שמעתי כלום. נסה שוב.":ev.error==="aborted"?"ההקלטה נעצרה.":KB)};
     rec.onend=()=>{rec=null;b.classList.remove("on");b.setAttribute("aria-label","הקלטה בעברית")};
-    try{rec.start();b.classList.add("on");b.setAttribute("aria-label","עצור הקלטה");hint.hidden=true}catch(_){rec=null;say("ההקלטה לא זמינה כאן. אפשר להכתיב עם המיקרופון במקלדת של הטלפון.")}
+    try{rec.start();b.classList.add("on");b.setAttribute("aria-label","עצור הקלטה");hint.hidden=true}catch(_){rec=null;say(KB)}
   };
 }
 function genPotOdds(){
@@ -1485,6 +1541,7 @@ const VIEWS=["settings","home","drill","charts","learn","story","deck","coach","
 const NAV_OF={settings:"home",home:"home",profile:"home",journal:"home",entry:"home",drill:"drill",charts:"drill",learn:"learn",story:"learn",deck:"learn",coach:"coach"};
 let current=null;
 function show(v){
+  if(story&&story.overlay&&v!=="story"){story=null;document.body.classList.remove("story")}
   current=v;VIEWS.forEach(x=>$("#v-"+x).hidden=x!==v);
   document.body.classList.toggle("focus",v==="focus");document.body.classList.toggle("story",v==="story");
   $$("nav.tabbar button").forEach(b=>{if(b.dataset.nav===NAV_OF[v])b.setAttribute("aria-current","page");else b.removeAttribute("aria-current")});
@@ -1495,7 +1552,7 @@ function show(v){
 $$("nav.tabbar button").forEach(x=>x.onclick=()=>show(x.dataset.nav));
 $$("[data-back]").forEach(x=>x.onclick=()=>show(x.dataset.back));
 document.addEventListener("keydown",e=>{
-  if(!activePF||e.target.matches("textarea,input,select"))return;
+  if(!activePF||storyOpen()||e.target.matches("textarea,input,select"))return;
   const m={r:"R",c:"C",l:"C",f:"F","1":"F","2":"C","3":"R"}[e.key.toLowerCase()];
   if(m){activePF.answer(m);return}
   if(e.key==="Enter"&&!e.target.matches("button")){e.preventDefault();activePF.next()}
@@ -1818,15 +1875,18 @@ function renderLearn(){
 }
 $("#l-groups").onclick=e=>{const b=e.target.closest("[data-l]");if(b)openStory(b.dataset.l,"learn")};
 let story=null;
-function openStory(id,backTo){
-  const L=LESSONS.find(x=>x.id===id);if(!L)return;
-  story={L,states:storyStates(L.S),i:0,t:0,paused:false,backTo:backTo||"learn",last:0};
+function openStory(id,backTo){const L=LESSONS.find(x=>x.id===id);if(L)playStory(L,{backTo})}
+const storyOpen=()=>!!story&&!$("#v-story").hidden;
+function playStory(L,{backTo,overlay,onClose}={}){
+  const id=L.id;
+  story={L,states:storyStates(L.S),i:0,t:0,paused:false,backTo:backTo||"learn",last:0,overlay:!!overlay,onClose};
   $("#sb-title").innerHTML=bidi(L.t);$("#sb-ic").textContent=L.ic;$("#sb-ring").className="sto-ring";
   $("#sb-bars").innerHTML=L.S.frames.map(()=>"<i><b></b></i>").join("");
   $("#sb-hint").textContent=store.get("sb_hint",0)<2?"לחיצה: הבא · לחיצה בצד ימין: הקודם · החזקה: עצירה":"";store.set("sb_hint",store.get("sb_hint",0)+1);
   let T=$("#sb-stage .ptable");if(!T){T=document.createElement("div");T.className="ptable";$("#sb-stage").prepend(T)}
-  show("story");drawStory(null);setPaused(false);
-  if(!seenL.includes(id)){seenL.push(id);store.set("seen",seenL)}
+  if(overlay){$("#v-story").hidden=false;document.body.classList.add("story")}else show("story");
+  drawStory(null);setPaused(false);
+  if(id&&!overlay&&!seenL.includes(id)){seenL.push(id);store.set("seen",seenL)}
   story.last=performance.now();requestAnimationFrame(storyTick);
 }
 const frameMs=f=>Math.min(12000,Math.max(4200,2600+60*f.c.replace(/\{[a-z]+:[\d.]+\}/g,"00").length));
@@ -1836,17 +1896,19 @@ function drawStory(prev){
   $$("#sb-bars b").forEach((b,j)=>b.style.width=j<i?"100%":"0");
 }
 function storyTick(now){
-  if(!story||current!=="story")return;
+  if(!storyOpen())return;
   const dt=now-story.last;story.last=now;
   if(!story.paused&&!story.hold&&$("#gl-sheet").hidden&&!document.hidden){story.t+=dt;
     const d=frameMs(story.L.S.frames[story.i]),bar=$$("#sb-bars b")[story.i];if(bar)bar.style.width=Math.min(100,story.t/d*100)+"%";
-    if(story.t>=d){storyNext();if(!story||current!=="story")return}}
+    if(story.t>=d){storyNext();if(!storyOpen())return}}
   requestAnimationFrame(storyTick);
 }
 function storyNext(){if(!story)return;const n=story.states.length;if(story.i<n-1){const prev=story.states[story.i];story.i++;story.t=0;drawStory(prev)}else finishStory()}
 function storyPrev(){if(!story)return;if(story.i>0){story.i--;story.t=0;drawStory(null)}else{story.t=0;drawStory(null)}}
 function setPaused(v){if(!story)return;story.paused=v;$("#sb-pause").textContent=v?"▶":"❚❚";$("#sb-pause").setAttribute("aria-label",v?"המשך":"עצור");$("#v-story").classList.toggle("sb-paused",v)}
+function closeOverlay(){const cb=story&&story.onClose;story=null;$("#v-story").hidden=true;document.body.classList.remove("story");if(cb)cb()}
 function finishStory(){
+  if(story.overlay)return closeOverlay();
   const {L,backTo}=story;story=null;
   const idx=LESSONS.indexOf(L),nx=LESSONS[idx+1];
   $("#k-title").innerHTML=bidi("סיימת: "+L.t);$("#k-back").onclick=()=>show(backTo);
@@ -1863,8 +1925,8 @@ function finishStory(){
   for(const [id,fn] of [["#sb-next",storyNext],["#sb-prev",storyPrev]]){const z=$(id);z.addEventListener("pointerdown",press);z.addEventListener("pointerup",release(fn));z.addEventListener("pointerleave",()=>{clearTimeout(timer);if(story)story.hold=false});z.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();fn()}})}
   const cap=$("#sb-cap");cap.addEventListener("pointerdown",e=>{if(!e.target.closest(".term"))press(e)});cap.addEventListener("pointerup",e=>{if(e.target.closest(".term"))return;release(storyNext)(e)});
   $("#sb-pause").onclick=()=>setPaused(!story.paused);
-  $("#sb-x").onclick=()=>{const b=story?story.backTo:"learn";story=null;show(b)};
-  document.addEventListener("keydown",e=>{if(current!=="story"||!story||!$("#gl-sheet").hidden||e.target.matches("textarea,input"))return;
+  $("#sb-x").onclick=()=>{if(story&&story.overlay)return closeOverlay();const b=story?story.backTo:"learn";story=null;show(b)};
+  document.addEventListener("keydown",e=>{if(!storyOpen()||!$("#gl-sheet").hidden||e.target.matches("textarea,input"))return;
     if(e.key==="ArrowLeft"){e.preventDefault();storyNext()}else if(e.key==="ArrowRight"){e.preventDefault();storyPrev()}else if(e.key===" "&&!e.target.matches("button")){e.preventDefault();setPaused(!story.paused)}else if(e.key==="Escape"){$("#sb-x").click()}});
 })();
 function theoryEnd(end,t){
@@ -2051,6 +2113,7 @@ function renderSettings(){
   ch("#st-units","units",[["chips","ג׳יטונים","Blinds של 5/10, לכל שחקן 1,000. לדוגמה: raise ל-25."],["bb","Big blinds","לכל שחקן 100bb. לדוגמה: raise ל-2.5bb."]]);
   ch("#st-theme","theme",[["dark","כהה","מומלץ לסשנים ארוכים."],["light","בהיר","רקע לבן."]]);
   ch("#st-deck","deck",[["4","4 צבעים","♠ כהה, ♥ אדום, ♦ כחול, ♣ ירוק. מזהים flush draw בשנייה."],["2","2 צבעים","אדום ושחור קלאסי."]]);
+  ch("#st-replay","replay",[["auto","סטורי אוטומטי","אחרי טעות, היד מוסברת שלב אחרי שלב על השולחן."],["button","רק בלחיצה","כפתור ״הסבר על השולחן״ אחרי כל יד."]]);
   ch("#st-auto","autoNext",[["on","אוטומטי אחרי תשובה נכונה","אחרי טעות תמיד עוצרים להסבר."],["off","ידני","לחיצה על הבא או Enter."]]);
   ch("#st-anim","anim",[["fast","מהיר","ה-folds שלפני התור שלך מיידיים, רק raises מונפשים."],["normal","קצב משחק","כל פעולה מונפשת, כמו ליד שולחן אמיתי."],["off","כבוי","ישר להחלטה שלך."]]);
   $("#st-players").innerHTML=[3,4,5,6,7,8,9].map(n=>`<button class="choice" data-v="${n}" aria-pressed="${settings.players===n}"><b>${n}</b><span>${n===9?"שולחן מלא":"שחקנים"}</span></button>`).join("");
