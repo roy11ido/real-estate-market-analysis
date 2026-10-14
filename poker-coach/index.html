@@ -9,34 +9,35 @@
   --bg:#f5f5f7; --surface:#ffffff; --surface-2:#f0f0f3; --fill:#e8e8ed; --fg:#1d1d1f; --fg-2:#424245; --muted:#86868b;
   --accent:#3b6fd9; --accent-soft:rgba(59,111,217,.10); --on-accent:#ffffff;
   --ok:#2f9e5b; --ok-soft:rgba(47,158,91,.12); --bad:#d64545; --bad-soft:rgba(214,69,69,.10);
-  --r-val:#1d1d1f; --r-val-fg:#ffffff; --r-bluff:#3b6fd9; --r-bluff-fg:#ffffff; --r-call:#8e8e93; --r-call-fg:#ffffff; --r-x:#c7c7cc; --r-x-fg:#1d1d1f;
+  --r-val:#E5484D; --r-val-fg:#ffffff; --r-bluff:#F2777A; --r-bluff-fg:#3b0a0c; --r-call:#22A06B; --r-call-fg:#ffffff; --r-x:#cbd2dc; --r-x-fg:#1d1d1f;
+  --act-fold:#4B5563; --act-call:#22A06B; --act-raise:#E5484D; --act-allin:#9B1C2E; --s-spade:#1F2937; --s-heart:#D92D20; --s-diamond:#2E6BE6; --s-club:#1E9E5A;
   --cell:#f0f0f3; --cell-fg:#a1a1a6; --card:#ffffff; --card-fg:#1d1d1f; --card-red:#d64545;
   --glass:rgba(255,255,255,.72); --hair:rgba(0,0,0,.06);
   --shadow-sm:0 1px 2px rgba(0,0,0,.04),0 4px 14px rgba(0,0,0,.04);
   --shadow:0 2px 6px rgba(0,0,0,.03),0 18px 50px rgba(0,0,0,.07);
   --shadow-lg:0 4px 12px rgba(0,0,0,.04),0 30px 80px rgba(0,0,0,.10);
-  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Segoe UI",Roboto,"Heebo",system-ui,sans-serif;
-  --display:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,"Heebo",system-ui,sans-serif;
+  --font:"Heebo",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;
+  --display:"Heebo",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,system-ui,sans-serif;
   --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
   --ease:cubic-bezier(.2,.8,.2,1); --nav-h:68px;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#000000; --surface:#1c1c1e; --surface-2:#2c2c2e; --fill:#3a3a3c; --fg:#f5f5f7; --fg-2:#d1d1d6; --muted:#98989d;
-  --accent:#6b93f0; --accent-soft:rgba(107,147,240,.16); --on-accent:#0b0b0c;
-  --ok:#4cc27a; --ok-soft:rgba(76,194,122,.16); --bad:#ff6b6b; --bad-soft:rgba(255,107,107,.14);
-  --r-val:#f5f5f7; --r-val-fg:#000000; --r-bluff:#6b93f0; --r-bluff-fg:#000000; --r-call:#8e8e93; --r-call-fg:#000000; --r-x:#48484a; --r-x-fg:#f5f5f7;
-  --cell:#1c1c1e; --cell-fg:#636366; --card:#f5f5f7; --card-fg:#1d1d1f; --card-red:#d64545;
-  --glass:rgba(28,28,30,.72); --hair:rgba(255,255,255,.08);
+  --bg:#0E1116; --surface:#161B22; --surface-2:#1F2630; --fill:#2A323D; --fg:#E6EAF0; --fg-2:#C3CAD5; --muted:#8B95A5;
+  --accent:#5B8DEF; --accent-soft:rgba(91,141,239,.16); --on-accent:#0B0E14;
+  --ok:#30A46C; --ok-soft:rgba(48,164,108,.16); --bad:#E5484D; --bad-soft:rgba(229,72,77,.15);
+  --r-val:#E5484D; --r-val-fg:#ffffff; --r-bluff:#F2777A; --r-bluff-fg:#3b0a0c; --r-call:#22A06B; --r-call-fg:#ffffff; --r-x:#3A4250; --r-x-fg:#C3CAD5;
+  --cell:#1F2630; --cell-fg:#5B6575; --card:#F4F6F9; --card-fg:#1F2937; --card-red:#D92D20;
+  --glass:rgba(22,27,34,.8); --hair:rgba(255,255,255,.07);
   --shadow-sm:0 1px 2px rgba(0,0,0,.5),0 4px 14px rgba(0,0,0,.35);
   --shadow:0 2px 6px rgba(0,0,0,.4),0 18px 50px rgba(0,0,0,.5);
   --shadow-lg:0 4px 12px rgba(0,0,0,.5),0 30px 80px rgba(0,0,0,.6); color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#000000; --surface:#1c1c1e; --surface-2:#2c2c2e; --fill:#3a3a3c; --fg:#f5f5f7; --fg-2:#d1d1d6; --muted:#98989d;
-  --accent:#6b93f0; --accent-soft:rgba(107,147,240,.16); --on-accent:#0b0b0c;
-  --ok:#4cc27a; --ok-soft:rgba(76,194,122,.16); --bad:#ff6b6b; --bad-soft:rgba(255,107,107,.14);
-  --r-val:#f5f5f7; --r-val-fg:#000000; --r-bluff:#6b93f0; --r-bluff-fg:#000000; --r-call:#8e8e93; --r-call-fg:#000000; --r-x:#48484a; --r-x-fg:#f5f5f7;
-  --cell:#1c1c1e; --cell-fg:#636366; --card:#f5f5f7; --card-fg:#1d1d1f; --card-red:#d64545;
-  --glass:rgba(28,28,30,.72); --hair:rgba(255,255,255,.08);
+  --bg:#0E1116; --surface:#161B22; --surface-2:#1F2630; --fill:#2A323D; --fg:#E6EAF0; --fg-2:#C3CAD5; --muted:#8B95A5;
+  --accent:#5B8DEF; --accent-soft:rgba(91,141,239,.16); --on-accent:#0B0E14;
+  --ok:#30A46C; --ok-soft:rgba(48,164,108,.16); --bad:#E5484D; --bad-soft:rgba(229,72,77,.15);
+  --r-val:#E5484D; --r-val-fg:#ffffff; --r-bluff:#F2777A; --r-bluff-fg:#3b0a0c; --r-call:#22A06B; --r-call-fg:#ffffff; --r-x:#3A4250; --r-x-fg:#C3CAD5;
+  --cell:#1F2630; --cell-fg:#5B6575; --card:#F4F6F9; --card-fg:#1F2937; --card-red:#D92D20;
+  --glass:rgba(22,27,34,.8); --hair:rgba(255,255,255,.07);
   --shadow-sm:0 1px 2px rgba(0,0,0,.5),0 4px 14px rgba(0,0,0,.35);
   --shadow:0 2px 6px rgba(0,0,0,.4),0 18px 50px rgba(0,0,0,.5);
   --shadow-lg:0 4px 12px rgba(0,0,0,.5),0 30px 80px rgba(0,0,0,.6); color-scheme:dark}
@@ -199,7 +200,7 @@ body.story nav.tabbar{display:none}
 .sto:active{transform:scale(.95)}
 .sto-ring{width:76px;height:76px;border-radius:50%;padding:4px;background:conic-gradient(from 210deg,#ffb340,#ff375f,#bf5af2,#ffb340)}
 .sto-ring.seen{background:var(--hair,rgba(127,127,127,.35))}
-.sto-ic{display:grid;place-items:center;width:100%;height:100%;border-radius:50%;background:radial-gradient(circle at 50% 35%,#2fa36b,#14613b);color:#fff;font:800 1.05rem/1 var(--display);box-shadow:0 0 0 2.5px var(--bg)}
+.sto-ic{display:grid;place-items:center;width:100%;height:100%;border-radius:50%;background:radial-gradient(circle at 50% 35%,#1D5444,#0B231D);color:#fff;font:800 1.05rem/1 var(--display);box-shadow:0 0 0 2.5px var(--bg)}
 .sto>small{font-size:.78rem;font-weight:600;text-align:center;line-height:1.3;max-width:92px}
 .lesson-done{text-align:center;justify-items:center}
 .po-scene{display:grid;justify-items:center}
@@ -207,14 +208,14 @@ body.story nav.tabbar{display:none}
 
 /* ===== POKER TABLE ===== */
 .tbl-host{display:grid}
-.ptable{position:relative;width:100%;max-width:min(520px,calc((100svh - 380px) * .91));min-width:min(100%,300px);margin:0 auto;aspect-ratio:10/11;user-select:none;-webkit-user-select:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.felt{position:absolute;inset:11% 10% 15%;border-radius:50%/46%;background:radial-gradient(ellipse at 50% 38%,#34b273 0%,#1f8a55 50%,#14613b 100%);box-shadow:0 0 0 9px #3b2416,0 0 0 12px #1c110a,0 22px 44px rgba(0,0,0,.35),inset 0 0 50px rgba(0,0,0,.38);display:grid;place-items:center;transition:box-shadow .35s var(--ease)}
+.ptable{position:relative;width:100%;max-width:min(520px,calc((100svh - 440px) * .91));min-width:min(100%,300px);margin:0 auto;aspect-ratio:10/11;user-select:none;-webkit-user-select:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.felt{position:absolute;inset:11% 10% 15%;border-radius:50%/46%;background:radial-gradient(ellipse at 50% 38%,#1D5444 0%,#12382D 58%,#0B231D 100%);box-shadow:0 0 0 9px #11161D,0 0 0 10px rgba(255,255,255,.07),0 0 0 12px #07090C,0 22px 44px rgba(0,0,0,.45),inset 0 0 50px rgba(0,0,0,.45);display:grid;place-items:center;transition:box-shadow .35s var(--ease)}
 .felt::after{content:"";position:absolute;inset:7%;border-radius:50%/46%;border:2px solid rgba(255,255,255,.10);pointer-events:none}
-.ptable.ok .felt{box-shadow:0 0 0 9px #3b2416,0 0 0 13px var(--ok),0 22px 44px rgba(0,0,0,.35),inset 0 0 50px rgba(0,0,0,.38)}
-.ptable.bad .felt{box-shadow:0 0 0 9px #3b2416,0 0 0 13px var(--bad),0 22px 44px rgba(0,0,0,.35),inset 0 0 50px rgba(0,0,0,.38)}
+.ptable.ok .felt{box-shadow:0 0 0 9px #11161D,0 0 0 13px var(--ok),0 22px 44px rgba(0,0,0,.35),inset 0 0 50px rgba(0,0,0,.38)}
+.ptable.bad .felt{box-shadow:0 0 0 9px #11161D,0 0 0 13px var(--bad),0 22px 44px rgba(0,0,0,.35),inset 0 0 50px rgba(0,0,0,.38)}
 .t-center{display:grid;justify-items:center;gap:6px;text-align:center;color:#fff;max-width:62%;z-index:1;margin-top:-6%}
 .pot{display:flex;align-items:center;gap:6px;direction:ltr;background:rgba(0,0,0,.32);border-radius:999px;padding:3px 12px;font-size:.78rem;font-weight:600;letter-spacing:.02em}
-.pot b{color:#ffd84d;font-variant-numeric:tabular-nums;font-size:.92rem}
+.pot b{color:#ffd84d;font-variant-numeric:tabular-nums;font-size:1.05rem}
 .t-msg{font-weight:700;font-size:.95rem;min-height:1.3em;text-shadow:0 1px 2px rgba(0,0,0,.4)}
 .ptable .gl{display:none}
 .ptable .fb.ok{background:#fff;color:#1a7f37}.ptable .fb.bad{background:#fff;color:#d70015}
@@ -225,8 +226,8 @@ body.story nav.tabbar{display:none}
 .seat .av svg{display:block;width:100%;height:100%}
 .seat.turn .av{box-shadow:0 0 0 3px #ffd84d,0 0 0 8px rgba(255,216,77,.38),0 4px 12px rgba(0,0,0,.3);animation:pulse 1.1s var(--ease) infinite}
 .seat .plate{margin-top:-7px;min-width:62px;padding:3px 7px 2px;border-radius:10px;background:rgba(20,20,22,.9);color:#fff;display:grid;justify-items:center;line-height:1.2;position:relative;z-index:1}
-.plate .nm{font-size:.66rem;font-weight:600;max-width:64px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.plate .stk{font-size:.7rem;font-weight:800;color:#ffd84d;font-variant-numeric:tabular-nums}
+.plate .nm{font-size:.7rem;font-weight:600;max-width:64px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.plate .stk{font-size:.82rem;font-weight:800;color:#ffd84d;font-variant-numeric:tabular-nums}
 .seat .badge{position:absolute;top:-4px;inset-inline-start:-4px;z-index:2;background:#fff;color:#111;font-size:.6rem;font-weight:800;border-radius:999px;padding:1px 5px;box-shadow:0 1px 4px rgba(0,0,0,.25)}
 .seat.hero .badge{top:-4px;inset-inline-start:auto;inset-inline-end:-8px}
 .seat .hole{position:absolute;top:10px;inset-inline-end:-2px;display:flex;direction:ltr;z-index:0;opacity:0}
@@ -240,9 +241,9 @@ body.story nav.tabbar{display:none}
 .seat.folded{opacity:.42}
 .seat.folded .hole{opacity:0;transition:opacity .25s}
 .seat.hero.folded .hcards{opacity:.35}
-.pill{position:absolute;top:-21px;left:50%;transform:translateX(-50%);z-index:3;background:#fff;color:#111;font-size:.66rem;font-weight:800;border-radius:999px;padding:2px 8px;white-space:nowrap;direction:ltr;box-shadow:0 2px 8px rgba(0,0,0,.25);animation:pop .25s var(--ease) both}
+.pill{position:absolute;top:-21px;left:50%;transform:translateX(-50%);z-index:3;background:#fff;color:#111;font-size:.72rem;font-weight:800;border-radius:999px;padding:2px 8px;white-space:nowrap;direction:ltr;box-shadow:0 2px 8px rgba(0,0,0,.25);animation:pop .25s var(--ease) both}
 .seat.hero .pill{top:-24px}
-.pill.r{background:#ff9f0a;color:#1d1300} .pill.c{background:#0a84ff;color:#fff} .pill.f{background:#e5e5ea;color:#3a3a3c}
+.pill.r{background:var(--act-raise);color:#fff} .pill.c{background:var(--act-call);color:#fff} .pill.f{background:#E5E7EB;color:#374151}
 .bet{position:absolute;transform:translate(-50%,-50%);display:flex;align-items:center;gap:4px;direction:ltr;z-index:1;color:#fff;font-size:.72rem;font-weight:800;text-shadow:0 1px 2px rgba(0,0,0,.5);pointer-events:none}
 .bet.fly{animation:chipin .42s var(--ease) both}
 .chips{display:grid;width:16px;height:16px}
@@ -276,7 +277,16 @@ body:not(.focus) .answers.game{bottom:calc(var(--nav-h) + env(safe-area-inset-bo
 .abtn small{font-size:.75rem;font-weight:700;opacity:.9;direction:ltr}
 .abtn:active{transform:scale(.95)}
 .abtn:disabled{opacity:.4;cursor:default;filter:saturate(.5)}
-.a-F{background:linear-gradient(#ff5a4f,#e0342b)} .a-C{background:linear-gradient(#3aa0ff,#0a74e0)} .a-R{background:linear-gradient(#ffb340,#f08a00);color:#1d1300}
+.a-F{background:var(--act-fold)} .a-C{background:var(--act-call)} .a-R{background:var(--act-raise)}
+.ptable,.answers.game{font-variant-numeric:tabular-nums}
+.answers.game .size input{font-variant-numeric:tabular-nums}
+.abtn{position:relative}
+kbd{display:none;font:600 .62rem/1 var(--mono);padding:2px 4px;border-radius:4px;background:rgba(255,255,255,.18);color:inherit}
+.abtn kbd{position:absolute;top:6px;inset-inline-end:8px}
+.btn kbd{background:rgba(127,127,127,.18);margin-inline-start:6px}
+@media (hover:hover) and (pointer:fine){kbd{display:inline-block}}
+.rgrid .c-B{background-image:repeating-linear-gradient(135deg,rgba(255,255,255,.28) 0 3px,transparent 3px 7px)}
+body.deck4 .s-s{color:var(--s-spade)!important} body.deck4 .s-h{color:var(--s-heart)!important} body.deck4 .s-d{color:var(--s-diamond)!important} body.deck4 .s-c{color:var(--s-club)!important}
 
 .cards{display:flex;gap:14px;direction:ltr;padding-block:18px 8px}
 .pcard{width:96px;height:134px;background:var(--card);color:var(--card-fg);border-radius:16px;box-shadow:0 0 0 1px var(--hair),0 10px 30px rgba(0,0,0,.10);display:grid;place-content:center;justify-items:center;gap:2px;font:700 2.3rem/1 var(--display);letter-spacing:-.02em;animation:deal .5s var(--ease) both}
@@ -531,7 +541,9 @@ label.fld,.fld{display:grid;gap:6px;font-size:.85rem;color:var(--muted);font-wei
     <button class="back" data-back="home">→ בית</button>
     <h1>הגדרות</h1>
     <div class="card-box"><h2>איך לספור</h2><div class="choices" id="st-units"></div></div>
-    <div class="card-box"><h2>רמת שפה</h2><div class="choices" id="st-lang"></div></div>
+    <div class="card-box"><h2>תצוגה</h2><div class="choices" id="st-theme"></div></div>
+    <div class="card-box"><h2>קלפים</h2><div class="choices" id="st-deck"></div></div>
+    <div class="card-box"><h2>מעבר ליד הבאה</h2><div class="choices" id="st-auto"></div></div>
     <div class="card-box"><h2>אנימציות</h2><div class="choices" id="st-anim"></div></div>
     <div class="card-box"><h2>שחקנים בשולחן</h2><div class="seats" id="st-players"></div><p class="small muted" id="st-players-note"></p></div>
     <p class="small muted">השינויים נשמרים מיד.</p>
@@ -603,12 +615,15 @@ const fmt=n=>String(Math.round(n*10)/10);
 const todayKey=(d=new Date())=>d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0");
 
 /* ===== SETTINGS + UNITS ===== */
-const SET_DEFAULT={units:"chips",lang:"easy",players:6,anim:"normal"};
-let settings=store.get("settings",null);
-if(!settings){const veteran=store.get("profile",null)||store.get("assessments",null);settings=veteran?{units:"bb",lang:"pro",players:9}:{}}
-settings=Object.assign({},SET_DEFAULT,settings);
+/* v2: one audience, players who know the game and want to improve. */
+const SET_DEFAULT={v:2,units:"bb",lang:"pro",players:6,anim:"fast",theme:"dark",deck:"4",autoNext:"on"};
+let settings=store.get("settings",null)||{};
+if(settings.v!==2)settings=Object.assign({},settings,{v:2,units:"bb",lang:"pro",anim:"fast",theme:"dark",deck:"4",autoNext:"on"});
+settings=Object.assign({},SET_DEFAULT,settings);settings.lang="pro";
+const applyLook=()=>{document.documentElement.dataset.theme=settings.theme;document.body.classList.toggle("deck4",settings.deck==="4")};
+const ANTE=1;
 const saveSettings=()=>store.set("settings",settings);
-saveSettings();
+saveSettings();applyLook();
 /* All amounts are kept in big blinds. Chips mode shows them as blinds 5/10 with 1,000-chip stacks (100bb). */
 const CHIP=10;
 const money=bb=>settings.units==="chips"?Math.round(bb*CHIP).toLocaleString("en-US")+" ג׳יטונים":String(Math.round(bb*10)/10)+"bb";
@@ -616,10 +631,10 @@ const unitName=()=>settings.units==="chips"?"ג׳יטונים":"bb";
 const toUnit=bb=>settings.units==="chips"?Math.round(bb*CHIP):Math.round(bb*10)/10;
 const fromUnit=v=>settings.units==="chips"?v/CHIP:v;
 const u=t=>String(t).replace(/\{bb:([\d.]+)\}/g,(m,n)=>money(+n)).replace(/\{v:([\d.]+)\}/g,(m,n)=>settings.units==="chips"?Math.round(n*CHIP).toLocaleString("en-US"):String(+n));
-const stackLine=()=>settings.units==="chips"?"Blinds של 5/10. לכל שחקן יש 1,000 ג׳יטונים.":"לכל שחקן יש 100bb.";
+const stackLine=()=>settings.units==="chips"?"Blinds של 5/10 ו-BB ante של 10. לכל שחקן 1,000 ג׳יטונים.":"100bb effective, BB ante של 1bb.";
 const tablePos=()=>DATA.positions.slice(DATA.positions.length-Math.min(9,Math.max(3,settings.players)));
 const inTable=sp=>{const P=tablePos();return P.includes(sp.hero)&&(!sp.vill||P.includes(sp.vill))};
-function aiStyle(){return (settings.units==="chips"?"יחידות: ג׳יטונים. Blinds של 5/10, לכל שחקן 1,000 ג׳יטונים (100bb). כתוב כל סכום בג׳יטונים, לא ב-bb.":"יחידות: big blinds (bb).")+" "+(settings.lang==="easy"?"רמת שפה: מתחיל. כתוב פשוט מאוד, ובפעם הראשונה שמופיע מונח באנגלית הסבר אותו בכמה מילים בעברית.":"רמת שפה: מקצוען.")+` שולחן של ${settings.players} שחקנים.`}
+function aiStyle(){return (settings.units==="chips"?"יחידות: ג׳יטונים. Blinds של 5/10 ו-BB ante של 10, לכל שחקן 1,000 ג׳יטונים (100bb). כתוב כל סכום בג׳יטונים.":"יחידות: big blinds (bb). 100bb effective, BB ante של 1bb.")+" קהל: שחקן שמכיר את המשחק ורוצה להשתפר. בלי הסברים בסיסיים, ישר לעניין, מונחים באנגלית בלבד."+` שולחן של ${settings.players} שחקנים.`}
 
 /* ===== GLOSSARY: every term in the app is tappable ===== */
 const GLOSS=[
@@ -785,22 +800,7 @@ const THEORY=[
 /* ===== LESSON STORIES =====
    Each frame is a delta on the table: bets (current street), collect (bets to pot), pot, done (committed earlier),
    board, fold, dealt, hero (hero cards), show (reveal), reset. Per frame only: c (caption), pills, emote, hl, eq, outs. */
-const S_BASICS={seats:["LJ","HJ","CO","BTN","SB","BB"],hero:"BTN",frames:[
- {c:"זה שולחן פוקר. כל שחקן מתחיל עם ערימת ג׳יטונים. אתה יושב למטה, בעמדת BTN.",hl:["hero"]},
- {c:"לפני שמחלקים, שני שחקנים שמים הימור חובה: ה-SB שם {bb:0.5} וה-BB שם {bb:1}. אלה ה-blinds.",bets:{SB:.5,BB:1},hl:["SB","BB"]},
- {c:"כל שחקן מקבל 2 קלפים סגורים. רק אתה רואה את שלך: A♠ K♦.",dealt:true,hero:"A♠ K♦",hl:["hero"]},
- {c:"מתחילים מהשחקן שאחרי ה-BB. ל-LJ יש יד חלשה, והוא עושה fold: זורק את הקלפים ויוצא מהיד.",fold:["LJ"],pills:{LJ:"Fold"},hl:["LJ"]},
- {c:"ה-HJ עושה raise ל-{bb:2.5}: מעלה את ההימור. מי שרוצה להמשיך צריך לשים לפחות {bb:2.5}.",bets:{HJ:2.5},pills:{HJ:"Raise"},hl:["HJ"]},
- {c:"ה-CO עושה fold. התור שלך. עם A♠ K♦ אתה עושה call: משווה ל-{bb:2.5}.",fold:["CO"],bets:{BTN:2.5},pills:{CO:"Fold",BTN:"Call"},hl:["hero"]},
- {c:"ה-SB וה-BB עושים fold. נשארתם שניים, וכל הג׳יטונים עוברים ל-pot באמצע.",fold:["SB","BB"],collect:true,pills:{SB:"Fold",BB:"Fold"},hl:["pot"]},
- {c:"Flop: 3 קלפים משותפים נפתחים באמצע. כל השחקנים יכולים להשתמש בהם.",board:["K♠","8♥","3♣"],hl:["board"]},
- {c:"פגעת: יש לך זוג K. ה-HJ עושה check: מעביר את התור בלי לשים כסף.",pills:{HJ:"Check"},hl:["hero","board"]},
- {c:"אתה עושה bet של {bb:4}. ה-HJ עושה call.",bets:{BTN:4,HJ:4},pills:{BTN:"Bet",HJ:"Call"}},
- {c:"Turn: הקלף הרביעי נפתח. שניכם עושים check.",collect:true,board:["K♠","8♥","3♣","2♦"],pills:{HJ:"Check",BTN:"Check"},hl:["board"]},
- {c:"River: הקלף החמישי והאחרון. שוב check ו-check.",board:["K♠","8♥","3♣","2♦","9♠"],pills:{HJ:"Check",BTN:"Check"},hl:["board"]},
- {c:"Showdown: הופכים קלפים. ל-HJ יש Q♥ Q♣, זוג Q. לך זוג K. היד הכי טובה זוכה: ה-pot שלך!",show:{HJ:"Q♥ Q♣"},pills:{BTN:"זוכה"},hl:["hero","pot"]}
-]};
-const S_POSITION={seats:["UTG","HJ","CO","BTN","SB","BB"],hero:"BTN",base:{dealt:true,hero:"9♠ 8♠",fold:["UTG","HJ","CO","SB"],pot:5.5,done:{BTN:2.5,BB:2.5}},frames:[
+const S_POSITION={seats:["UTG","HJ","CO","BTN","SB","BB"],hero:"BTN",base:{dealt:true,hero:"9♠ 8♠",fold:["UTG","HJ","CO","SB"],pot:6.5,done:{BTN:2.5,BB:2.5}},frames:[
  {c:"עשית raise מה-BTN וה-BB עשה call. אחרי ה-flop אתה תמיד פועל אחרון. זה נקרא in position.",hl:["hero","BB"]},
  {c:"Flop: Q♦ 7♠ 2♣. ה-BB פועל ראשון. הוא צריך להחליט בלי לדעת מה תעשה.",board:["Q♦","7♠","2♣"],pills:{BB:"?"},hl:["BB"]},
  {c:"הוא עושה check. עכשיו יש לך מידע: כנראה הבורד לא עזר לו.",pills:{BB:"Check"},hl:["hero"]},
@@ -808,23 +808,23 @@ const S_POSITION={seats:["UTG","HJ","CO","BTN","SB","BB"],hero:"BTN",base:{dealt
  {c:"לכן בטבלאות ה-BTN עושה open עם כ-51% מהידיים, ו-UTG רק עם כ-10%. ככל שיש יותר שחקנים אחריך, צריך יד חזקה יותר.",hl:["UTG","hero"]},
  {c:"סדר הפעולה אחרי ה-flop: SB, BB, ואז מ-UTG עד BTN. ה-blinds תמיד פועלים ראשונים.",hl:["SB","BB"]}
 ]};
-const S_GROUPS={seats:["UTG","HJ","CO","BTN","SB","BB"],hero:"BTN",base:{dealt:true,bets:{SB:.5,BB:1}},frames:[
+const S_GROUPS={seats:["UTG","HJ","CO","BTN","SB","BB"],hero:"BTN",base:{dealt:true,pot:1,bets:{SB:.5,BB:1}},frames:[
  {c:"זוגות חזקים: AA, KK, QQ. עושים raise כמעט מכל עמדה.",hero:"A♠ A♥",hl:["hero"]},
  {c:"זוגות בינוניים (JJ–88) ונמוכים (77–22). זוג נמוך משחק בשביל set: בערך 12% מה-flops.",hero:"5♣ 5♦",hl:["hero"]},
  {c:"Suited: שני קלפים מאותו צבע, כמו K♥ Q♥. יש להם פוטנציאל ל-flush.",hero:"K♥ Q♥",hl:["hero"]},
  {c:"מחברים suited, כמו 8♦ 7♦: מרוויחים מ-implied odds, אבל יכולים להפסיד ל-flush או straight גבוהים יותר.",hero:"8♦ 7♦",hl:["hero"]},
  {c:"ברודווי offsuit, כמו K♣ J♦, מסוכן: כשהוא נשלט ע״י KQ או AK, מפסידים pot גדול.",hero:"K♣ J♦",hl:["hero"]}
 ]};
-const S_BBDEF={seats:["HJ","CO","BTN","SB","BB"],hero:"BB",base:{dealt:true,hero:"K♣ 8♣",bets:{SB:.5,BB:1},fold:["HJ","CO"]},frames:[
- {c:"אתה ב-BB עם K♣ 8♣. כבר שמת {bb:1} לפני שחילקו קלפים.",hl:["hero","bet:BB"]},
+const S_BBDEF={seats:["HJ","CO","BTN","SB","BB"],hero:"BB",base:{dealt:true,hero:"K♣ 8♣",pot:1,done:{BB:1},bets:{SB:.5,BB:1},fold:["HJ","CO"]},frames:[
+ {c:"אתה ב-BB עם K♣ 8♣. כבר שמת {bb:1} ועוד ante של {bb:1} ל-pot.",hl:["hero","bet:BB","pot"]},
  {c:"ה-BTN עושה raise ל-{bb:2.5}, וה-SB עושה fold.",bets:{BTN:2.5},fold:["SB"],pills:{BTN:"Raise",SB:"Fold"},hl:["BTN"]},
  {c:"כדי לעשות call צריך להוסיף רק {bb:1.5}, כי {bb:1} כבר בפנים.",eq:"{v:2.5} − {v:1} = {v:1.5}",hl:["bet:BB"]},
- {c:"ה-pot הסופי אחרי ה-call: ה-raise, ה-call שלך וה-SB.",eq:"{v:2.5} + {v:2.5} + {v:0.5} = {v:5.5}",hl:["pot"]},
- {c:"משלמים {bb:1.5} כדי לזכות ב-{bb:5.5}. זה ה-pot odds שלך:",eq:"{v:1.5} ÷ {v:5.5} ≈ 27%"},
- {c:"מספיק 27% equity. ל-K8s מול ה-range הרחב של ה-BTN יש יותר. Call.",bets:{BB:2.5},pills:{BB:"Call"},hl:["hero"]},
+ {c:"ה-pot הסופי אחרי ה-call: ה-raise, ה-call שלך, ה-SB וה-ante.",eq:"{v:2.5} + {v:2.5} + {v:0.5} + {v:1} = {v:6.5}",hl:["pot"]},
+ {c:"משלמים {bb:1.5} כדי לזכות ב-{bb:6.5}. זה ה-pot odds שלך:",eq:"{v:1.5} ÷ {v:6.5} ≈ 23%"},
+ {c:"מספיק 23% equity. ל-K8s מול ה-range הרחב של ה-BTN יש הרבה יותר. Call.",bets:{BB:2.5},pills:{BB:"Call"},hl:["hero"]},
  {c:"מול BTN ו-SB מגינים עם הרבה ידיים. מול UTG מגינים צר: ה-range שלו חזק בהרבה."}
 ]};
-const S_3BET={seats:["HJ","CO","BTN","SB","BB"],hero:"BTN",base:{dealt:true,hero:"Q♠ Q♦",bets:{SB:.5,BB:1},fold:["HJ"]},frames:[
+const S_3BET={seats:["HJ","CO","BTN","SB","BB"],hero:"BTN",base:{dealt:true,hero:"Q♠ Q♦",pot:1,bets:{SB:.5,BB:1},fold:["HJ"]},frames:[
  {c:"ה-CO עושה open: raise ראשון ל-{bb:2.5}.",bets:{CO:2.5},pills:{CO:"Raise"},hl:["CO"]},
  {c:"אתה ב-BTN עם Q♠ Q♦. ה-raise השני preflop נקרא 3bet.",hl:["hero"]},
  {c:"גודל 3bet in position: פי 3 מה-open.",eq:"{v:2.5} × 3 = {v:7.5}",bets:{BTN:7.5},pills:{BTN:"3bet"}},
@@ -860,8 +860,8 @@ const S_SPR={seats:["CO","BTN","SB","BB"],hero:"BTN",base:{dealt:true,hero:"6♠
  {c:"SPR גבוה, מעל 10: צריך יד חזקה יותר כדי לבנות pot ענק."},
  {c:"Call עם זוג קטן בשביל set משתלם כשה-stacks לפחות פי 15–20 מה-call. והנה: set!",board:["Q♣","6♦","2♠"],hl:["board","hero"]}
 ]};
-const S_CBET={seats:["CO","BTN","SB","BB"],hero:"BTN",base:{dealt:true,hero:"A♦ Q♣",fold:["CO","SB"],pot:5.5,done:{BTN:2.5,BB:2.5}},frames:[
- {c:"עשית raise מה-BTN עם A♦ Q♣, וה-BB עשה call. ה-pot: {bb:5.5}.",hl:["hero","pot"]},
+const S_CBET={seats:["CO","BTN","SB","BB"],hero:"BTN",base:{dealt:true,hero:"A♦ Q♣",fold:["CO","SB"],pot:6.5,done:{BTN:2.5,BB:2.5}},frames:[
+ {c:"עשית raise מה-BTN עם A♦ Q♣, וה-BB עשה call. ה-pot, כולל ה-ante: {bb:6.5}.",hl:["hero","pot"]},
  {c:"Flop: K♠ 7♦ 2♣. בורד יבש: אין flush draw וכמעט אין straight draw.",board:["K♠","7♦","2♣"],hl:["board"]},
  {c:"ה-BB עושה check. בבורד כזה יש לך יותר ידיים חזקות: AA, KK, AK. לו כמעט אין.",pills:{BB:"Check"}},
  {c:"Continuation bet: ממשיכים את האגרסיה מה-preflop. Bet קטן של {bb:2}, בערך שליש pot, גם בלי זוג.",bets:{BTN:2},pills:{BTN:"C-bet"}},
@@ -870,7 +870,7 @@ const S_CBET={seats:["CO","BTN","SB","BB"],hero:"BTN",base:{dealt:true,hero:"A�
  {c:"כאן ה-BB פוגע הרבה: 7-5, 10-7, זוגות קטנים ו-flush draws. עושים פחות c-bet, וכשעושים, bet גדול יותר.",hl:["BB"]},
  {c:"הכלל: בורד יבש = c-bet קטן ותכוף. בורד רטוב = פחות c-bet, וגדול יותר."}
 ]};
-const S_MISSED={seats:["CO","BTN","SB","BB"],hero:"CO",base:{dealt:true,hero:"A♥ K♣",fold:["BTN","SB"],pot:5.5,done:{CO:2.5,BB:2.5}},frames:[
+const S_MISSED={seats:["CO","BTN","SB","BB"],hero:"CO",base:{dealt:true,hero:"A♥ K♣",fold:["BTN","SB"],pot:6.5,done:{CO:2.5,BB:2.5}},frames:[
  {c:"עשית raise מ-CO עם A♥ K♣, וה-BB עשה call.",hl:["hero"]},
  {c:"Flop: 9♠ 6♦ 2♣. החטאת. זה קורה בערך 2 מכל 3 פעמים, אז זה חלק רגיל מהמשחק.",board:["9♠","6♦","2♣"],hl:["board"]},
  {c:"ה-BB עושה check. לא נבהלים: ל-AK יש עוד 6 outs ל-top pair.",pills:{BB:"Check"},outs:["A♠","A♦","A♣","K♠","K♥","K♦"]},
@@ -888,7 +888,7 @@ const S_VALUE={seats:["CO","BTN","SB","BB"],hero:"BTN",base:{dealt:true,hero:"A�
  {c:"Bluff עובד כשידיים חזקות משלך יעשו fold, כמו K עם kicker חלש או 8x. Bet של {bb:15}.",bets:{BTN:15},pills:{BTN:"Bet"}},
  {c:"ה-BB עושה fold. כלל אצבע: bet של pot מלא ב-river, בערך 2 value על כל bluff. מול מי שלא עושה fold לעולם: בלי bluffs.",fold:["BB"],pills:{BB:"Fold"},hl:["pot"]}
 ]};
-const S_TYPES={seats:["UTG","HJ","CO","BTN","SB","BB"],hero:"BTN",base:{dealt:true,hero:"7♣ 7♦",bets:{SB:.5,BB:1}},frames:[
+const S_TYPES={seats:["UTG","HJ","CO","BTN","SB","BB"],hero:"BTN",base:{dealt:true,hero:"7♣ 7♦",pot:1,bets:{SB:.5,BB:1}},frames:[
  {c:"5 סוגי שחקנים שתפגוש כמעט בכל שולחן. נכיר אותם אחד אחד."},
  {c:"Nit: משחק מעט, ורק ידיים חזקות. כשהוא עושה raise, מאמינים לו. גונבים לו את ה-blinds.",emote:{UTG:"Nit"},hl:["UTG"]},
  {c:"TAG: tight aggressive. מעט ידיים, אבל משחק אותן באגרסיביות. השחקן הטוב הנפוץ.",emote:{HJ:"TAG"},hl:["HJ"]},
@@ -896,7 +896,7 @@ const S_TYPES={seats:["UTG","HJ","CO","BTN","SB","BB"],hero:"BTN",base:{dealt:tr
  {c:"Calling station: עושה call להכל. נגדו: value bets גדולים, אפס bluffs.",emote:{SB:"Calling station"},hl:["SB"]},
  {c:"Maniac: עושה raise להכל. נגדו: מהדקים, ונותנים לו לעשות bet לתוך היד החזקה שלך.",emote:{BB:"Maniac"},hl:["BB"]}
 ]};
-const S_TELLS={seats:["CO","BTN","SB","BB"],hero:"BB",base:{dealt:true,hero:"A♣ J♣",fold:["CO","SB"],pot:5.5,done:{BTN:2.5,BB:2.5}},frames:[
+const S_TELLS={seats:["CO","BTN","SB","BB"],hero:"BB",base:{dealt:true,hero:"A♣ J♣",fold:["CO","SB"],pot:6.5,done:{BTN:2.5,BB:2.5}},frames:[
  {c:"Tell הוא שינוי מההתנהגות הרגילה של השחקן. קודם צופים בו כשהוא לא ב-pot, ורק אז משווים.",emote:{BTN:"רגוע, מדבר"},hl:["BTN"]},
  {c:"Flop: A♦ 8♠ 3♥. הוא מעיף מבט מהיר לצ׳יפים שלו ומסיט את העיניים: בדרך כלל פגע ומתכנן bet.",board:["A♦","8♠","3♥"],emote:{BTN:"מבט לצ׳יפים"},hl:["BTN"]},
  {c:"הוא עושה bet, ואז מסתכל לך ישר בעיניים ומחייך. אצל מתחילים חזק = חלש: ביטחון מוגזם הוא הרבה פעמים bluff.",bets:{BTN:3},emote:{BTN:"חיוך, מבט ישיר"}},
@@ -904,10 +904,9 @@ const S_TELLS={seats:["CO","BTN","SB","BB"],hero:"BB",base:{dealt:true,hero:"A�
  {c:"Call מיידי, בלי לחשוב: ההחלטה קלה לו. בדרך כלל draw או יד בינונית, לא monster.",emote:{BTN:"Call מהיר"}},
  {c:"Tell הוא רק חלק מהתמונה. קודם range ו-pot odds, ורק אז ה-tell מזיז את ההחלטה."}
 ]};
-const fromTheory=t=>{const T=THEORY.find(x=>x.t===t);return {seats:["UTG","HJ","CO","BTN","SB","BB"],hero:"BTN",base:{dealt:true,hero:"A♣ Q♦",bets:{SB:.5,BB:1}},frames:T.c.map(c=>({c}))}};
+const fromTheory=t=>{const T=THEORY.find(x=>x.t===t);return {seats:["UTG","HJ","CO","BTN","SB","BB"],hero:"BTN",base:{dealt:true,hero:"A♣ Q♦",pot:1,bets:{SB:.5,BB:1}},frames:T.c.map(c=>({c}))}};
 const LESSONS=[
- {id:"basics",t:"איך משחקים",ic:"♠",g:"בסיס",q:"בסיס",S:S_BASICS},
- {id:"position",t:"Position",ic:"BTN",g:"בסיס",q:"Position",S:S_POSITION},
+ {id:"position",t:"Position",ic:"BTN",g:"Preflop",q:"Position",S:S_POSITION},
  {id:"groups",t:"קבוצות ידיים",ic:"AA",g:"Preflop",q:"Preflop",S:S_GROUPS},
  {id:"bbdef",t:"הגנת ה-BB",ic:"BB",g:"Preflop",q:"Preflop",S:S_BBDEF},
  {id:"3bet",t:"3bet ו-4bet",ic:"3bet",g:"Preflop",q:"Preflop",S:S_3BET},
@@ -923,10 +922,6 @@ const LESSONS=[
  {id:"tilt",t:"Bankroll ו-tilt",ic:"Tilt",g:"יריבים וראש",q:"מנטלי",S:fromTheory("Bankroll ו-tilt")}
 ];
 const QUIZ=[
- ["בסיס","מי שם הימור חובה של {bb:1} לפני שמחלקים קלפים?",["ה-BTN","ה-SB","ה-BB"],2,"ה-BB שם {bb:1}, וה-SB שם {bb:0.5}."],
- ["בסיס","מה חזק יותר?",["Flush","Straight"],0,"Flush (5 קלפים מאותו צבע) מנצח straight (5 קלפים ברצף)."],
- ["בסיס","אף אחד עוד לא שם כסף בסיבוב הזה. מה אפשר לעשות בלי לשים כסף?",["Check","Call","Raise"],0,"Check מעביר את התור בלי לשים כסף. מותר רק כשאף אחד לא שם לפניך."],
- ["בסיס","כמה קלפים משותפים יש על השולחן בסוף היד?",["3","4","5"],2,"3 ב-flop, עוד 1 ב-turn ועוד 1 ב-river: סך הכל 5."],
  ["Position","איזו עמדה עושה open עם ה-range הרחב ביותר בטבלאות?",["UTG","CO","BTN","BB"],2,"ה-BTN עושה open עם כ-51% מהידיים, כי הוא תמיד פועל אחרון אחרי ה-flop."],
  ["Position","למה ה-SB משחק הרבה ידיים למרות שהוא out of position?",["חצי blind כבר ב-pot ורק ה-BB אחריו","זו העמדה הכי טובה","ה-BB לא יכול לעשות 3bet","ה-BB תמיד עושה fold"],0,"רק ה-BB נשאר, וחצי blind כבר ב-pot. לכן ה-SB משחק הרבה ידיים, חלקן ב-raise וחלקן ב-limp."],
  ["Preflop","אתה ב-UTG, כולם לפניך עשו fold. יש לך KQo. מה עושים?",["Raise ל-{bb:2.5}","Fold"],1,"מ-UTG עושים open רק עם AKo ו-AQo מבין ידיים offsuit. KQo נשלט ע״י AK, AQ ו-KK."],
@@ -1057,7 +1052,7 @@ function seatGeom(N){
 }
 function mountTable(s,dealt){
   const P=tablePos(),N=P.length,hi=P.indexOf(s.hero),G=seatGeom(N),names=players.map(x=>x&&x.name).filter(Boolean).concat(BOT_NAMES);
-  const bets={},seat={},bet={};P.forEach(p=>bets[p]=p==="SB"?.5:p==="BB"?1:0);
+  const bets={},seat={},bet={};P.forEach(p=>bets[p]=p==="SB"?.5:p==="BB"?1:0);const dead=ANTE;
   const T=document.createElement("div");T.className="ptable"+(animF()?"":" noanim");
   let html=`<div class="felt"><div class="t-center"><div class="pot"><span>Pot</span><b class="pot-v"></b></div><p class="t-msg" aria-live="polite"></p><p class="fb" hidden></p></div></div>`,vi=0,btn=null;
   for(let k=0;k<N;k++){
@@ -1068,7 +1063,7 @@ function mountTable(s,dealt){
   if(btn)html+=btn.x==null?`<span class="dbtn" style="left:62%;top:${btn.by+4}%">D</span>`:`<span class="dbtn" style="left:${(btn.x+btn.bx)/2+(btn.x<50?3:-3)}%;top:${(btn.y+btn.by)/2+5}%">D</span>`;
   T.innerHTML=html;
   P.forEach(p=>{seat[p]=T.querySelector(`.seat[data-pos="${p}"]`);bet[p]=T.querySelector(`.bet[data-pos="${p}"]`)});
-  const upd=p=>{seat[p].querySelector(".stk").textContent=chipTxt(100-bets[p]);const b=bet[p];b.hidden=!(bets[p]>0);b.querySelector("b").textContent=chipTxt(bets[p]);T.querySelector(".pot-v").textContent=chipTxt(P.reduce((a,q)=>a+bets[q],0))};
+  const upd=p=>{seat[p].querySelector(".stk").textContent=chipTxt(100-bets[p]-(p==="BB"?ANTE:0));const b=bet[p];b.hidden=!(bets[p]>0);b.querySelector("b").textContent=chipTxt(bets[p]);T.querySelector(".pot-v").textContent=chipTxt(dead+P.reduce((a,q)=>a+bets[q],0))};
   P.forEach(upd);
   const pill=(p,txt,cls)=>{const e=seat[p].querySelector(".pill");e.textContent=txt;e.className="pill "+cls;e.hidden=false};
   const turn=p=>{T.querySelectorAll(".seat.turn").forEach(e=>e.classList.remove("turn"));if(p)seat[p].classList.add("turn")};
@@ -1081,8 +1076,8 @@ function mountTable(s,dealt){
       await new Promise(r=>requestAnimationFrame(()=>r()));
       const f=T.querySelector(".felt").getBoundingClientRect(),cx=f.left+f.width/2,cy=f.top+f.height/2;
       P.forEach(p=>{const e=seat[p].querySelector(".hole,.hcards"),r=e.getBoundingClientRect();e.style.setProperty("--cx",(cx-r.left-r.width/2)+"px");e.style.setProperty("--cy",(cy-r.top-r.height/2)+"px")});
-      T.classList.add("dealt");await wait(420+N*45);
-      for(const [p,type,to,lb] of script){if(!T.isConnected)return;turn(p);await wait(type==="F"?160:420);act(p,type,to,lb);await wait(type==="F"?70:300)}
+      const slow=settings.anim==="normal";T.classList.add("dealt");await wait(slow?420+N*45:420);
+      for(const [p,type,to,lb] of script){if(!T.isConnected)return;if(type==="F"&&!slow){act(p,type,to,lb);continue}turn(p);await wait(type==="F"?160:420);act(p,type,to,lb);await wait(type==="F"?70:300)}
       turn(s.hero);
     },
     skipNow(){skip=true;T.classList.add("noanim")},
@@ -1093,11 +1088,11 @@ function mountTable(s,dealt){
   return api;
 }
 
-const SUITS=[["♠",0],["♥",1],["♦",1],["♣",0]];
+const SUITS=[["♠",0],["♥",1],["♦",1],["♣",0]],SUIT_CLS={"♠":"s-s","♥":"s-h","♦":"s-d","♣":"s-c"};
 function dealHand(h){
   const s1=rnd(SUITS);let s2;if(h[2]==="s")s2=s1;else{do{s2=rnd(SUITS)}while(s2===s1)}
   const r=x=>x==="T"?"10":x,c=[[r(h[0]),s1],[r(h[1]),s2]];
-  return {html:c.map(([v,[s,red]])=>`<div class="pcard ${red?"red":""}">${v}<small>${s}</small></div>`).join(""),txt:c.map(([v,[s]])=>v+s).join(" ")};
+  return {html:c.map(([v,[s,red]])=>`<div class="pcard ${red?"red":""} ${SUIT_CLS[s]}">${v}<small>${s}</small></div>`).join(""),txt:c.map(([v,[s]])=>v+s).join(" ")};
 }
 /* The situation the way a player tells it: who you are, what the villain did, how much. */
 function situation(s,handTxt){
@@ -1139,7 +1134,7 @@ function renderGrid(wrap,s,hl){
 }
 
 const STACK=100;
-const cardHTML=(c,cls,j)=>{const r=c.slice(0,-1),su=c.slice(-1);return `<div class="${cls}${"♥♦".includes(su)?" red":""}"${j!=null?` style="--j:${j}"`:""}>${r}<small>${su}</small></div>`};
+const cardHTML=(c,cls,j)=>{const r=c.slice(0,-1),su=c.slice(-1);return `<div class="${cls}${"♥♦".includes(su)?" red":""} ${SUIT_CLS[su]}"${j!=null?` style="--j:${j}"`:""}>${r}<small>${su}</small></div>`};
 const pillCls=t=>/^Fold/.test(t)?"f":/^(Raise|Bet|C-bet|3bet|4bet|All-in)/.test(t)?"r":/^(Call|Check|Limp)/.test(t)?"c":"w";
 function sceneState(){return {bets:{},done:{},pot:0,board:[],fold:[],dealt:false,hero:null,show:{},pills:{},emote:{},hl:[],eq:null,outs:null}}
 function applyDelta(st,d){
@@ -1181,14 +1176,14 @@ function renderScene(T,S,st,prev){
 let activePF=null;
 function mountPF(root,{spot,hand,feedback,onDone,onAsk,record}){
   const code=codeAt(spot,hand),dealt=dealHand(hand),A=answerSet(spot),rec=raiseSize(spot),script=handScript(spot);let done=false,ready=false,t0=performance.now();
-  const callTo=Math.max(1,...script.filter(x=>x[1]!=="F").map(x=>x[2])),lines=situation(spot,dealt.txt),kindLbl=(A.rName.match(/\((\w+)\)/)||[])[1];
+  let autoT=0;const callTo=Math.max(1,...script.filter(x=>x[1]!=="F").map(x=>x[2])),lines=situation(spot,dealt.txt),kindLbl=(A.rName.match(/\((\w+)\)/)||[])[1];
   const step=settings.units==="chips"?5:.5;
   root.innerHTML=`<div class="tbl-host"></div><div class="st-cap wait">${lines.map((l,i)=>`<p class="${i<2?"st-line":"st-desc"}">${mdInline(l)}</p>`).join("")}</div>
   <div class="answers game" role="group" aria-label="מה אתה עושה?">
     <div class="raise-row"><span class="rl">${bidi("גודל ה-"+(kindLbl||"raise"))}</span><div class="size"><button type="button" class="stp" data-s="-1" aria-label="פחות">−</button><input type="number" inputmode="decimal" step="${step}" min="1" ${rec?`value="${toUnit(rec)}"`:'placeholder="?"'} aria-label="גודל ה-raise ב-${unitName()}"><button type="button" class="stp" data-s="1" aria-label="יותר">+</button><span class="un">${unitName()}</span></div></div>
-    <div class="abtns"><button class="abtn a-F" data-k="F" disabled><b>Fold</b></button><button class="abtn a-C" data-k="C" disabled><b>${spot.kind==="rfi"?"Limp":"Call"}</b><small>${chipTxt(callTo)}</small></button><button class="abtn a-R" data-k="R" disabled><b>Raise</b><small class="r-amt">${rec?chipTxt(rec):kindLbl||""}</small></button></div>
+    <div class="abtns"><button class="abtn a-F" data-k="F" disabled><b>Fold</b><kbd>F</kbd></button><button class="abtn a-C" data-k="C" disabled><b>${spot.kind==="rfi"?"Limp":"Call"}</b><small>${chipTxt(callTo)}</small><kbd>C</kbd></button><button class="abtn a-R" data-k="R" disabled><b>Raise</b><small class="r-amt">${rec?chipTxt(rec):kindLbl||""}</small><kbd>R</kbd></button></div>
   </div>
-  <div class="after" hidden><div class="row" style="justify-content:center"><button class="btn primary" data-x="next">הבא ←</button><button class="btn" data-x="grid">הצג טבלה</button>${onAsk?'<button class="btn ghost" data-x="ask">שאל את המאמן</button>':""}</div><div class="why"></div><div class="gridwrap" hidden></div><div class="legend" hidden></div></div>`;
+  <div class="after" hidden><div class="row" style="justify-content:center"><button class="btn primary" data-x="next">הבא ←<kbd>Enter</kbd></button><button class="btn" data-x="grid">הצג טבלה</button>${onAsk?'<button class="btn ghost" data-x="ask">שאל את המאמן</button>':""}</div><div class="why"></div><div class="gridwrap" hidden></div><div class="legend" hidden></div></div>`;
   const tbl=mountTable(spot,dealt),T=tbl.el;root.querySelector(".tbl-host").appendChild(T);
   const cap=root.querySelector(".st-cap"),bar=root.querySelector(".answers"),after=root.querySelector(".after"),sizeIn=bar.querySelector(".size input"),rAmt=bar.querySelector(".r-amt");
   const curSize=()=>{const v=parseFloat(sizeIn.value);return v>0?fromUnit(v):null};
@@ -1212,7 +1207,8 @@ function mountPF(root,{spot,hand,feedback,onDone,onAsk,record}){
     if(k==="R"&&size&&rec){const r=size/rec;why+=r<.8||r>1.3?`\nהגודל שבחרת: ${money(size)}. הגודל המקובל כאן: ${money(rec)}.`:`\nגודל ה-raise שבחרת (${money(size)}) מתאים.`}
     after.querySelector(".why").innerHTML=md(why);
     followUp(after,ok,`מצב: ${lines.join(" ").replace(/\*\*/g,"")}\nהיד שלי: ${hand}\nאפשרויות: Fold | ${A.rName} | ${A.call}\nבחרתי: ${label(k,size)}\nהתשובה לפי הטבלה (PokerCoaching 9-max, 100bb, שולחן של ${settings.players}): ${right}\nהסבר: ${explain(spot,hand,code)}`);
-    me.next=()=>go(res);
+    me.next=()=>{clearTimeout(autoT);me.next=()=>{};go(res)};
+    if(ok&&settings.autoNext!=="off"){autoT=setTimeout(()=>{if(T.isConnected)me.next()},900);const stop=()=>clearTimeout(autoT);root.addEventListener("pointerdown",stop,{once:true});root.addEventListener("focusin",stop,{once:true})}
   };
   const me={answer,next:()=>{if(!ready)tbl.skipNow()}};activePF=me;
   bar.onclick=e=>{const b=e.target.closest("[data-k]");if(b&&!b.disabled)answer(b.dataset.k)};
@@ -1353,17 +1349,20 @@ const PQ=[
 const optLabel=(k,v)=>{const q=PQ.find(x=>x.k===k),o=q&&q.o&&q.o.find(x=>x[0]===v);return o?o[1]:v};
 function skipProfile(){if(!profile){profile={skipped:true};store.set("profile",profile)}saveSettings();show("home")}
 const ONB=[
- {k:"start",q:"כמה אתה משחק פוקר?",o:[["never","אף פעם, אני רוצה ללמוד מההתחלה"],["some","קצת, בעיקר עם חברים"],["lots","הרבה, אני רוצה להשתפר"]]},
- {k:"units",q:"איך נוח לך לספור?",o:[["chips","ג׳יטונים","לדוגמה: יש לי 1,000 ג׳יטונים, והנבל העלה ל-25."],["bb","Big blinds","לדוגמה: יש לי 100bb, והנבל עשה raise ל-2.5bb."]]},
- {k:"players",q:"כמה שחקנים יש בדרך כלל בשולחן שלך?",type:"players"},
- {k:"aim",q:"מה המטרה שלך?",o:[["fun","ליהנות ולשחק טוב יותר"],["friends","לנצח את החברים"],["profit","להרוויח באופן קבוע"]]}
+ {k:"game",q:"מה אתה משחק בעיקר?",o:[["cash_live","קאש לייב או משחק ביתי"],["cash_online","קאש אונליין"],["mtt","טורנירים"],["both","גם קאש וגם טורנירים"]]},
+ {k:"stakesLvl",q:"באיזה סטייק?",o:[["micro","מיקרו","עד 0.25/0.50"],["low","נמוך","0.50/1 עד 1/2"],["mid","בינוני ומעלה","2/5 ומעלה"],["home","משחק ביתי","סכומים משתנים"]]},
+ {k:"players",q:"כמה שחקנים בדרך כלל בשולחן?",type:"players"},
+ {k:"leak",q:"איפה אתה מרגיש שאתה מפסיד הכי הרבה?",o:[["preflop","Preflop","מה לפתוח, מתי 3bet, איך להגן על ה-BB"],["postflop","אחרי ה-flop","c-bet, הגנה, turn ו-river"],["math","מתמטיקה","pot odds, equity ו-outs"],["reads","קריאת יריבים","התאמה לסוגי שחקנים ו-tells"],["mental","ראש","tilt, סבלנות, bankroll"]]}
 ];
+const GAME_MAP={cash_live:{venue:"live",format:"cash"},cash_online:{venue:"online",format:"cash"},mtt:{format:"mtt"},both:{format:"both",venue:"both"}};
+const SELF_LEAK={preflop:"Preflop",postflop:"אחרי ה-flop",math:"מתמטיקה",reads:"קריאת יריבים",mental:"ראש וניהול רגשות"};
 function startWizard(){startOnboarding(0,{})}
 function startOnboarding(i,d){
   if(i>=ONB.length){
-    settings.units=d.units||"chips";settings.players=+d.players||6;settings.lang=d.start==="lots"?"pro":"easy";saveSettings();
-    profile=Object.assign({},hasProfile()?profile:{},{start:d.start,aim:d.aim,skipped:false,updatedAt:Date.now()});store.set("profile",profile);
-    return welcome(d.start);
+    settings.players=+d.players||6;saveSettings();
+    const st=ONB[1].o.find(o=>o[0]===d.stakesLvl);
+    profile=Object.assign({},hasProfile()?profile:{},GAME_MAP[d.game]||{},{stakesLvl:d.stakesLvl,stakes:st?st[1]+" ("+st[2]+")":"",selfLeak:d.leak,skipped:false,updatedAt:Date.now()});store.set("profile",profile);
+    return startTest();
   }
   const q=ONB[i];focus(`היכרות · ${i+1}/${ONB.length}`,i/ONB.length,skipProfile);
   const back=i?`<div class="row"><button class="btn" id="ob-back">חזרה</button></div>`:`<button class="btn ghost" id="ob-skip" style="justify-self:center">דלג</button>`;
@@ -1375,14 +1374,6 @@ function startOnboarding(i,d){
   }
   fbody().querySelector(".choices,.seats").onclick=e=>{const b=e.target.closest("[data-v]");if(!b)return;d[q.k]=b.dataset.v;startOnboarding(i+1,d)};
   const bk=$("#ob-back");if(bk)bk.onclick=()=>startOnboarding(i-1,d);const sk=$("#ob-skip");if(sk)sk.onclick=skipProfile;
-}
-function welcome(start){
-  if(start==="lots")return startTest();
-  focus("מוכן",1,()=>show("home"));
-  const basics=start==="never";
-  fbody().innerHTML=`<h1>${basics?"נתחיל מהבסיס.":"מעולה, אפשר להתחיל."}</h1><p class="muted">${bidi(basics?"יד שלמה על השולחן, שלב אחרי שלב: blinds, חלוקה, raise, flop, turn, river ומי זוכה. בכל מקום שמופיע מונח מסומן בקו, אפשר ללחוץ עליו ולקבל הסבר.":"בכל מקום שמופיע מונח מסומן בקו, אפשר ללחוץ עליו ולקבל הסבר. אחרי כמה אימונים אפשר לעשות בדיקת רמה קצרה.")}</p>
-  <button class="cta" id="wl-go"><b>${basics?"לשיעור הראשון":"לאימון הראשון"}</b><span>${basics?"3 דקות":"10 דקות"}</span></button>`;
-  $("#wl-go").onclick=()=>{if(basics)openStory("basics","home");else startDaily()};
 }
 
 /* ===== PLACEMENT TEST ===== */
@@ -1535,7 +1526,7 @@ function startDaily(){
   for(let i=0;i<15;i++)steps.push({type:"pf"});
   const topics=[];if(leakKeys.includes("postflop"))topics.push("Postflop");if(leakKeys.includes("mental"))topics.push("מנטלי");
   if(Object.keys(patterns).some(k=>/flop|fear|missed/i.test(k)))topics.push("החטאת flop");
-  const qpool=QUIZ.filter(q=>q[0]!=="מתמטיקה"&&(q[0]!=="בסיס"||settings.lang==="easy")),pref=qpool.filter(q=>topics.includes(q[0]));const used=new Set();
+  const qpool=QUIZ.filter(q=>q[0]!=="מתמטיקה"),pref=qpool.filter(q=>topics.includes(q[0]));const used=new Set();
   for(let i=0;i<3;i++){
     if(leakKeys.includes("reads")&&i===2){steps.push(Object.assign({type:"mcq"},tellItem(rnd(TS))));continue}
     let q,tries=0;do{q=rnd(pref.length&&Math.random()<.6?pref:qpool)}while(used.has(q)&&++tries<10);used.add(q);
@@ -1585,7 +1576,7 @@ function nextDrill(){
 
 /* ===== CHARTS VIEWER ===== */
 const cv={kind:"rfi",hero:"UTG",vill:null};
-$("#c-src").innerHTML=bidi("מקור: PokerCoaching.com, 9-max, stack של {bb:100} עם ante. In position: open ל-{bb:2.5}, 3bet פי 3, 4bet פי 2.5. Out of position: open ל-{bb:3.5}, 3bet פי 3.5, 4bet פי 2.75. לחץ על משבצת כדי לראות את הפעולה.");
+$("#c-src").innerHTML=bidi("מקור: PokerCoaching.com, 9-max, stack של {bb:100} עם ante. המקור לא מציין את גודל ה-ante, ולכן השולחן משתמש ב-BB ante של {bb:1}. In position: open ל-{bb:2.5}, 3bet פי 3, 4bet פי 2.5. Out of position: open ל-{bb:3.5}, 3bet פי 3.5, 4bet פי 2.75. לחץ על משבצת כדי לראות את הפעולה.");
 function renderCharts(){
   $("#c-kinds").innerHTML=Object.keys(KIND_NAME).map(k=>`<button class="chip" data-k="${k}" aria-pressed="${k===cv.kind}">${bidi(KIND_NAME[k])}</button>`).join("");
   const heroes=PREFLOP.filter(p=>SPOTS.some(s=>s.kind===cv.kind&&s.hero===p));if(!heroes.includes(cv.hero))cv.hero=heroes[0];
@@ -1607,7 +1598,7 @@ $("#c-vills").onclick=e=>{const b=e.target.closest("[data-v]");if(b){cv.vill=b.d
 
 /* ===== LEARN ===== */
 let seenL=store.get("seen",[]);if(!Array.isArray(seenL))seenL=[];
-const L_GROUPS=["בסיס","Preflop","מתמטיקה","Postflop","יריבים וראש"];
+const L_GROUPS=["Preflop","מתמטיקה","Postflop","יריבים וראש"];
 const stoRing=(L,cls)=>`<span class="sto-ring${seenL.includes(L.id)?" seen":""}${cls||""}"><span class="sto-ic" dir="ltr">${esc(L.ic)}</span></span>`;
 function renderLearn(){
   $("#l-sub").innerHTML=bidi("כל שיעור הוא יד אמיתית על השולחן, שלב אחרי שלב. לחץ כדי להתקדם, החזק כדי לעצור. בסוף: תרגול.");
@@ -1844,10 +1835,12 @@ $("#c-journal").onclick=()=>show("journal");
 
 /* ===== SETTINGS ===== */
 function renderSettings(){
-  const ch=(id,key,opts)=>{$(id).innerHTML=opts.map(([v,l,ex])=>`<button class="choice" data-v="${v}" aria-pressed="${settings[key]===v}"><span>${bidi(l)}</span><small class="ex">${bidi(ex)}</small></button>`).join("");$(id).onclick=e=>{const b=e.target.closest("[data-v]");if(!b)return;settings[key]=b.dataset.v;saveSettings();renderSettings()}};
+  const ch=(id,key,opts)=>{$(id).innerHTML=opts.map(([v,l,ex])=>`<button class="choice" data-v="${v}" aria-pressed="${settings[key]===v}"><span>${bidi(l)}</span><small class="ex">${bidi(ex)}</small></button>`).join("");$(id).onclick=e=>{const b=e.target.closest("[data-v]");if(!b)return;settings[key]=b.dataset.v;saveSettings();applyLook();renderSettings()}};
   ch("#st-units","units",[["chips","ג׳יטונים","Blinds של 5/10, לכל שחקן 1,000. לדוגמה: raise ל-25."],["bb","Big blinds","לכל שחקן 100bb. לדוגמה: raise ל-2.5bb."]]);
-  ch("#st-lang","lang",[["easy","רגיל","מונח באנגלית עם הסבר קצר בעברית לידו."],["pro","מקצוען","מונחים באנגלית בלבד."]]);
-  ch("#st-anim","anim",[["normal","רגיל","חלוקת קלפים וג׳יטונים בקצב משחק."],["fast","מהיר","אותה תחושה, פי 2 מהר."],["off","כבוי","ישר להחלטה שלך."]]);
+  ch("#st-theme","theme",[["dark","כהה","מומלץ לסשנים ארוכים."],["light","בהיר","רקע לבן."]]);
+  ch("#st-deck","deck",[["4","4 צבעים","♠ כהה, ♥ אדום, ♦ כחול, ♣ ירוק. מזהים flush draw בשנייה."],["2","2 צבעים","אדום ושחור קלאסי."]]);
+  ch("#st-auto","autoNext",[["on","אוטומטי אחרי תשובה נכונה","אחרי טעות תמיד עוצרים להסבר."],["off","ידני","לחיצה על הבא או Enter."]]);
+  ch("#st-anim","anim",[["fast","מהיר","ה-folds שלפני התור שלך מיידיים, רק raises מונפשים."],["normal","קצב משחק","כל פעולה מונפשת, כמו ליד שולחן אמיתי."],["off","כבוי","ישר להחלטה שלך."]]);
   $("#st-players").innerHTML=[3,4,5,6,7,8,9].map(n=>`<button class="choice" data-v="${n}" aria-pressed="${settings.players===n}"><b>${n}</b><span>${n===9?"שולחן מלא":"שחקנים"}</span></button>`).join("");
   $("#st-players").onclick=e=>{const b=e.target.closest("[data-v]");if(!b)return;settings.players=+b.dataset.v;saveSettings();renderSettings()};
   $("#st-players-note").innerHTML=bidi(settings.players<9?`בשולחן של ${settings.players} שחקנים משחקים רק העמדות ${tablePos().join(", ")}. הטווחים מבוססים על טבלאות של 9 שחקנים, ולכן הם מקורבים.`:"שולחן מלא: כל 9 העמדות, לפי הטבלאות המקוריות.");
@@ -1871,7 +1864,7 @@ $("#p-reassess").onclick=()=>startTest();
 
 /* ===== AI COACH ===== */
 let sample=null,imgOK="",ctl=null,turns=store.get("chat",[]);if(!Array.isArray(turns))turns=[];
-function profileText(){if(!hasProfile())return "לא מולא";const p=profile;return (p.start?`ניסיון: ${({never:"מתחיל לגמרי",some:"משחק קצת עם חברים",lots:"משחק הרבה"})[p.start]}; מטרה: ${({fun:"ליהנות",friends:"לנצח את החברים",profit:"להרוויח"})[p.aim]||"?"}; `:"")+PQ.filter(q=>q.type==="stakes"?p.stakes:p[q.k]).map(q=>q.type==="stakes"?`סטייק: ${p.stakes||"?"} ${p.currency||""}`:`${q.q} ${p[q.k]?optLabel(q.k,p[q.k]):"?"}`).join("; ")}
+function profileText(){if(!hasProfile())return "לא מולא";const p=profile;return (p.selfLeak?`איפה לדעתו הוא מפסיד: ${SELF_LEAK[p.selfLeak]}; `:"")+PQ.filter(q=>q.type==="stakes"?p.stakes:p[q.k]).map(q=>q.type==="stakes"?`סטייק: ${p.stakes||"?"} ${p.currency||""}`:`${q.q} ${p[q.k]?optLabel(q.k,p[q.k]):"?"}`).join("; ")}
 function assessText(a){if(!a)return "לא בוצע";return `רמה ${LEVEL_HE[a.level]} (${Math.round(a.overall*100)}%). ציונים 1–5: ${Object.keys(DOM_HE).map(d=>DOM_HE[d]+" "+a.scores[d]).join(", ")}. דפוסים: ${Object.entries(a.patterns).map(([k,v])=>PAT_HE[k]+"×"+v).join(", ")||"אין"}. דליפות: ${a.leaks.map(l=>l.title).join(", ")}.`}
 function statsText(){
   const bk=Object.entries(stats.byKind).map(([k,v])=>`${KIND_NAME[k]}: ${v.ok}/${v.n}`).join(", ")||"אין עדיין";
