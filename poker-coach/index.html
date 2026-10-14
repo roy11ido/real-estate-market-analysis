@@ -177,7 +177,7 @@ body.focus nav.tabbar{display:none}
 .cc-seg button{flex:1;border:0;background:none;border-radius:9px;padding:7px 4px;font:inherit;font-size:.82rem;font-weight:700;color:var(--muted);cursor:pointer}
 .cc-seg button[aria-pressed="true"]{background:var(--surface);color:var(--fg);box-shadow:var(--shadow-sm)}
 .cc-note{font-size:.88rem;color:var(--fg-2);min-height:1.3em}
-.cc-why{margin:0;padding:0;list-style:none;display:grid;gap:8px;counter-reset:w}
+.cc .cc-why:not(ul){margin:0;padding:0;list-style:none;display:grid;gap:8px;counter-reset:w}
 .cc-why li{display:flex;gap:10px;align-items:baseline;line-height:1.5}
 .cc-why li::before{counter-increment:w;content:counter(w);flex:0 0 22px;height:22px;border-radius:50%;display:grid;place-items:center;background:var(--surface-2);font-size:.75rem;font-weight:800;color:var(--fg-2)}
 .cc-rule{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--accent-soft);border-radius:16px;padding:12px 14px}
@@ -199,6 +199,40 @@ body.focus nav.tabbar{display:none}
 #p-rules{margin:0;padding:0;list-style:none;display:grid;gap:8px}
 #p-rules li{display:flex;justify-content:space-between;gap:10px;align-items:center;background:var(--surface-2);border-radius:14px;padding:10px 12px}
 #p-rules li button{border:0;background:none;color:var(--muted);cursor:pointer;font-size:1rem}
+
+
+.cc{gap:12px}
+.cc-head{display:flex;align-items:center;gap:12px}
+.cc-ic{flex:0 0 36px;height:36px;border-radius:50%;display:grid;place-items:center;font-weight:900;font-size:1.1rem;color:#fff}
+.cc-head.ok .cc-ic{background:var(--ok)} .cc-head.bad .cc-ic{background:var(--bad)}
+.cc-head b{display:block;font-size:1.2rem;font-weight:800;line-height:1.3}
+.cc-head small{display:block;color:var(--muted);font-size:.85rem;font-weight:600}
+.cc-line{margin:0;font-size:1.02rem;line-height:1.55;color:var(--fg)}
+.cc-sub{margin:0;font-size:.86rem;color:var(--muted)}
+.cc-bar{display:grid;gap:6px}
+.cc-track{position:relative;height:10px;border-radius:999px;background:var(--surface-2)}
+.cc-track .have{position:absolute;inset-inline-start:0;top:0;bottom:0;border-radius:999px;background:var(--act-call);width:0;transition:width .5s var(--ease)}
+.cc-track .need{position:absolute;top:-4px;bottom:-4px;width:3px;border-radius:2px;background:var(--act-raise)}
+.cc-legend{display:flex;justify-content:space-between;font-size:.85rem;font-weight:600}
+.cc-legend .g b{color:var(--act-call)} .cc-legend .r b{color:var(--act-raise)}
+ul.cc-why{margin:0;padding-inline-start:18px;display:grid;gap:4px;color:var(--fg-2);font-size:.93rem;line-height:1.5}
+ul.cc-why li{display:list-item}
+ul.cc-why li::before{content:none}
+.cc-rule{padding:10px 12px;border-radius:14px}
+.cc-rule p{font-weight:600;font-size:.95rem}
+.cc-save{flex:0 0 36px;height:36px;border-radius:50%;border:0;background:var(--surface);color:var(--fg-2);font-size:1.1rem;cursor:pointer}
+.cc-save.on{color:#f5a524}
+.cc-more summary{list-style:none;cursor:pointer;color:var(--muted);font-weight:600;font-size:.85rem}
+.cc-more summary::-webkit-details-marker{display:none}
+.cc-more summary::before{content:"＋ "}
+.cc-more[open] summary::before{content:"－ "}
+.cc-more-in{display:grid;gap:10px;margin-top:10px}
+.cc-nums{grid-template-columns:repeat(3,1fr)}
+.cc-exp{font-size:.88rem;color:var(--fg-2)}
+.next-big{width:100%;min-height:54px;font-size:1.05rem}
+.tools{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.tool{border:0;background:var(--surface-2);color:var(--fg-2);border-radius:999px;padding:9px 14px;font:inherit;font-size:.86rem;font-weight:700;cursor:pointer}
+.tool[aria-pressed="true"]{background:var(--accent-soft);color:var(--accent)}
 
 /* ===== STORIES ===== */
 body.story nav.tabbar{display:none}
@@ -1306,7 +1340,7 @@ function renderScene(T,S,st,prev){
 const ACT_HE={R:"Raise",C:"Call",F:"Fold"};
 function ruleFor(s,h,code){
   const cat=category(h),v=s.vill,big=s.kind==="rfi_vs_3bet"?"4bet":"3bet",bet=s.kind==="rfi_vs_3bet"?"3bet":"open";
-  if(s.kind==="rfi"){const p=chartPct(s.cid),o=Math.round(((p.R||0)+(p.B||0)+(p.C||0))/13.26);return NORM[code]==="F"?`מ-${s.hero} פותחים רק כ-${o}% מהידיים. ${cat} כמו ${h} בחוץ.`:`מ-${s.hero} פותחים כ-${o}% מהידיים, ו-${h} בפנים.`}
+  if(s.kind==="rfi"){const p=chartPct(s.cid),o=Math.round(((p.R||0)+(p.B||0)+(p.C||0))/13.26);return NORM[code]==="F"?`מ-${s.hero} פותחים ${o<35?"רק ":""}כ-${o}% מהידיים. ${cat} כמו ${h} בחוץ.`:`מ-${s.hero} פותחים כ-${o}% מהידיים, ו-${h} בפנים.`}
   if(code==="R")return `מול ${bet} מ-${v}: ${cat} כמו ${h} עושה ${big} ל-value.`;
   if(code==="B")return `${big} כ-bluff: ידיים עם blocker כמו ${h}, לא ידיים שמשחקות טוב ב-call.`;
   if(code==="C")return `מול ${bet} מ-${v}: ${h} מספיקה ל-call, לא ל-${big}.`;
@@ -1327,33 +1361,41 @@ function reasonsFor(s,h,code,N,eq){
   return out.slice(0,3);
 }
 function coachCard(host,{spot:s,hand:h,code,chosen,size,rec,ok,heroCards}){
-  const N=spotNums(s),VR=villRange(s),right=NORM[code],best=codeLabel(s,code).replace(/\s*\(.*?\)/,"");
-  const sizeNote=chosen==="R"&&size&&rec?(size/rec<.8||size/rec>1.3?`הגודל שבחרת ${money(size)}. המקובל: ${money(rec)}.`:""):"";
+  const N=spotNums(s),VR=villRange(s),right=NORM[code],best=codeLabel(s,code).replace(/\s*\(.*?\)/,""),big=s.kind==="rfi_vs_3bet"?"4bet":"3bet";
+  const pos=s.vill?(ip(s.hero,s.vill)?"in position":"out of position"):"";
+  const showBar=VR&&N.need!=null&&(right!=="R"||chosen==="C");
+  const sizeNote=chosen==="R"&&size&&rec&&(size/rec<.8||size/rec>1.3)?`הגודל שבחרת ${money(size)}. המקובל: ${money(rec)}.`:"";
+  const line=eq=>{
+    if(s.kind==="rfi"){const p=chartPct(s.cid),o=Math.round(((p.R||0)+(p.B||0)+(p.C||0))/13.26);return right==="F"?`${h} מחוץ ל-range של ${s.hero}. משם משחקים ${o<35?"רק ":""}${o}% מהידיים.`:`${h} בתוך ה-range של ${s.hero} (${o}% מהידיים).`}
+    const price=`משלם ${chipTxt(N.toCall)} כדי לזכות ב-${chipTxt(N.fin)}`;
+    if(eq==null)return right==="F"?`${price}: צריך לזכות ${pct(N.need)} מהפעמים.`:`${h} מול ה-range של ${s.vill}.`;
+    if(right==="R"&&code!=="B")return `${h} מקדימה את רוב הידיים של ${s.vill}: אתה זוכה ב-${pct(eq)}.`;
+    if(code==="B")return `${h} חלשה ל-call, אבל טובה ל-${big} כ-bluff: הוא הרבה פעמים יוותר.`;
+    if(right==="C")return `${price}: צריך ${pct(N.need)}, ואתה זוכה ב-${pct(eq)}. משתלם.`;
+    return eq<N.need?`${price}: צריך ${pct(N.need)}, ואתה זוכה רק ב-${pct(eq)}.`:`על הנייר ${pct(eq)} מספיק, אבל ${pos} היד מחטיאה הרבה ומממשת מעט.`;
+  };
   const el=document.createElement("div");el.className="cc";host.appendChild(el);
-  const showEq=VR&&N.need!=null;
-  el.innerHTML=`<div class="cc-verdict ${ok?"ok":"bad"}"><b><span class="dot"></span>${ok?bidi("נכון: "+best):bidi(best+" עדיף")}</b>${ok?"":`<small>${bidi("בחרת "+ACT_HE[chosen])}</small>`}</div>
-  ${sizeNote?`<p class="small" style="margin:0">${bidi(sizeNote)}</p>`:""}
-  <div class="cc-nums">${s.kind==="rfi"
-    ?`<div class="cc-num"><span>Pot</span><b>${chipTxt(N.pot)}</b></div><div class="cc-num"><span>Open</span><b>${chipTxt(rec||openSize(s.hero))}</b></div><div class="cc-num"><span>${bidi("ה-range")}</span><b>${pct(((p=>(p.R||0)+(p.B||0)+(p.C||0))(chartPct(s.cid)))/13.26)}</b></div><div class="cc-num ${right==="F"?"need":"have"}"><span>${bidi("היד שלך")}</span><b>${right==="F"?"בחוץ":"בפנים"}</b></div>`
-    :`<div class="cc-num"><span>${bidi("Pot לפני")}</span><b>${chipTxt(N.pot)}</b></div><div class="cc-num"><span>${bidi("לשלם")}</span><b>${chipTxt(N.toCall)}</b></div><div class="cc-num need"><span>${bidi("צריך")}</span><b>${pct(N.need)}</b></div><div class="cc-num have"><span>${bidi("יש לך")}</span><b class="cc-eq">${showEq?"…":"—"}</b></div>`}</div>
-  ${showEq?`<div><div class="cc-gauge"><i class="have" style="width:0"></i><i class="need" style="inset-inline-start:${N.need}%"></i></div><div class="cc-glabel"><span>${bidi("equity שלך")}</span><span>${bidi("הקו האדום: מה שצריך")}</span></div></div>
-  <div class="cc-seg" role="group" aria-label="range של הנבל">${[["tight","צר"],["base","לפי הטבלה"],["wide","רחב"]].map(([k,l])=>`<button type="button" data-r="${k}" aria-pressed="${k==="base"}">${l}</button>`).join("")}</div>
-  <p class="cc-note"></p>`:""}
-  <ol class="cc-why"></ol>
-  <div class="cc-rule"><p>${bidi("📌 "+ruleFor(s,h,code))}</p><button class="btn" data-x="save-rule">שמור</button></div>
-  <details><summary>פרט עוד</summary><div class="cc-more">${md(explain(s,h,code))}</div></details>`;
-  const why=el.querySelector(".cc-why"),setWhy=eq=>{why.innerHTML=reasonsFor(s,h,code,N,eq).map(r=>`<li><span>${bidi(r)}</span></li>`).join("")};setWhy(null);
-  el.querySelector('[data-x="save-rule"]').onclick=e=>{e.stopPropagation();const t=ruleFor(s,h,code);const R=store.get("rules",[]);if(!R.some(x=>x.t===t)){R.unshift({t,at:Date.now()});store.set("rules",R.slice(0,60))}e.target.textContent="נשמר ✓";e.target.disabled=true};
+  el.innerHTML=`<div class="cc-head ${ok?"ok":"bad"}"><span class="cc-ic">${ok?"✓":"✗"}</span><div><b>${ok?bidi("נכון: "+best):bidi(best+" עדיף")}</b>${ok?"":`<small>${bidi("בחרת "+ACT_HE[chosen])}</small>`}</div></div>
+  <p class="cc-line">${bidi(line(null))}</p>
+  ${showBar?`<div class="cc-bar" hidden><div class="cc-track"><i class="have"></i><i class="need"></i></div><div class="cc-legend"><span class="g">${bidi("אתה זוכה")} <b class="cc-eq"></b></span><span class="r">${bidi("צריך")} <b>${pct(N.need)}</b></span></div></div>`:""}
+  ${sizeNote?`<p class="cc-sub">${bidi(sizeNote)}</p>`:""}
+  ${ok?"":`<ul class="cc-why"></ul>`}
+  ${ok?"":`<div class="cc-rule"><p>${bidi("📌 "+ruleFor(s,h,code))}</p><button class="cc-save" data-x="save-rule" aria-label="שמור כלל">☆</button></div>`}
+  <details class="cc-more"><summary>עוד פרטים</summary><div class="cc-more-in">
+    ${s.kind==="rfi"?"":`<div class="cc-nums"><div class="cc-num"><span>${bidi("Pot לפני")}</span><b>${chipTxt(N.pot)}</b></div><div class="cc-num"><span>${bidi("לשלם")}</span><b>${chipTxt(N.toCall)}</b></div><div class="cc-num"><span>SPR</span><b>${N.spr.toFixed(1)}</b></div></div>`}
+    ${VR&&N.need!=null?`<p class="cc-sub">${bidi("ומה אם הנבל משחק אחרת?")}</p><div class="cc-seg" role="group" aria-label="range של הנבל">${[["tight","צר"],["base","לפי הטבלה"],["wide","רחב"]].map(([k,l])=>`<button type="button" data-r="${k}" aria-pressed="${k==="base"}">${l}</button>`).join("")}</div><p class="cc-note"></p>`:""}
+    <div class="cc-exp">${md(explain(s,h,code))}</div></div></details>`;
+  const why=el.querySelector(".cc-why"),setWhy=eq=>{if(why){const R=reasonsFor(s,h,code,N,eq);why.innerHTML=[R[0],R[R.length-1]].map(r=>`<li>${bidi(r)}</li>`).join("")}};setWhy(null);
+  const sv=el.querySelector('[data-x="save-rule"]');if(sv)sv.onclick=e=>{e.stopPropagation();const t=ruleFor(s,h,code);const R=store.get("rules",[]);if(!R.some(x=>x.t===t)){R.unshift({t,at:Date.now()});store.set("rules",R.slice(0,60))}e.currentTarget.textContent="★";e.currentTarget.classList.add("on");e.currentTarget.setAttribute("aria-label","נשמר")};
   const res={N,VR,eq:{}};
-  if(showEq){
-    const seg=el.querySelector(".cc-seg"),note=el.querySelector(".cc-note"),gauge=el.querySelector(".cc-gauge .have"),eqEl=el.querySelector(".cc-eq");
-    const draw=k=>{const e=res.eq[k];if(e==null)return;eqEl.textContent=pct(e);gauge.style.width=Math.min(100,e)+"%";setWhy(e);
-      seg.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.r===k));
-      const lbl={tight:"צר",base:"לפי הטבלה",wide:"רחב"}[k];
-      const enough=e>=N.need,tail=right==="R"?(enough?` Call לא הפסד גדול, אבל ${best} מרוויח יותר.`:` לכן call לא משתלם, ו-${best} עדיף.`):right==="C"?(enough?" לכן call.":" כאן גם call כבר לא משתלם."):(enough?" על הנייר call סביר, אבל קשה לממש את ה-equity.":" לכן fold.");
-      note.innerHTML=bidi(`מול range ${lbl} (${VR.lbl}, ${pct(VR.pct[k])} מהידיים): equity ${pct(e)} ${enough?"≥":"<"} צריך ${pct(N.need)}.${tail}`)};
-    seg.onclick=e=>{const b=e.target.closest("[data-r]");if(b){e.stopPropagation();draw(b.dataset.r)}};
-    setTimeout(()=>{if(!el.isConnected)return;for(const k of ["base","tight","wide"])res.eq[k]=equityVs(heroCards,VR[k],5000);draw("base")},30);
+  if(VR&&N.need!=null){
+    const seg=el.querySelector(".cc-seg"),note=el.querySelector(".cc-note");
+    const pick=k=>{const e=res.eq[k];if(e==null)return;seg.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.r===k));
+      const lbl={tight:"צר",base:"לפי הטבלה",wide:"רחב"}[k];note.innerHTML=bidi(`מול range ${lbl} (${pct(VR.pct[k])} מהידיים) אתה זוכה ב-${pct(e)}. צריך ${pct(N.need)}.`)};
+    seg.onclick=e=>{const b=e.target.closest("[data-r]");if(b){e.stopPropagation();pick(b.dataset.r)}};
+    setTimeout(()=>{if(!el.isConnected)return;for(const k of ["base","tight","wide"])res.eq[k]=equityVs(heroCards,VR[k],5000);const e=res.eq.base;
+      el.querySelector(".cc-line").innerHTML=bidi(line(e));setWhy(e);pick("base");
+      const bar=el.querySelector(".cc-bar");if(bar){bar.hidden=false;el.querySelector(".cc-eq").textContent=pct(e);el.querySelector(".cc-track .have").style.width=Math.min(100,e)+"%";el.querySelector(".cc-track .need").style.insetInlineStart=N.need+"%"}},30);
   }
   res.el=el;return res;
 }
@@ -1413,7 +1455,7 @@ function mountPF(root,{spot,hand,feedback,onDone,onAsk,record}){
     <div class="raise-row"><span class="rl">${bidi("גודל ה-"+(kindLbl||"raise"))}</span><div class="size"><button type="button" class="stp" data-s="-1" aria-label="פחות">−</button><input type="number" inputmode="decimal" step="${step}" min="1" ${rec?`value="${toUnit(rec)}"`:'placeholder="?"'} aria-label="גודל ה-raise ב-${unitName()}"><button type="button" class="stp" data-s="1" aria-label="יותר">+</button><span class="un">${unitName()}</span></div></div>
     <div class="abtns"><button class="abtn a-F" data-k="F" disabled><b>Fold</b><kbd>F</kbd></button><button class="abtn a-C" data-k="C" disabled><b>${spot.kind==="rfi"?"Limp":"Call"}</b><small>${chipTxt(callTo)}</small><kbd>C</kbd></button><button class="abtn a-R" data-k="R" disabled><b>Raise</b><small class="r-amt">${rec?chipTxt(rec):kindLbl||""}</small><kbd>R</kbd></button></div>
   </div>
-  <div class="after" hidden><div class="row" style="justify-content:center"><button class="btn primary" data-x="next">הבא ←<kbd>Enter</kbd></button><button class="btn" data-x="replay" hidden>▶ הסבר על השולחן</button><button class="btn" data-x="grid">הצג טבלה</button>${onAsk?'<button class="btn ghost" data-x="ask">שאל את המאמן</button>':""}</div><div class="why"></div><div class="gridwrap" hidden></div><div class="legend" hidden></div></div>`;
+  <div class="after" hidden><div class="why"></div><button class="btn primary next-big" data-x="next">הבא ←<kbd>Enter</kbd></button><div class="tools"><button class="tool" data-x="replay" hidden>▶ הסבר על השולחן</button><button class="tool" data-x="grid" aria-pressed="false">▦ טבלה</button><button class="tool" data-x="ask" hidden aria-pressed="false">💬 שאל את המאמן</button></div><div class="gridwrap" hidden></div><div class="legend" hidden></div></div>`;
   const tbl=mountTable(spot,dealt),T=tbl.el;root.querySelector(".tbl-host").appendChild(T);
   const cap=root.querySelector(".st-cap"),bar=root.querySelector(".answers"),after=root.querySelector(".after"),sizeIn=bar.querySelector(".size input"),rAmt=bar.querySelector(".r-amt");
   const curSize=()=>{const v=parseFloat(sizeIn.value);return v>0?fromUnit(v):null};
@@ -1438,6 +1480,7 @@ function mountPF(root,{spot,hand,feedback,onDone,onAsk,record}){
     replay=()=>{const go2=()=>playStory(replayStory(spot,hand,dealt.txt,code,k,card),{overlay:true,onClose:()=>rb.focus({preventScroll:true})});if(card.VR&&card.N.need!=null&&card.eq.base==null)setTimeout(go2,120);else go2()};
     if(!ok&&settings.replay!=="button")setTimeout(()=>{if(T.isConnected&&!storyOpen())replay()},700);
     followUp(after,ok,`מצב: ${lines.join(" ").replace(/\*\*/g,"")}\nהיד שלי: ${hand}\nאפשרויות: Fold | ${A.rName} | ${A.call}\nבחרתי: ${label(k,size)}\nהתשובה לפי הטבלה (PokerCoaching 9-max, 100bb, שולחן של ${settings.players}): ${right}\nהסבר: ${explain(spot,hand,code)}`,null,()=>coachFacts(spot,card),`${hand} · ${spot.hero}${spot.vill?" מול "+spot.vill:""} · ${KIND_NAME[spot.kind]}`);
+    {const f=after.querySelector(".follow");if(f){f.hidden=true;after.querySelector('[data-x="ask"]').hidden=false}}
     me.next=()=>{clearTimeout(autoT);me.next=()=>{};go(res)};
     if(ok&&settings.autoNext!=="off"){autoT=setTimeout(()=>{if(T.isConnected)me.next()},900);const stop=()=>clearTimeout(autoT);root.addEventListener("pointerdown",stop,{once:true});root.addEventListener("focusin",stop,{once:true})}
   };
@@ -1447,8 +1490,8 @@ function mountPF(root,{spot,hand,feedback,onDone,onAsk,record}){
   after.onclick=e=>{const x=e.target.closest("[data-x]");if(!x)return;const a=x.dataset.x;
     if(a==="next")me.next();
     if(a==="replay"&&replay)replay();
-    if(a==="grid"){const gw=after.querySelector(".gridwrap"),lg=after.querySelector(".legend");gw.hidden=!gw.hidden;lg.hidden=gw.hidden;if(!gw.hidden){renderGrid(gw,spot,hand);lg.innerHTML=legendHTML(spot)}}
-    if(a==="ask"&&onAsk)onAsk(spot,hand,code)};
+    if(a==="grid"){const gw=after.querySelector(".gridwrap"),lg=after.querySelector(".legend");gw.hidden=!gw.hidden;lg.hidden=gw.hidden;x.setAttribute("aria-pressed",!gw.hidden);if(!gw.hidden){renderGrid(gw,spot,hand);lg.innerHTML=legendHTML(spot)}}
+    if(a==="ask"){const f=after.querySelector(".follow");if(f){f.hidden=!f.hidden;x.setAttribute("aria-pressed",!f.hidden);if(!f.hidden){f.querySelector("textarea").focus();f.scrollIntoView({block:"nearest"})}}}};
   T.onclick=()=>{if(!ready)tbl.skipNow();else if(done)me.next()};
   tbl.play(script).then(()=>{if(!T.isConnected||done)return;ready=true;t0=performance.now();bar.querySelectorAll("[data-k]").forEach(b=>b.disabled=false);cap.classList.remove("wait");tbl.msg(tableMsg(spot,script)+"<small>התור שלך</small>")});
 }
