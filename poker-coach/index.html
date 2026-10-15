@@ -450,6 +450,37 @@ button .gl,.ans .gl,.chip .gl,.opt .gl,.choice .gl,h1 .gl,h2 .gl,.score-row .gl{
 .rgrid .hl{box-shadow:0 0 0 3px var(--accent);position:relative;z-index:1}
 .bubble{position:absolute;z-index:3;background:var(--fg);color:var(--bg);border-radius:12px;padding:7px 12px;font-size:.85rem;font-weight:600;white-space:nowrap;pointer-events:none;box-shadow:var(--shadow)}
 .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:.82rem;color:var(--muted)}
+.stage-seg{margin-bottom:-8px}
+.stage-seg button{font-size:.86rem;padding:9px 4px}
+.scen-box{gap:14px}
+.scen-box .fld{display:grid;gap:6px}
+.scen-box .fld>span{font-size:.82rem;font-weight:700;color:var(--muted)}
+.scen-box .chip{padding:7px 13px;font-size:.85rem}
+.scen-box .chip-row{flex-wrap:wrap;overflow:visible;margin:0;padding:0}
+.cc-head.mid .cc-ic{background:#f5a524}
+.ev-tbl{display:grid;gap:4px}
+.ev-r{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:7px 12px;border-radius:12px;background:var(--surface-2);font-size:.9rem;font-weight:600}
+.ev-r b{font-variant-numeric:tabular-nums}
+.ev-r.t-best{box-shadow:inset 0 0 0 2px var(--ok)}
+.ev-r.me{background:var(--accent-soft)}
+.ev-r.t-bad b{color:var(--bad)} .ev-r.t-best b{color:var(--ok)}
+.pp-think section{display:grid;gap:6px}
+.pp-think h3{margin:0;font-size:.92rem;font-weight:800}
+.pp-think p{margin:0;font-size:.92rem;line-height:1.55;color:var(--fg-2)}
+.pp-log{margin:0;padding-inline-start:18px;display:grid;gap:5px;font-size:.9rem;line-height:1.5;color:var(--fg-2)}
+.pp-log li.b{font-weight:700;color:var(--fg);list-style:none;margin-inline-start:-18px}
+.pp-bar{display:flex;height:12px;border-radius:999px;overflow:hidden;background:var(--surface-2)}
+.pp-bar i{display:block;height:100%}
+.pp-leg{gap:10px;font-size:.78rem}
+.pp-dec{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.pp-dec li{display:flex;gap:8px;align-items:baseline;font-size:.92rem}
+.pp-dec li span{font-weight:800;min-width:44px}
+.pp-dec li.t-bad{color:var(--bad)} .pp-dec li.t-best{color:var(--ok)}
+.pp-dec small{color:var(--muted)}
+.pf-next{display:grid;gap:8px}
+.wgrid button{transition:none}
+.rq{gap:14px}
+
 .legend i{display:inline-block;width:11px;height:11px;border-radius:4px;vertical-align:-1px;margin-inline-end:6px}
 .q{font-family:var(--display);font-weight:700;font-size:1.3rem;letter-spacing:-.015em;line-height:1.35}
 .opts{display:grid;gap:12px}
@@ -555,7 +586,9 @@ label.fld,.fld{display:grid;gap:6px;font-size:.85rem;color:var(--muted);font-wei
   <!-- DRILL -->
   <section class="view" id="v-drill" hidden>
     <div class="row between"><h1>תרגול</h1><button class="btn" id="d-charts">טבלאות</button></div>
+    <div class="cc-seg stage-seg" id="d-stage" role="group" aria-label="מה לתרגל"></div>
     <div class="chip-row" id="d-modes" role="group" aria-label="מצב תרגול"></div>
+    <div class="card-box scen-box" id="d-scen" hidden></div>
     <p class="small muted" id="d-note" hidden></p>
     <div id="d-pf" class="view"></div>
     <p class="small muted" id="d-acc" style="text-align:center;font-variant-numeric:tabular-nums"></p>
@@ -1206,7 +1239,7 @@ function fromMiss(){const m=Object.entries(stats.miss).filter(([k,v])=>v>0&&SPOT
 function pickSpot(mode){
   if(mode==="miss")return fromMiss();
   if(mode==="leaks"&&Math.random()<.3){const m=fromMiss();if(m)return m}
-  let pool=SPOTS.filter(s=>(mode==="leaks"||mode==="all"||s.kind===mode)&&inTable(s));if(!pool.length)pool=SPOTS.filter(s=>inTable(s));
+  let pool=mode==="scen"?prePool():SPOTS.filter(s=>(mode==="leaks"||mode==="all"||s.kind===mode)&&inTable(s));if(!pool.length){if(mode==="scen")return null;pool=SPOTS.filter(s=>inTable(s))}
   const a=lastAssess(),weak=a?Object.keys(a.posErr||{}):[];
   const w=pool.map(s=>1+4*errRate(stats.byKind[s.kind])+4*errRate(stats.byPos[s.hero])+(mode==="leaks"&&weak.includes(s.hero)?2:0));
   let r=Math.random()*w.reduce((x,y)=>x+y,0),i=0;for(;i<w.length-1;i++){r-=w[i];if(r<=0)break}
@@ -1223,7 +1256,7 @@ function classify(ch,code){
 function recordPF(s,h,ch,code){
   const ok=NORM[code]===ch,key=s.id+"#"+h;
   stats.n++;if(ok){stats.ok++;stats.streak++;if(stats.miss[key]){stats.miss[key]--;if(!stats.miss[key])delete stats.miss[key]}}else{stats.streak=0;stats.miss[key]=(stats.miss[key]||0)+1}
-  for(const [obj,k] of [[stats.byKind,s.kind],[stats.byPos,s.hero]]){const o=obj[k]||{n:0,ok:0};o.n++;if(ok)o.ok++;obj[k]=o}
+  stats.byScen=stats.byScen||{};for(const [obj,k] of [[stats.byKind,s.kind],[stats.byPos,s.hero],[stats.byScen,scenKey(s.kind,s.hero,s.vill)]]){const o=obj[k]||{n:0,ok:0};o.n++;if(ok)o.ok++;obj[k]=o}
   for(const p of classify(ch,code))stats.pat[p]=(stats.pat[p]||0)+1;
   store.set("stats",stats);
 }
@@ -1258,7 +1291,7 @@ const cardInt=t=>RV[t.slice(0,-1)]*4+SV[t.slice(-1)];
 function straightTop(m){const mm=(m<<1)|((m>>12)&1);for(let t=13;t>=4;t--)if(((mm>>(t-4))&31)===31)return t-1;return -1}
 function eval7(cs){
   const rc=[0,0,0,0,0,0,0,0,0,0,0,0,0],sc=[0,0,0,0],sm=[0,0,0,0];let all=0;
-  for(let i=0;i<7;i++){const c=cs[i],r=c>>2,u=c&3;rc[r]++;sc[u]++;sm[u]|=1<<r;all|=1<<r}
+  for(let i=0;i<cs.length;i++){const c=cs[i],r=c>>2,u=c&3;rc[r]++;sc[u]++;sm[u]|=1<<r;all|=1<<r}
   let fs=-1;for(let u=0;u<4;u++)if(sc[u]>=5)fs=u;
   if(fs>=0){const t=straightTop(sm[fs]);if(t>=0)return 8e6+t}
   let q=-1,t1=-1,t2=-1,p1=-1,p2=-1;
@@ -1621,7 +1654,7 @@ function factorsFor(s,h,hc,code,chosen,eq){
   return {main:main.length?main:F.slice(0,1),all:F,best};
 }
 let activePF=null;
-function mountPF(root,{spot,hand,feedback,onDone,onAsk,record}){
+function mountPF(root,{spot,hand,feedback,onDone,onAsk,record,cont,onFlop}){
   const code=codeAt(spot,hand),dealt=dealHand(hand),A=answerSet(spot),rec=raiseSize(spot),script=handScript(spot);let done=false,ready=false,t0=performance.now();
   let autoT=0,replay=null;const callTo=Math.max(1,...script.filter(x=>x[1]!=="F").map(x=>x[2])),lines=situation(spot,dealt.txt),kindLbl=(A.rName.match(/\((\w+)\)/)||[])[1];
   const step=settings.units==="chips"?5:.5;
@@ -1656,14 +1689,19 @@ function mountPF(root,{spot,hand,feedback,onDone,onAsk,record}){
     if(!ok&&settings.replay!=="button")setTimeout(()=>{if(T.isConnected&&!storyOpen())replay()},700);
     followUp(after,ok,`מצב: ${lines.join(" ").replace(/\*\*/g,"")}\nהיד שלי: ${hand}\nאפשרויות: Fold | ${A.rName} | ${A.call}\nבחרתי: ${label(k,size)}\nהתשובה לפי הטבלה (PokerCoaching 9-max, 100bb, שולחן של ${settings.players}): ${right}\nהסבר: ${explain(spot,hand,code)}`,null,()=>coachFacts(spot,card),`${hand} · ${spot.hero}${spot.vill?" מול "+spot.vill:""} · ${KIND_NAME[spot.kind]}`);
     {const f=after.querySelector(".follow");if(f){f.hidden=true;after.querySelector('[data-x="ask"]').hidden=false}}
-    me.next=()=>{clearTimeout(autoT);me.next=()=>{};go(res)};
-    if(ok&&settings.autoNext!=="off"){autoT=setTimeout(()=>{if(T.isConnected)me.next()},900);const stop=()=>clearTimeout(autoT);root.addEventListener("pointerdown",stop,{once:true});root.addEventListener("focusin",stop,{once:true})}
+    me.next=()=>{clearTimeout(autoT);me.next=()=>{};go(res)};me.newHand=me.next;
+    const fa=cont&&(k!=="F"?k:NORM[code]!=="F"?NORM[code]:null),fl=fa&&cont(spot,fa,dealt.txt.split(" ").map(cardInt));
+    if(fl){const nb=after.querySelector('[data-x="next"]');nb.classList.remove("primary","next-big");nb.textContent="יד חדשה";
+      const fb=document.createElement("button");fb.className="btn primary next-big";fb.dataset.x="flop";fb.innerHTML=bidi(k==="F"?"המשך ל-flop עם "+ACT_HE[fa]+" ←":"המשך ל-flop ←")+"<kbd>Enter</kbd>";nb.before(fb);fb.focus({preventScroll:true});
+      me.next=()=>{me.next=()=>{};if(activePF===me)activePF=null;onFlop(fl)}}
+    else if(ok&&settings.autoNext!=="off"){autoT=setTimeout(()=>{if(T.isConnected)me.next()},900);const stop=()=>clearTimeout(autoT);root.addEventListener("pointerdown",stop,{once:true});root.addEventListener("focusin",stop,{once:true})}
   };
   const me={answer,next:()=>{if(!ready)tbl.skipNow()}};activePF=me;
   bar.onclick=e=>{const b=e.target.closest("[data-k]");if(b&&!b.disabled)answer(b.dataset.k)};
   sizeIn.addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();answer("R")}});
   after.onclick=e=>{const x=e.target.closest("[data-x]");if(!x)return;const a=x.dataset.x;
-    if(a==="next")me.next();
+    if(a==="next")(me.newHand||me.next)();
+    if(a==="flop")me.next();
     if(a==="replay"&&replay)replay();
     if(a==="grid"){const gw=after.querySelector(".gridwrap"),lg=after.querySelector(".legend");gw.hidden=!gw.hidden;lg.hidden=gw.hidden;x.setAttribute("aria-pressed",!gw.hidden);if(!gw.hidden){renderGrid(gw,spot,hand);lg.innerHTML=legendHTML(spot)}}
     if(a==="ask"){const f=after.querySelector(".follow");if(f){f.hidden=!f.hidden;x.setAttribute("aria-pressed",!f.hidden);if(!f.hidden){f.querySelector("textarea").focus();f.scrollIntoView({block:"nearest"})}}}};
@@ -2079,19 +2117,571 @@ function dailySummary(res){
   $("#ds-home").onclick=()=>show("home");
 }
 
+/* ===== SCENARIOS: stage, situation, your position, villain positions ===== */
+const PLINES={open:{t:"פתחת וקיבלת call",kind:"rfi"},callopen:{t:"עשית call ל-open",kind:"facing_rfi"},"3bet":{t:"עשית 3bet וקיבלת call",kind:"facing_rfi"},call3bet:{t:"עשית call ל-3bet",kind:"rfi_vs_3bet"}};
+const KIND_OPTS=[["all","הכל"],["rfi","Open"],["facing_rfi","מול raise"],["rfi_vs_3bet","מול 3bet"]];
+const STAGES=[["pre","Preflop"],["full","יד שלמה"],["post","Postflop"],["range","טווחים"]];
+const SCEN_DEF={stage:"pre",mode:"leaks",kind:"all",hero:"all",vills:[],pline:"any"};
+let scen=Object.assign({},SCEN_DEF,store.get("scen",{}));if(!Array.isArray(scen.vills))scen.vills=[];
+const saveScen=()=>store.set("scen",scen);
+const spotOf=(kind,hero,vill)=>SPOTS.find(x=>x.kind===kind&&x.hero===hero&&(vill==null?!x.vill:x.vill===vill));
+const handsOf=(sp,codes)=>sp?ALL.filter(h=>codes.includes(CHARTS[sp.cid].map[h])):[];
+const inTab=p=>tablePos().includes(p);
+const r1=x=>Math.round(x*10)/10;
+/* A heads-up line that reaches the flop, straight from the charts: both ranges, who raised last, the pot. */
+function lineInfo(pl,hero,vill){
+  if(!hero||!vill||hero===vill)return null;
+  let hr,vr,pfr,inv;
+  if(pl==="open"){hr=handsOf(spotOf("rfi",hero),["R","B"]);vr=handsOf(spotOf("facing_rfi",vill,hero),["C"]);pfr="hero";inv=openSize(hero)}
+  else if(pl==="callopen"){hr=handsOf(spotOf("facing_rfi",hero,vill),["C"]);vr=handsOf(spotOf("rfi",vill),["R","B"]);pfr="vill";inv=openSize(vill)}
+  else if(pl==="3bet"){hr=handsOf(spotOf("facing_rfi",hero,vill),["R","B"]);vr=handsOf(spotOf("rfi_vs_3bet",vill,hero),["C"]);pfr="hero";inv=openSize(vill)*(ip(hero,vill)?3:3.5)}
+  else if(pl==="call3bet"){hr=handsOf(spotOf("rfi_vs_3bet",hero,vill),["C"]);vr=handsOf(spotOf("facing_rfi",vill,hero),["R","B"]);pfr="vill";inv=openSize(hero)*(ip(vill,hero)?3:3.5)}
+  else return null;
+  if(!hr.length||!vr.length)return null;
+  inv=r1(inv);const dead=ANTE+(hero!=="SB"&&vill!=="SB"?.5:0)+(hero!=="BB"&&vill!=="BB"?1:0);
+  return {pl,hero,vill,hr,vr,pfr,inv,pot:r1(2*inv+dead),stack:r1(STACK-inv)};
+}
+function linePairs(pl){
+  const out=[];
+  if(pl==="open"){for(const s of SPOTS)if(s.kind==="facing_rfi"&&inTab(s.hero)&&inTab(s.vill)&&lineInfo("open",s.vill,s.hero))out.push({hero:s.vill,vill:s.hero})}
+  else{const k=PLINES[pl].kind;for(const s of SPOTS)if(s.kind===k&&s.vill&&inTab(s.hero)&&inTab(s.vill)&&lineInfo(pl,s.hero,s.vill))out.push({hero:s.hero,vill:s.vill})}
+  return out;
+}
+const uniq=a=>[...new Set(a)];
+const posSort=a=>a.slice().sort((x,y)=>PREFLOP.indexOf(x)-PREFLOP.indexOf(y));
+/* Which heroes and villains the builder offers, for the current stage. */
+function scenChoices(){
+  if(scen.stage==="post"){
+    const pls=scen.pline==="any"?Object.keys(PLINES):[scen.pline],pairs=pls.flatMap(linePairs);
+    const heroes=posSort(uniq(pairs.map(p=>p.hero))),vills=posSort(uniq(pairs.filter(p=>scen.hero==="all"||p.hero===scen.hero).map(p=>p.vill)));
+    return {heroes,vills};
+  }
+  const kinds=scen.kind==="all"?["rfi","facing_rfi","rfi_vs_3bet"]:[scen.kind];
+  const sp=SPOTS.filter(s=>kinds.includes(s.kind)&&inTable(s));
+  const heroes=posSort(uniq(sp.map(s=>s.hero)));
+  let vills=posSort(uniq(sp.filter(s=>s.vill&&(scen.hero==="all"||s.hero===scen.hero)).map(s=>s.vill)));
+  if(scen.stage==="full"&&kinds.includes("rfi"))vills=posSort(uniq(vills.concat(linePairs("open").filter(p=>scen.hero==="all"||p.hero===scen.hero).map(p=>p.vill))));
+  return {heroes,vills};
+}
+function pruneScen(){const c=scenChoices();if(scen.hero!=="all"&&!c.heroes.includes(scen.hero))scen.hero="all";scen.vills=scen.vills.filter(v=>scenChoices().vills.includes(v))}
+function prePool(){
+  const kinds=scen.kind==="all"?(scen.stage==="full"?["rfi","facing_rfi","rfi_vs_3bet"]:null):[scen.kind];
+  return SPOTS.filter(s=>inTable(s)&&(!kinds||kinds.includes(s.kind))&&(scen.hero==="all"||s.hero===scen.hero)&&(!scen.vills.length||!s.vill||scen.vills.includes(s.vill))
+    &&(scen.stage!=="full"||s.kind!=="rfi"||!scen.vills.length||scen.vills.some(v=>lineInfo("open",s.hero,v))));
+}
+const scenKey=(kind,hero,vill)=>kind+"|"+hero+"|"+(vill||"");
+function scenTitle(){
+  const h=scen.hero==="all"?"כל העמדות":scen.hero,v=scen.vills.length?" מול "+scen.vills.join(", "):"";
+  if(scen.stage==="post")return (scen.pline==="any"?"כל הקווים":PLINES[scen.pline].t)+" · "+h+v;
+  return (KIND_OPTS.find(k=>k[0]===scen.kind)||KIND_OPTS[0])[1]+" · "+h+v;
+}
+
+/* ===== POSTFLOP ENGINE: hand classes, villain model, equities, EV of each option ===== */
+const RCH=["2","3","4","5","6","7","8","9","10","J","Q","K","A"],SCH=["♠","♥","♦","♣"];
+const cTxt=c=>RCH[c>>2]+SCH[c&3];
+const comboHand=(a,b)=>{const ra=a>>2,rb=b>>2,hi=Math.max(ra,rb),lo=Math.min(ra,rb),ch=r=>RK[12-r];return hi===lo?ch(hi)+ch(lo):ch(hi)+ch(lo)+((a&3)===(b&3)?"s":"o")};
+const BK_SC={monster:6,strong:5,medium:4,draw:3,weak:2.5,weakdraw:2,air:1};
+const GROUPS=[["monster","חזקות מאוד","var(--r-val)"],["strong","חזקות","var(--act-raise)"],["mid","בינוניות","var(--act-call)"],["draw","draws","var(--r-bluff)"],["air","אוויר","var(--muted)"]];
+const grpOf=b=>b==="monster"||b==="strong"?b:b==="medium"||b==="weak"?"mid":b==="draw"||b==="weakdraw"?"draw":"air";
+function drawInfo(h,b){
+  if(b.length>=5)return {fd:false,st:0,outs:0};
+  const all=h.concat(b);let fd=false;
+  for(let u=0;u<4;u++){const n=all.filter(c=>(c&3)===u).length,nh=h.filter(c=>(c&3)===u).length;if(n===4&&nh>0)fd=true}
+  const mask=cs=>cs.reduce((m,c)=>m|1<<(c>>2),0),am=mask(all),bm=mask(b);let st=0;
+  if(straightTop(am)<0)for(let r=0;r<13;r++)if(!(am>>r&1)&&straightTop(am|1<<r)>=0&&straightTop(bm|1<<r)<0)st++;
+  st=Math.min(st,2);
+  return {fd,st,outs:(fd?9:0)+st*4-(fd&&st?2:0)};
+}
+/* What a two-card hand is on this board, in the words a player uses. */
+function handInfo(h,b){
+  const v=eval7(h.concat(b)),cat=Math.floor(v/1e6),bcat=Math.floor(eval7(b)/1e6);
+  const ub=uniq(b.map(c=>c>>2)).sort((x,y)=>y-x),hr=h.map(c=>c>>2).sort((x,y)=>y-x),pp=hr[0]===hr[1];
+  const bc=r=>b.filter(c=>c>>2===r).length,d=drawInfo(h,b);let bk="air",t="";
+  if(cat>bcat&&cat>=4){bk="monster";t=["","","","","straight","flush","full house","quads","straight flush"][cat]}
+  else if(pp&&bc(hr[0])===1){bk="monster";t="set"}
+  else if(!pp&&hr.some(r=>bc(r)===2)&&cat>bcat){bk="monster";t="trips"}
+  else if(!pp&&bc(hr[0])===1&&bc(hr[1])===1){bk=hr[0]===ub[0]?"monster":"strong";t="two pair"}
+  else{
+    const pr=pp?hr[0]:hr.find(r=>bc(r)===1);
+    if(pr!=null){
+      if(pp&&pr>ub[0]){bk="strong";t="overpair"}
+      else if(!pp&&pr===ub[0]){const k=hr.find(r=>r!==pr);bk=k>=9?"strong":"medium";t="top pair"+(k>=11?", kicker חזק":k>=8?", kicker בינוני":", kicker חלש")}
+      else if(pp?pr>(ub[1]??-1):pr===ub[1]){bk="medium";t=pp?"זוג מתחת לקלף העליון":"second pair"}
+      else{bk="weak";t=pp?"זוג נמוך":"bottom pair"}
+    }else t=hr[0]===12?"A-high":"high card";
+  }
+  const over=!pp&&hr[1]>ub[0];
+  if((bk==="air"||bk==="weak")&&(d.fd||d.st===2))bk="draw";
+  else if(bk==="air"&&(d.st===1||over))bk="weakdraw";
+  const dr=[d.fd?"flush draw":"",d.st===2?"open-ended straight draw":d.st===1?"gutshot":"",bk==="weakdraw"&&over&&!d.st?"overcards":""].filter(Boolean);
+  return {bk,t,dr,d,cat,v,txt:t+(dr.length?" + "+dr.join(" + "):"")};
+}
+function boardInfo(b){
+  const f=b.slice(0,3),r=f.map(c=>c>>2).sort((x,y)=>y-x),ns=new Set(f.map(c=>c&3)).size,paired=new Set(r).size<3,hi=r[0],conn=!paired&&r[0]-r[2]<=4;
+  let cls,t,p;
+  if(ns===1){cls="mono";t="בורד בצבע אחד";p="כל יד עם קלף אחד מהצבע משנה את התמונה. מהמרים פחות, וכשמהמרים, bet קטן."}
+  else if(paired){cls="paired";t="בורד עם זוג";p="קשה לפגוע בו, ולרוב אף אחד לא פגע. מי שעשה raise לפני ה-flop מהמר הרבה, וקטן."}
+  else if(conn&&hi<=8){cls="lowconn";t="בורד נמוך ומחובר";p="הוא פוגע במי שעשה call לפני ה-flop: מחברים וזוגות קטנים. מי שעשה raise מהמר פחות, וכשמהמר, גדול."}
+  else if(hi===12&&!conn){cls="ahigh";t="בורד עם A, יבש";p="ה-A החזקים (AK, AQ) נמצאים אצל מי שעשה raise. מהמרים הרבה, וקטן."}
+  else if(hi>=10&&!conn){cls="highdry";t="בורד גבוה ויבש";p="יתרון למי שעשה raise לפני ה-flop: יותר זוגות גבוהים וקלפים גבוהים. מהמרים הרבה, וקטן."}
+  else {cls="mid";t=conn?"בורד מחובר":"בורד בינוני";p="אין כלל אחד: בודקים למי יש יותר ידיים חזקות ולמי יש יותר draws."}
+  if(ns===2)t+=", עם flush draw אפשרי";
+  return {cls,t,p};
+}
+/* Weighted range helpers. A range is a list of combos [c1,c2] and a weight for each. */
+function mkPick(cs,w){let s=0;const c=w.map(x=>s+=x);if(!(s>0))return null;return ()=>{const r=Math.random()*s;let lo=0,hi=c.length-1;while(lo<hi){const m=(lo+hi)>>1;if(c[m]<r)lo=m+1;else hi=m}return cs[lo]}}
+const mkCombos=(hands,dead)=>{const ds=new Set(dead),out=[];for(const h of hands)for(const c of expand(h))if(!ds.has(c[0])&&!ds.has(c[1]))out.push(c);return out};
+function runoutEq(A,B,board,iters,pickA,pickB){
+  const need=5-board.length,used=new Set(board),deck=[];for(let c=0;c<52;c++)if(!used.has(c))deck.push(c);
+  const H=new Array(7),V=new Array(7);board.forEach((c,i)=>{H[2+i]=V[2+i]=c});let win=0,n=0;
+  for(let it=0;it<iters;it++){const a=pickA(),v=pickB();if(a[0]===v[0]||a[0]===v[1]||a[1]===v[0]||a[1]===v[1])continue;
+    H[0]=a[0];H[1]=a[1];V[0]=v[0];V[1]=v[1];let k=0;const run=[];
+    while(k<need){const c=deck[(Math.random()*deck.length)|0];if(c===a[0]||c===a[1]||c===v[0]||c===v[1]||run.includes(c))continue;run.push(c);H[2+board.length+k]=V[2+board.length+k]=c;k++}
+    const x=eval7(H),y=eval7(V);win+=x>y?1:x===y?.5:0;n++}
+  return n?win/n*100:null;
+}
+/* Your cards against a weighted range (combos holding your cards are removed). */
+function eqW(hero,board,cs,w,iters){
+  const w2=w.map((x,i)=>x>0&&cs[i][0]!==hero[0]&&cs[i][0]!==hero[1]&&cs[i][1]!==hero[0]&&cs[i][1]!==hero[1]?x:0);
+  const pb=mkPick(cs,w2);if(!pb)return null;return runoutEq(null,null,board,iters||1500,()=>hero,pb);
+}
+function rangeEq(R1,R2,board){const a=mkPick(R1.cs,R1.w),b=mkPick(R2.cs,R2.w);if(!a||!b)return null;return runoutEq(null,null,board,2000,a,b)}
+function distOf(R){const t={monster:0,strong:0,mid:0,draw:0,air:0};let s=0;R.w.forEach((x,i)=>{if(x>0){t[grpOf(R.bk[i])]+=x;s+=x}});for(const k in t)t[k]=s?t[k]/s*100:0;return t}
+const wsum=w=>w.reduce((a,b)=>a+b,0);
+/* The villain model: an average regular. Same tables narrow both ranges, so what you read is what he plays. */
+function betProbs(ctx){
+  const {street,aggr,first,probe,fav}=ctx;
+  if(aggr){
+    if(street===0)return fav==="fav"?{monster:1,strong:.9,medium:.55,draw:.85,weak:.35,weakdraw:.65,air:.5}:fav==="neu"?{monster:.95,strong:.8,medium:.35,draw:.75,weak:.2,weakdraw:.45,air:.3}:{monster:.9,strong:.7,medium:.15,draw:.65,weak:.1,weakdraw:.3,air:.12};
+    if(street===1)return {monster:.95,strong:.75,medium:.2,draw:.6,weak:.05,weakdraw:.3,air:.25};
+    return {monster:.95,strong:.7,medium:.15,draw:0,weak:0,weakdraw:0,air:.3};
+  }
+  if(probe)return {monster:.75,strong:.6,medium:.2,draw:.5,weak:.05,weakdraw:.25,air:.2};
+  if(first)return {monster:.12,strong:.06,medium:0,draw:.05,weak:0,weakdraw:0,air:.03};
+  return street===2?{monster:.9,strong:.65,medium:.2,draw:0,weak:0,weakdraw:0,air:.3}:{monster:.85,strong:.7,medium:.35,draw:.6,weak:.15,weakdraw:.4,air:.35};
+}
+const betSize=ctx=>ctx.aggr&&ctx.street===0&&ctx.fav==="fav"?.33:ctx.street===2?.75:.66;
+/* Facing a bet he defends like a regular: the strongest part of his range, exactly MDF of it. Then a pure bluff earns nothing by itself, and equity decides. */
+const ORDER=["monster","strong","medium","draw","weak","weakdraw","air"];
+function respTable(R,s,street,vsRaise,over){
+  const tw={};ORDER.forEach(k=>tw[k]=0);let tot=0;R.w.forEach((w,i)=>{tw[R.bk[i]]+=w;tot+=w});
+  let need=Math.min(.97,(over||1)/(1+Math.max(0,s)))*tot;const out={};
+  for(const k of ORDER){const c=tw[k]>0?Math.max(0,Math.min(1,need/tw[k])):1;if(tw[k]>0)need-=c*tw[k];
+    const rs=vsRaise?(k==="monster"?.4:0):({monster:.35,strong:.06,draw:street<2?.15:0})[k]||0;out[k]={fold:1-c,call:c*(1-rs),raise:c*rs}}
+  return out;
+}
+const weighted=(R,f)=>R.w.map((x,i)=>x*f(R.bk[i]));
+const fracOf=(R,w2)=>{const a=wsum(R.w);return a?wsum(w2)/a:0};
+const realize=(street,isIP,allin)=>allin||street>=2?1:street===0?(isIP?.95:.8):(isIP?.98:.88);
+/* ===== POSTFLOP HAND: one heads-up hand from the flop to the river ===== */
+const STREET_N=["Flop","Turn","River"];
+const pctS=x=>x==null?"—":Math.round(x)+"%";
+const lineText=L=>{const o=chipTxt(openSize(L.pl==="callopen"?L.vill:L.pl==="call3bet"||L.pl==="open"?L.hero:L.vill));
+  if(L.pl==="open")return `פתחת מ-${L.hero} ל-${o}, ו-${L.vill} עשה call.`;
+  if(L.pl==="callopen")return `${L.vill} פתח ל-${o}, ועשית call מ-${L.hero}.`;
+  if(L.pl==="3bet")return `${L.vill} פתח ל-${o}, עשית 3bet ל-${chipTxt(L.inv)}, והוא עשה call.`;
+  return `פתחת מ-${L.hero} ל-${o}, ${L.vill} עשה 3bet ל-${chipTxt(L.inv)}, ועשית call.`};
+/* How the preflop line shaped his range, in one sentence a player can repeat at the table. */
+function rangeStory(L){
+  const p=Math.round(combosOf(L.vr)/13.26),missing=h=>STRENGTH.filter(x=>!L.vr.includes(x)).slice(0,h);
+  if(L.pl==="open"){const m=missing(3).filter(x=>handsOf(spotOf("facing_rfi",L.vill,L.hero),["R","B"]).includes(x));return `ה-range של ${L.vill}: call מול open מ-${L.hero}, ${p}% מהידיים.${m.length?` חסרות בו הידיים הכי חזקות (${m.join(", ")}): איתן הוא היה עושה 3bet.`:""}`}
+  if(L.pl==="callopen")return `ה-range של ${L.vill}: open מ-${L.vill}, ${p}% מהידיים. הוא עוד לא צמצם כלום: יש בו גם AA וגם ידיים חלשות.`;
+  if(L.pl==="3bet")return `ה-range של ${L.vill}: call ל-3bet, ${p}% מהידיים. את הכי חזקות הוא היה עושה 4bet, ואת החלשות fold. נשארו בעיקר ידיים בינוניות-חזקות.`;
+  return `ה-range של ${L.vill}: 3bet מול open מ-${L.hero}, ${p}% מהידיים. ידיים חזקות מאוד ו-bluffs, כמעט בלי אמצע.`;
+}
+let G=null;
+function postRange(hands,dead){const cs=mkCombos(hands,dead);return {cs,w:cs.map(()=>1),bk:cs.map(()=>"air")}}
+const board=()=>G.board.slice(0,G.shown);
+function reBucket(R){const b=board(),bs=new Set(b);R.cs.forEach((c,i)=>{if(bs.has(c[0])||bs.has(c[1]))R.w[i]=0;else if(R.w[i]>0)R.bk[i]=handInfo(c,b).bk})}
+function ctxFor(who,o={}){
+  const st=G.street,isIP=who==="hero"?G.heroIP:!G.heroIP,first=!isIP&&!G.acted.hero&&!G.acted.vill;
+  const adv=who==="hero"?G.adv:100-G.adv;
+  return {street:st,aggr:G.init===who,first:o.afterCheck?false:first,probe:st>=1&&G.init===null&&!isIP&&first,fav:adv>55?"fav":adv<47?"unf":"neu"};
+}
+function startPost(root,L,hc,vc,onEnd,fromPre){
+  const dead=hc.concat(vc),deck=[];for(let c=0;c<52;c++)if(!dead.includes(c))deck.push(c);
+  const bd=[];while(bd.length<5){const c=deck.splice((Math.random()*deck.length)|0,1)[0];bd.push(c)}
+  G={L,hc,vc,board:bd,shown:0,street:-1,pot:L.pot,st:{hero:L.stack,vill:L.stack},heroIP:ip(L.hero,L.vill),init:L.pfr,
+     H:postRange(L.hr,[]),V:postRange(L.vr,hc),log:[{s:"Preflop",t:lineText(L)+" "+rangeStory(L)}],dec:[],root,onEnd,adv:50,nut:{h:0,v:0},T:null,prev:null,pills:{},fromPre};
+  root.innerHTML=`<div class="tbl-host"></div><div class="st-cap pf-cap"></div>
+  <div class="answers game" hidden role="group" aria-label="מה אתה עושה?"><div class="abtns"></div></div>
+  <div class="after" hidden></div>`;
+  const T=document.createElement("div");root.querySelector(".tbl-host").appendChild(T);G.T=T;
+  runHand();
+}
+function scene(o={}){
+  const L=G.L,st=sceneState();st.dealt=true;st.hero=G.hc.map(cTxt).join(" ");st.board=board().map(cTxt);st.pot=G.pot;
+  const inv=w=>r1(STACK-G.st[w]-G.bets[w]);st.done={[L.hero]:inv("hero"),[L.vill]:inv("vill")};
+  st.bets={};if(G.bets.hero>0)st.bets[L.hero]=G.bets.hero;if(G.bets.vill>0)st.bets[L.vill]=G.bets.vill;
+  st.fold=tablePos().filter(p=>p!==L.hero&&p!==L.vill);st.pills=Object.assign({},G.pills);if(o.show)st.show={[L.vill]:G.vc.map(cTxt).join(" ")};if(o.hl)st.hl=o.hl;
+  renderScene(G.T,{seats:tablePos(),hero:L.hero},st,G.prev);G.prev=st;
+}
+const capSet=(a,b)=>{const c=G.root.querySelector(".pf-cap");c.innerHTML=`<p class="st-line">${mdInline(a)}</p>${b?`<p class="st-desc">${mdInline(b)}</p>`:""}`};
+const sleep=ms=>new Promise(r=>setTimeout(r,ms*Math.max(.35,animF()||.35)));
+async function runHand(){
+  const g=G;
+  for(let s=0;s<3;s++){
+    if(G!==g)return;
+    G.street=s;G.shown=s===0?3:s+3;G.bets={hero:0,vill:0};G.acted={hero:false,vill:false};G.raised=false;G.capped=false;G.donk=false;G.pills={};G.lastBet=null;
+    reBucket(G.H);reBucket(G.V);
+    G.adv=rangeEq(G.H,G.V,board())??50;G.nut={h:distOf(G.H).monster,v:distOf(G.V).monster};
+    G.log.push({s:STREET_N[s],t:`${STREET_N[s]}: ${board().map(cTxt).join(" ")}.`,board:true});
+    scene({hl:["board"]});capSet(`**${STREET_N[s]}** · Pot ${chipTxt(G.pot)}`,"");
+    await sleep(700);if(G!==g)return;
+    const r=await playStreet();if(G!==g)return;
+    if(r==="end")return;
+    G.pot=r1(G.pot+G.bets.hero+G.bets.vill);G.bets={hero:0,vill:0};
+    G.init=G.lastBet;
+    if(G.st.hero<=0||G.st.vill<=0){G.shown=5;G.street=2;break}
+  }
+  scene({show:true});await sleep(300);
+  const hv=eval7(G.hc.concat(G.board)),vv=eval7(G.vc.concat(G.board)),res=hv>vv?"win":hv<vv?"lose":"split";
+  finishHand(res);
+}
+async function playStreet(){
+  let actor=G.heroIP?"vill":"hero";
+  for(let guard=0;guard<6;guard++){
+    const other=actor==="hero"?"vill":"hero",owe=r1(G.bets[other]-G.bets[actor]);
+    const g=G,act=actor==="hero"?await heroTurn(owe):await villTurn(owe);
+    if(G!==g)return "end";
+    applyAct(actor,act,owe);
+    scene();await sleep(actor==="vill"?500:250);if(G!==g)return "end";
+    if(act.a==="F"){finishHand(actor==="hero"?"fold":"vfold");return "end"}
+    if(act.a==="C")return "next";
+    if(act.a==="X"&&G.acted[other])return "next";
+    G.acted[actor]=true;actor=other;
+  }
+  return "next";
+}
+/* Narrow a range by the action taken, with the same tables the villain uses. */
+function narrow(who,act,owe,potBefore){
+  const R=who==="hero"?G.H:G.V,st=G.street;
+  if(act.a==="X"||act.a==="B"){if(owe>0)return;const bp=betProbs(ctxFor(who));R.w=R.w.map((w,i)=>w*(act.a==="B"?bp[R.bk[i]]:1-bp[R.bk[i]]))}
+  else if(act.a==="C"||act.a==="R"){const T=respTable(R,owe/Math.max(.1,potBefore-owe),st,G.raised,G.donk&&!G.raised?1.2:1);R.w=R.w.map((w,i)=>{const p=T[R.bk[i]];return w*(act.a==="C"?p.call:p.raise)})}
+  if(!(wsum(R.w)>0))R.w=R.w.map(()=>1);
+}
+function applyAct(who,act,owe){
+  const potBefore=G.pot+G.bets.hero+G.bets.vill,before=who==="vill"?distOf(G.V):null;
+  narrow(who,act,owe,potBefore);
+  if(act.a==="B"||act.a==="R"||act.a==="C"){const add=r1(Math.min(G.st[who],act.amt-G.bets[who]));G.st[who]=r1(G.st[who]-add);G.bets[who]=r1(G.bets[who]+add)}
+  if(act.a==="R"){if(G.raised)G.capped=true;G.raised=true}
+  if(act.a==="B"){const isIP=who==="hero"?G.heroIP:!G.heroIP;G.donk=!!G.init&&G.init!==who&&!isIP&&G.street===0}
+  if(act.a==="B"||act.a==="R")G.lastBet=who;
+  const name={X:"Check",B:"Bet",C:"Call",R:"Raise",F:"Fold"}[act.a],pos=who==="hero"?G.L.hero:G.L.vill;
+  G.pills={[pos]:name+(act.a==="B"||act.a==="R"?" "+chipTxt(G.bets[who]):"")};
+  const who2=who==="hero"?"אתה":G.L.vill,amt=act.a==="B"||act.a==="R"?` של ${chipTxt(G.bets[who])}`:"";
+  let t=`${who2}: ${name}${amt}.`;
+  if(who==="vill")t+=" "+readAction(act,before,distOf(G.V),potBefore,owe);
+  G.log.push({s:STREET_N[G.street],t,who});
+  if(who==="vill")capSet(`**${G.L.vill}**: ${name}${amt}`,STREET_N[G.street]+" · Pot "+chipTxt(G.pot+G.bets.hero+G.bets.vill));
+}
+/* What his action says about his range: the numbers move, and the sentence says why. */
+function readAction(act,b,a,potBefore,owe){
+  /* The sentence names only what the numbers show: the groups that grew and shrank most. */
+  const L=Object.fromEntries(GROUPS.map(([k,l])=>[k,l])),d=Object.keys(L).map(k=>({k,d:a[k]-b[k]})).sort((x,y)=>y.d-x.d);
+  const up=d[0],dn=d[d.length-1],mv=(up.d>=3?`עלו: ${L[up.k]} ${pctS(b[up.k])} → ${pctS(a[up.k])}. `:"")+(dn.d<=-3?`ירדו: ${L[dn.k]} ${pctS(b[dn.k])} → ${pctS(a[dn.k])}.`:"");
+  let why="";
+  if(act.a==="X")why=G.init==="vill"?"הוא הוביל את היד ועכשיו עשה check: עם רוב הידיים החזקות הוא היה מהמר.":"Check של מי שלא הוביל את היד הוא רגיל, ומצמצם מעט.";
+  else if(act.a==="B"){const s=G.bets.vill/Math.max(.1,potBefore);why=G.init==="vill"?(s<.45?"Bet קטן של מי שהוביל: בבורד שטוב לו מהמרים ככה עם הרבה ידיים, כולל חלשות.":"Bet גדול של מי שהוביל: מגיע מידיים טובות ומ-draws, ופחות מ-bluffs סתם."):"Bet של מי שלא הוביל את היד: בדרך כלל יד שפגעה או draw."}
+  else if(act.a==="C")why="Call: את רוב האוויר הוא זרק, ועם החזקות מאוד הוא היה מעלה לפעמים.";
+  else if(act.a==="R")why="Raise: מגיע בעיקר מידיים חזקות מאוד ומ-draws טובים.";
+  return why+(mv?" "+mv:" ה-range כמעט לא השתנה.");
+}
+async function villTurn(owe){
+  await sleep(450);
+  const ctx=ctxFor("vill"),hi=handInfo(G.vc,board()),potNow=G.pot+G.bets.hero+G.bets.vill;
+  if(owe<=0){const p=betProbs(ctx)[hi.bk];if(Math.random()<p&&G.st.vill>0)return {a:"B",amt:Math.min(G.st.vill,r1(Math.max(1,potNow*betSize(ctx))))};return {a:"X"}}
+  const p=respTable(G.V,owe/Math.max(.1,potNow-owe),G.street,G.raised,G.donk&&!G.raised?1.2:1)[hi.bk],r=Math.random();
+  if(r<p.fold)return {a:"F"};
+  if(r<p.fold+p.raise&&!G.capped&&G.st.vill>owe)return {a:"R",amt:G.raised?r1(G.bets.vill+G.st.vill):Math.min(G.bets.vill+G.st.vill,r1(G.bets.hero*3))};
+  return {a:"C",amt:Math.min(G.bets.vill+G.st.vill,G.bets.hero)};
+}
+function heroOpts(owe){
+  const potNow=r1(G.pot+G.bets.hero+G.bets.vill),st=G.st.hero;
+  if(owe<=0){const s=Math.min(st,r1(Math.max(1,potNow*.33))),b=Math.min(st,r1(potNow*.75));
+    const o=[{k:"X",lbl:"Check",sub:""},{k:"B",amt:s,lbl:s>=st?"All-in":"Bet",sub:s>=st?chipTxt(s):"⅓ pot · "+chipTxt(s)}];
+    if(b>s)o.push({k:"B",amt:b,lbl:b>=st?"All-in":"Bet",sub:b>=st?chipTxt(b):"¾ pot · "+chipTxt(b)});return o}
+  const ca=Math.min(owe,st),o=[{k:"F",lbl:"Fold",sub:""},{k:"C",amt:r1(G.bets.hero+ca),lbl:ca>=st?"Call all-in":"Call",sub:chipTxt(ca)}];
+  if(!G.raised&&st>ca){const tot=Math.min(r1(G.bets.hero+st),r1(G.bets.vill*3));o.push({k:"R",amt:tot,lbl:tot>=G.bets.hero+st?"All-in":"Raise",sub:"ל-"+chipTxt(tot)})}
+  return o;
+}
+/* EV of every option against the villain model. Simple one-street math, the same thinking you do at the table. */
+function evalOpts(opts,owe){
+  const b=board(),street=G.street,V=G.V,isIP=G.heroIP,potNow=r1(G.pot+G.bets.hero+G.bets.vill),eqAll=eqW(G.hc,b,V.cs,V.w,2500)??0,tot=wsum(V.w);
+  const res=opts.map(o=>{
+    let ev=0,x={};
+    if(o.k==="X"){
+      if(isIP||G.acted.vill){ev=realize(street,isIP)*eqAll/100*potNow;x={closes:true}}
+      else{const ctx=ctxFor("vill",{afterCheck:true}),bp=betProbs(ctx),wb=weighted(V,k=>bp[k]),wc=weighted(V,k=>1-bp[k]),pb=wsum(wb)/tot,b2=Math.min(G.st.vill,r1(potNow*betSize(ctx)));
+        const eB=pb>.01?eqW(G.hc,b,V.cs,wb):0,eC=pb<.99?eqW(G.hc,b,V.cs,wc):0,R=realize(street,false),evCall=R*(eB||0)/100*(potNow+2*b2)-b2;
+        ev=(1-pb)*R*(eC||0)/100*potNow+pb*Math.max(0,evCall);x={pb,eB,eC,b2,evCall}}
+    }else if(o.k==="B"){
+      const bet=o.amt,s=bet/potNow,RT=respTable(V,s,street,false,!!G.init&&G.init!=="hero"&&!isIP&&street===0?1.2:1),rp=V.bk.map(k=>RT[k]),wc=V.w.map((w,i)=>w*rp[i].call),wr=V.w.map((w,i)=>w*rp[i].raise),pc=wsum(wc)/tot,pr=wsum(wr)/tot,f=Math.max(0,1-pc-pr);
+      const allin=bet>=G.st.hero,eC=pc>.01?eqW(G.hc,b,V.cs,wc):0,eR=pr>.01?eqW(G.hc,b,V.cs,wr):0,X=Math.min(r1(bet*3),G.st.vill),callX=Math.min(X,G.st.hero);
+      const evC=realize(street,isIP,allin)*(eC||0)/100*(potNow+2*bet)-bet,evR=Math.max(-bet,(eR||0)/100*(potNow+bet+callX+Math.min(X,callX))-callX);
+      ev=f*potNow+pc*evC+(allin?pr*evC:pr*evR);x={f,pc,pr,eC,eR,alpha:bet/(potNow+bet)*100}
+    }else if(o.k==="C"){const add=r1(o.amt-G.bets.hero),allin=add>=G.st.hero,outs=handInfo(G.hc,b).d.outs,imp=street<2&&!allin&&outs>=8?outs/(street===0?47:46)*.3*(potNow+add):0;ev=realize(street,isIP,allin)*eqAll/100*(potNow+add)-add+imp;x={need:add/(potNow+add)*100,add,imp}}
+    else if(o.k==="R"){const X=o.amt,add=r1(X-G.bets.hero),vo=r1(X-G.bets.vill),RT=respTable(V,vo/Math.max(.1,potNow+add-vo),street,true),rp=V.bk.map(k=>RT[k]),wc=V.w.map((w,i)=>w*rp[i].call),pc=wsum(wc)/tot,eC=pc>.01?eqW(G.hc,b,V.cs,wc):0,vadd=Math.min(r1(X-G.bets.vill),G.st.vill);
+      const wr=V.w.map((w,i)=>w*rp[i].raise),pr=wsum(wr)/tot,f=Math.max(0,1-pc-pr),eR=pr>.01?eqW(G.hc,b,V.cs,wr):0,T2=Math.min(G.bets.hero+G.st.hero,G.bets.vill+G.st.vill),evJam=Math.max(-add,(eR||0)/100*(G.pot+2*T2)-(T2-G.bets.hero));
+      ev=f*potNow+pc*(realize(street,isIP,add>=G.st.hero)*(eC||0)/100*(potNow+add+vadd)-add)+pr*evJam;x={f,pc,eC,pr,alpha:add/(potNow+add)*100}}
+    return Object.assign({},o,{ev,x});
+  });
+  const best=Math.max(...res.map(r=>r.ev)),thr=Math.max(.3,.05*potNow);
+  res.forEach(r=>r.tier=r.ev>=best-1e-9?"best":best-r.ev<=thr?"good":"bad");
+  return {eqAll,res,potNow};
+}
+const optName=o=>o.lbl+(o.k==="B"&&o.lbl==="Bet"?" "+o.sub.split(" · ")[0]:o.k==="R"&&o.lbl==="Raise"?" "+o.sub:"");
+function heroTurn(owe){
+  return new Promise(resolve=>{
+    const root=G.root,bar=root.querySelector(".answers"),after=root.querySelector(".after"),opts=heroOpts(owe),g=G;
+    const hi=handInfo(G.hc,board());
+    capSet(owe>0?`**${G.L.vill}** עשה ${G.raised?"raise":"bet"}. לשלם **${chipTxt(Math.min(owe,G.st.hero))}**`:`התור שלך`,`${STREET_N[G.street]} · Pot ${chipTxt(G.pot+G.bets.hero+G.bets.vill)} · יש לך: ${hi.txt}`);
+    const cls=o=>o.k==="F"?"a-F":o.k==="X"||o.k==="C"?"a-C":"a-R";
+    bar.querySelector(".abtns").innerHTML=opts.map((o,i)=>`<button class="abtn ${cls(o)}" data-i="${i}"><b>${esc(o.lbl)}</b>${o.sub?`<small>${esc(o.sub)}</small>`:""}<kbd>${i+1}</kbd></button>`).join("");
+    bar.hidden=false;after.hidden=true;after.innerHTML="";
+    let done=false;
+    const pick=i=>{
+      if(done||G!==g||!opts[i])return;done=true;bar.hidden=true;
+      after.hidden=false;after.innerHTML=`<p class="small muted" style="text-align:center">${bidi("מחשב: ה-range שלו, equity וכל אפשרות…")}</p>`;
+      setTimeout(()=>{if(G!==g)return;
+        const E=evalOpts(opts,owe),ch=E.res[i],bst=E.res.reduce((a,b)=>b.ev>a.ev?b:a);
+        const D={street:G.street,owe,E,ch,bst,hi,bi:boardInfo(board()),adv:G.adv,nut:G.nut,dist:distOf(G.V),log:G.log.slice(),spr:Math.min(G.st.hero,G.st.vill)/Math.max(.1,E.potNow)};
+        G.dec.push({street:G.street,tier:ch.tier,ch:optName(ch),best:optName(bst)});recordPost(ch.tier);
+        after.innerHTML="";const card=postCard(after,D);
+        const nx=document.createElement("div");nx.className="pf-next";
+        let gone=false;const goOn=o=>{if(gone)return;gone=true;activePF=null;after.hidden=true;after.innerHTML="";G.root.scrollIntoView?.({block:"start",behavior:"smooth"});resolve({a:o.k==="B"?"B":o.k,amt:o.amt})};
+        nx.innerHTML=`<button class="btn primary next-big" data-n="go">${ch.k==="F"?"סיים את היד":"המשך ←"}<kbd>Enter</kbd></button>${ch.k==="F"&&bst.k!=="F"?`<button class="btn" data-n="best">${bidi("המשך עם "+optName(bst))}</button>`:""}`;
+        after.prepend(nx);
+        nx.onclick=e=>{const b=e.target.closest("[data-n]");if(!b)return;goOn(b.dataset.n==="best"?bst:ch)};
+        activePF={answer:()=>{},next:()=>goOn(ch)};
+        followUp(after,ch.tier!=="bad",postFacts(D).ctx,null,()=>postFacts(D),`${G.hc.map(cTxt).join(" ")} · ${STREET_N[G.street]} · ${G.L.hero} מול ${G.L.vill}`);
+        {const f=after.querySelector(".follow");if(f){f.hidden=true;card.querySelector('[data-x="ask"]').hidden=false}}
+      },30);
+    };
+    bar.querySelector(".abtns").onclick=e=>{const b=e.target.closest("[data-i]");if(b)pick(+b.dataset.i)};
+    activePF={answer:k=>pick({F:0,C:1,R:2}[k]),next:()=>{}};
+  });
+}
+function recordPost(tier){
+  const p=stats.post||(stats.post={n:0,ok:0,bySt:{},byScen:{}}),ok=tier!=="bad",k=G.L.pl+"|"+G.L.hero+"|"+G.L.vill;
+  p.n++;if(ok)p.ok++;for(const [o,key] of [[p.bySt,G.street],[p.byScen,k]]){const x=o[key]||{n:0,ok:0};x.n++;if(ok)x.ok++;o[key]=x}
+  store.set("stats",stats);
+}
+/* Facts for the AI coach: it may only use these numbers. */
+function postFacts(D){
+  const o=D.E.res.map(r=>`${optName(r)}: EV ${r.ev.toFixed(1)}bb`).join(" | ");
+  const ctx=`יד postflop. ${G.log.map(l=>l.t).join(" ")}\nהיד שלי: ${G.hc.map(cTxt).join(" ")} (${D.hi.txt}). בורד: ${board().map(cTxt).join(" ")}.\nבחרתי: ${optName(D.ch)}. הכי טוב לפי המודל: ${optName(D.bst)}.`;
+  const nums=[D.E.eqAll,D.adv,100-D.adv,D.nut.h,D.nut.v,...Object.values(D.dist)].concat(D.E.res.flatMap(r=>[r.x.f!=null?r.x.f*100:null,r.x.need,r.x.alpha,r.x.eC])).filter(x=>x!=null).map(Math.round);
+  return {ctx,text:`\nמספרים מחושבים (השתמש רק בהם): equity שלי מול ה-range שלו ${pctS(D.E.eqAll)}. Range advantage: ה-range שלי ${pctS(D.adv)} מול שלו. ידיים חזקות מאוד: אצלי ${pctS(D.nut.h)}, אצלו ${pctS(D.nut.v)}. ה-range שלו עכשיו: ${GROUPS.map(([k,l])=>l+" "+pctS(D.dist[k])).join(", ")}. אפשרויות: ${o}. המודל: שחקן ממוצע, לא solver.`,nums};
+}
+const tierTxt={best:"מצוין",good:"גם טוב",bad:"טעות"};
+/* The decision card: verdict, the 1-2 reasons that decide it, then the full thinking process. */
+function postCard(host,D){
+  const {E,ch,bst,hi,bi,street}=D,isIP=G.heroIP,facing=D.owe>0,V=G.L.vill;
+  const R=mainReasons(D);
+  const el=document.createElement("div");el.className="cc pp";host.appendChild(el);
+  const ic={best:"✓",good:"≈",bad:"✗"}[ch.tier],hc=ch.tier==="best"?"ok":ch.tier==="good"?"mid":"bad";
+  const evRows=E.res.map(r=>`<div class="ev-r ${r===ch?"me":""} t-${r.tier}"><span>${bidi(optName(r))}</span><b dir="ltr">${(r.ev>=0?"+":"")+r.ev.toFixed(1)}bb</b></div>`).join("");
+  const dist=D.dist,bar=GROUPS.map(([k,l,c])=>dist[k]>=1?`<i style="width:${dist[k]}%;background:${c}" title="${l}"></i>`:"").join("");
+  const legend=GROUPS.map(([k,l,c])=>`<span><i style="background:${c}"></i>${l} ${pctS(dist[k])}</span>`).join("");
+  const math=[];
+  if(facing){const c=E.res.find(r=>r.k==="C");if(c){math.push(`Pot odds: משלם ${chipTxt(c.x.add)} כדי לזכות ב-${chipTxt(E.potNow+c.x.add)}. [[${fmt(c.x.add)} ÷ ${fmt(E.potNow+c.x.add)} = ${pctS(c.x.need)}]] צריך לזכות ${pctS(c.x.need)} מהפעמים. אתה זוכה ב-${pctS(E.eqAll)} מול ה-range שלו${street<2?", לפני שמממשים equity":""}.`);
+    const s=D.owe/Math.max(.1,E.potNow-D.owe);math.push(`MDF: מול bet כזה צריך להמשיך בערך עם [[1 ÷ (1 + ${s.toFixed(2)}) = ${pctS(100/(1+s))}]] מה-range. זה ייחוס, לא חוק: ${isIP?"in position קל יותר להגן":"out of position מגינים פחות"}.`)}}
+  else E.res.filter(r=>r.k==="B").forEach(r=>math.push(`${optName(r)}: bluff צריך לעבוד ${pctS(r.x.alpha)} מהפעמים (alpha). לפי המודל הוא עושה fold ב-${pctS(r.x.f*100)}${r.x.eC?`, וכשהוא ממשיך אתה זוכה ב-${pctS(r.x.eC)}`:""}.`));
+  math.push(`SPR: ${D.spr.toFixed(1)}. ${D.spr<2.5?"נמוך: יד טובה כבר מוכנה להכניס הכל.":D.spr>6?"גבוה: יש עוד הרבה כסף מאחור, זהירות עם ידיים בינוניות ב-pot גדול.":"בינוני."}`);
+  if(street===2&&hi.bk!=="monster"){const bl=blockNote(hi);if(bl)math.push(bl)}
+  el.innerHTML=`<div class="cc-head ${hc}"><span class="cc-ic">${ic}</span><div><b>${bidi(tierTxt[ch.tier]+": "+optName(ch))}</b>${ch.tier!=="best"?`<small>${bidi("הכי טוב: "+optName(bst))}</small>`:""}</div></div>
+  <div class="cc-main"><span class="cc-k">${R.length>1?"שתי הסיבות העיקריות":"הסיבה העיקרית"}</span>${R.map(f=>`<div class="cc-f"><b>${bidi(f.t)}</b><p>${bidi(f.x)}</p></div>`).join("")}</div>
+  <div class="ev-tbl">${evRows}</div>
+  <details class="cc-more"><summary>תהליך החשיבה המלא</summary><div class="cc-more-in pp-think">
+    <section><h3>1. מה קרה עד עכשיו</h3><ul class="pp-log">${D.log.filter(l=>!l.board||l.s!=="Preflop").map(l=>`<li class="${l.board?"b":""}">${bidi(l.t)}</li>`).join("")}</ul></section>
+    <section><h3>2. הבורד ולמי הוא טוב</h3><p>${bidi(bi.t+". "+bi.p)}</p><p>${bidi(`Range advantage: ה-range שלך זוכה ב-${pctS(D.adv)} מול ה-range שלו. Nut advantage: ידיים חזקות מאוד אצלך ${pctS(D.nut.h)}, אצלו ${pctS(D.nut.v)}.`)}</p><p class="cc-sub">${bidi(D.adv>=55?"היתרון אצלך: אתה יכול להמר הרבה.":D.adv<=45?"היתרון אצלו: מהמרים פחות, ונזהרים מול bets שלו.":"אין יתרון ברור: היד שלך מחליטה יותר מה-range.")+" "+bidi(D.nut.h>D.nut.v+3?"יש לך יותר ידיים חזקות מאוד: bet גדול אפשרי.":D.nut.v>D.nut.h+3?"לו יש יותר ידיים חזקות מאוד: bet גדול שלו מסוכן לך.":"")}</p></section>
+    <section><h3>3. ה-range שלו עכשיו</h3><div class="pp-bar">${bar}</div><div class="legend pp-leg">${legend}</div><p>${bidi(rangeLine(D))}</p></section>
+    <section><h3>4. היד שלך</h3><p>${bidi(`${G.hc.map(cTxt).join(" ")}: ${hi.txt}. מול ה-range שלו עכשיו אתה זוכה ב-${pctS(E.eqAll)}.`+(hi.d.outs?` יש לך ${hi.d.outs} outs: בערך [[${hi.d.outs} × ${street===0?4:2} ≈ ${hi.d.outs*(street===0?4:2)}%]] להשלים עד ה-river.`:""))}</p></section>
+    <section><h3>5. המתמטיקה</h3>${math.map(m=>`<p>${bidi(m)}</p>`).join("")}</section>
+    <section><h3>6. המסקנה</h3><p>${bidi(principle(D))}</p></section>
+    <p class="cc-sub">${bidi("המספרים: חישוב מול שחקן ממוצע שמשחק לפי הטבלאות לפני ה-flop. זה מודל, לא solver. השתמש בתהליך, לא באחוז המדויק.")}</p>
+  </div></details>
+  <div class="tools"><button class="tool" data-x="rng" aria-pressed="false">${bidi("👁 ה-range שלו")}</button><button class="tool" data-x="ask" hidden aria-pressed="false">💬 שאל את המאמן</button></div><div class="gridwrap" hidden></div>`;
+  el.onclick=e=>{const x=e.target.closest("[data-x]");if(!x)return;
+    if(x.dataset.x==="rng"){const gw=el.querySelector(".gridwrap");gw.hidden=!gw.hidden;x.setAttribute("aria-pressed",!gw.hidden);if(!gw.hidden)renderWGrid(gw,G.V,null,`ה-range של ${V} עכשיו: ככל שהמשבצת מלאה יותר, הוא מחזיק אותה יותר.`)}
+    if(x.dataset.x==="ask"){const f=host.querySelector(".follow");if(f){f.hidden=!f.hidden;x.setAttribute("aria-pressed",!f.hidden);if(!f.hidden)f.querySelector("textarea").focus()}}};
+  return el;
+}
+function blockNote(hi){
+  const b=board(),su=[0,1,2,3].find(u=>b.filter(c=>(c&3)===u).length>=3),top=Math.max(...b.map(c=>c>>2));
+  const out=[];if(su!=null&&G.hc.some(c=>(c&3)===su)&&hi.cat<5)out.push(`אתה מחזיק ${SCH[su]}: זה מוריד לו flushes. טוב ל-bluff, כי זה חוסם ידיים שעושות call`);
+  if(G.hc.some(c=>c>>2===top)&&hi.bk!=="strong")out.push(`אתה מחזיק ${RCH[top]}: פחות top pair אצלו, כלומר פחות call`);
+  return out.length?"Blockers: "+out.join(". ")+".":"";
+}
+function rangeLine(D){
+  const d=D.dist,s=d.monster+d.strong;
+  if(s>=55)return `רוב ה-range שלו חזק (${pctS(s)}). מול ידיים כאלה צריך יד טובה כדי להמשיך.`;
+  if(d.air+d.draw>=55)return `יותר מחצי מה-range שלו draws ואוויר (${pctS(d.air+d.draw)}). ידיים בינוניות שלך מנצחות הרבה ממנו.`;
+  return `Range מעורב: ${pctS(s)} חזקות, ${pctS(d.mid)} בינוניות, ${pctS(d.draw+d.air)} draws ואוויר.`;
+}
+/* Pick the 1-2 reasons that decide this spot, from what is true here. */
+function mainReasons(D){
+  const {E,bst,hi,street}=D,out=[],c=E.res.find(r=>r.k==="C"),bets=E.res.filter(r=>r.k==="B"||r.k==="R"),bb=bst.k==="B"||bst.k==="R"?bst:null;
+  const strong=hi.bk==="monster"||hi.bk==="strong",drawy=hi.bk==="draw"||hi.bk==="weakdraw";
+  if(c){const ok=E.eqAll>=c.x.need;out.push({sc:bst.k==="F"||bst.k==="C"?80:40,t:ok?"המחיר מכוסה":"המחיר לא מכוסה",x:`צריך לזכות ${pctS(c.x.need)} מהפעמים, ואתה זוכה ב-${pctS(E.eqAll)} מול ה-range שלו אחרי ה-${G.raised?"raise":"bet"}.`+(street<2&&!G.heroIP&&ok&&bst.k==="F"?" אבל out of position מממשים רק חלק מזה.":"")})}
+  if(bb&&strong)out.push({sc:85,t:"value",x:`כשהוא ממשיך, אתה מנצח ${pctS(bb.x.eC)} מהידיים שממשיכות. ${street===2?"ב-river, value bet טוב כשמנצחים יותר מחצי מהידיים שעושות call.":"ידיים חלשות ממך משלמות עכשיו, ו-draws משלמים כדי להשלים."}`});
+  if(bb&&!strong)out.push({sc:82,t:drawy?"semi-bluff":"fold equity",x:`הוא עושה fold ב-${pctS(bb.x.f*100)} מהפעמים, וה-bet צריך לעבוד רק ${pctS(bb.x.alpha)}.`+(drawy&&hi.d.outs?` וגם כשהוא ממשיך יש לך ${hi.d.outs} outs.`:"")});
+  if(bst.k==="X"&&!strong){const b=bets[0];out.push({sc:80,t:hi.bk==="medium"||hi.bk==="weak"?"pot control":"אין fold equity",x:b?(hi.bk==="medium"||hi.bk==="weak"?`מול bet, הידיים שממשיכות מנצחות אותך: אתה זוכה רק ב-${pctS(b.x.eC)} מהן. Check שומר את ה-pot קטן ומגיע ל-showdown.`:`Bet של ${chipTxt(b.amt)} צריך לעבוד ${pctS(b.x.alpha)}, אבל הוא עושה fold רק ב-${pctS(b.x.f*100)}.`):"Check זול ומשאיר לך את ה-equity."})}
+  if(bst.k==="X"&&strong)out.push({sc:70,t:"slowplay",x:`ה-range שלו חלש כאן, ומול bet רובו עושה fold. Check נותן לו להמר או לפגוע במשהו ולשלם אחר כך.`});
+  out.push({sc:bb?(D.adv>=55?60:30):(D.adv<=45?60:25),t:"range advantage",x:`ה-range שלך זוכה ב-${pctS(D.adv)} מול שלו בבורד הזה. ${D.adv>=55?"היתרון אצלך: מותר להמר הרבה.":D.adv<=45?"היתרון אצלו: מהמרים פחות.":"אין יתרון ברור."}`});
+  if(drawy&&hi.d.outs&&bst.k!=="F")out.push({sc:bst.k==="C"&&c&&c.x.imp?78:62,t:bst.k==="C"&&c&&c.x.imp?"draw ו-implied odds":"draw",x:`${hi.dr.join(" + ")}: ${hi.d.outs} outs, בערך ${hi.d.outs*(street===0?4:2)}% להשלים עד ה-river.`+(bst.k==="C"&&c&&c.x.imp?" וכשמשלימים, הוא משלם עוד ברחובות הבאים (implied odds).":"")});
+  if(bst.k==="F"){const d=D.dist;out.push({sc:66,t:"ה-range שלו חזק",x:`אחרי ה-${G.raised?"raise":"bet"} שלו, ${pctS(d.monster+d.strong)} מה-range שלו חזקות. ${hi.txt} לא מנצחת מספיק מהן.`})}
+  out.sort((a,b)=>b.sc-a.sc);const m=out.slice(0,2);if(m[1]&&m[1].sc<m[0].sc*.7)m.pop();return m;
+}
+function principle(D){
+  const {bst,hi,street}=D,strong=hi.bk==="monster"||hi.bk==="strong";
+  const n=optName(bst);
+  if(bst.k==="F")return `${n}. כשה-range שלו אחרי הפעולה חזק, וה-equity שלך מתחת למחיר, מוותרים. זה חישוב, לא פחד.`;
+  if(bst.k==="C")return `${n}. ה-equity מכסה את המחיר${D.dist.air+D.dist.draw>35?", והוא מגיע לכאן גם עם הרבה draws ו-bluffs":""}. Raise היה מוציא fold מהידיים שאתה מנצח, ו-call מהידיים שמנצחות אותך.`;
+  if(bst.k==="R")return `${n}. ${strong?"יד חזקה מול range שמשלם: בונים pot.":"Raise כ-bluff עובד כשהוא מוותר מספיק, ויש לך equity גם כשהוא ממשיך."}`;
+  if(bst.k==="B")return `${n}. ${strong?"Value: ידיים חלשות ממך ימשיכו.":"Bluff או semi-bluff: הוא מוותר מספיק כדי שזה ירוויח."} ${street===0?"ב-flop: גודל קטן כשהבורד טוב לך, גדול כשה-range שלך מקוטב.":street===2?"ב-river: value רק אם מנצחים יותר מחצי מה-call, bluff עם blockers טובים.":"ב-turn: ממשיכים כשהקלף לא שינה את התמונה, או כשיש draw."}`;
+  return `${n}. ${strong?"Check עם יד חזקה רק כשה-range שלו חלש מאוד ומול bet הוא עושה fold.":"עם יד בינונית או חלשה, check זול. Bet יוציא fold מהחלשות ו-call מהחזקות."}`;
+}
+/* 13x13 grid with each hand shaded by how much of it is still in his range. */
+function renderWGrid(wrap,R,hl,note){
+  const agg={},cnt={};R.cs.forEach((c,i)=>{const h=comboHand(c[0],c[1]);agg[h]=(agg[h]||0)+R.w[i];cnt[h]=(cnt[h]||0)+1});
+  const mx=Math.max(...Object.keys(agg).map(h=>agg[h]/combos(h)),1e-9),g=document.createElement("div");g.className="rgrid wgrid";
+  for(const h of ALL){const b=document.createElement("button");b.type="button";const v=(agg[h]||0)/combos(h)/mx;if(v>.02){b.className="c-R";b.style.opacity=(.25+.75*v).toFixed(2)}if(h===hl)b.classList.add("hl");b.textContent=h;g.appendChild(b)}
+  wrap.innerHTML=note?`<p class="cc-sub">${bidi(note)}</p>`:"";wrap.appendChild(g);
+}
+function finishHand(res){
+  const g=G;if(!g||g.done)return;g.done=true;activePF=null;
+  const root=g.root,bar=root.querySelector(".answers"),after=root.querySelector(".after");bar.hidden=true;
+  if(res==="win"||res==="lose"||res==="split")scene({show:true});
+  const vh=handInfo(g.vc,g.board.slice(0,Math.max(3,g.shown))).txt,hh=handInfo(g.hc,g.board.slice(0,Math.max(3,g.shown))).txt;
+  const t={fold:"עשית fold.",vfold:`${g.L.vill} עשה fold. ה-pot שלך.`,win:"ניצחת ב-showdown.",lose:"הפסדת ב-showdown.",split:"תיקו."}[res];
+  const okN=g.dec.filter(d=>d.tier!=="bad").length;
+  const box=document.createElement("div");box.className="cc pp-end";
+  box.innerHTML=`<div class="cc-head ${res==="win"||res==="vfold"?"ok":res==="split"?"mid":"bad"}"><span class="cc-ic">${res==="win"||res==="vfold"?"✓":res==="split"?"=":"✗"}</span><div><b>${bidi(t)}</b><small>${bidi(`החלטות טובות: ${okN}/${g.dec.length}. התוצאה של יד אחת היא מזל, ההחלטות הן מה שנמדד.`)}</small></div></div>
+  <p>${bidi(`${g.L.vill} החזיק ${g.vc.map(cTxt).join(" ")}${res==="fold"||res==="vfold"?"":": "+vh}. לך היה ${hh}.`)}</p>
+  ${g.dec.length?`<ul class="pp-dec">${g.dec.map(d=>`<li class="t-${d.tier}"><span>${STREET_N[d.street]}</span>${bidi(d.ch)}${d.tier==="bad"?` <small>${bidi("← "+d.best)}</small>`:""}</li>`).join("")}</ul>`:""}
+  <div class="row" style="justify-content:center"><button class="btn primary" data-e="new">יד חדשה ←<kbd>Enter</kbd></button></div>`;
+  after.hidden=false;const nx=after.querySelector(".pf-next");if(nx)nx.remove();after.prepend(box);
+  const go=()=>{if(G===g)G=null;activePF=null;g.onEnd()};
+  box.querySelector('[data-e="new"]').onclick=go;activePF={answer:()=>{},next:go};
+  capSet(t,"");
+}
+
 /* ===== DRILL ===== */
-const MODES=[["leaks","לפי הדליפות שלי"],["rfi","Open"],["facing_rfi","מול raise"],["rfi_vs_3bet","מול 3bet"],["miss","הטעויות שלי"]];
-let drillMode="leaks";
-$("#d-modes").innerHTML=MODES.map(([k,l])=>`<button class="chip" data-m="${k}" aria-pressed="${k===drillMode}">${bidi(l)}</button>`).join("");
-$("#d-modes").onclick=e=>{const b=e.target.closest("[data-m]");if(!b)return;drillMode=b.dataset.m;$$("#d-modes .chip").forEach(x=>x.setAttribute("aria-pressed",x===b));nextDrill()};
 $("#d-charts").onclick=()=>show("charts");
 const accLine=()=>stats.n?`דיוק כולל ${Math.round(stats.ok/stats.n*100)}% · ${stats.n} ידיים`:"";
 function nextDrill(){
-  let p=pickSpot(drillMode);$("#d-note").hidden=true;
-  if(!p){$("#d-note").textContent="אין טעויות שמורות כרגע. עובר לתרגול לפי הדליפות.";$("#d-note").hidden=false;p=pickSpot("leaks")}
-  $("#d-acc").textContent=accLine()+(settings.players<9?` · שולחן של ${settings.players}`:"");
-  mountPF($("#d-pf"),{spot:p.spot,hand:p.hand,feedback:true,onDone:()=>nextDrill(),onAsk:(s,h,c)=>{curConv=null;show("coach");$("#chat-in").value=`תרגלתי: "${spotText(s).title}" עם ${h}. הטבלה אומרת ${codeLabel(s,c)}. תסביר לי את ההיגיון, ותשאל אותי שאלה אחת שתבדוק שהבנתי.`;$("#chat-in").focus()}});
+  G=null;const root=$("#d-pf");$("#d-note").hidden=true;
+  const note=t=>{$("#d-note").textContent=t;$("#d-note").hidden=false};
+  $("#d-acc").textContent=scenAcc()+(settings.players<9?` · שולחן של ${settings.players}`:"");
+  if(scen.stage==="range")return mountRangeQ(root,()=>nextDrill());
+  if(scen.stage==="post"){const q=postFromScenario();if(!q){root.innerHTML="";note("אין יד לתרחיש הזה. שנה עמדות.");return}return startPost(root,q.L,q.hc,q.vc,()=>nextDrill())}
+  let p=pickSpot(scen.mode);
+  if(!p){note(scen.mode==="miss"?"אין טעויות שמורות כרגע. עובר לתרגול לפי הדליפות.":"אין ידיים לתרחיש הזה. עובר לתרגול לפי הדליפות.");p=pickSpot("leaks")}
+  mountPF(root,{spot:p.spot,hand:p.hand,feedback:true,onDone:()=>nextDrill(),cont:scen.stage==="full"?contLine:null,onFlop:c=>startPost(root,c.L,c.hc,c.vc,()=>nextDrill(),true),onAsk:(s,h,c)=>{curConv=null;show("coach");$("#chat-in").value=`תרגלתי: "${spotText(s).title}" עם ${h}. הטבלה אומרת ${codeLabel(s,c)}. תסביר לי את ההיגיון, ותשאל אותי שאלה אחת שתבדוק שהבנתי.`;$("#chat-in").focus()}});
 }
+
+/* ===== STARTING A POSTFLOP HAND: from a scenario, or straight after your preflop decision ===== */
+const pickCombo=(hands,dead)=>{const cs=mkCombos(hands,dead);return cs.length?rnd(cs):null};
+function postFromScenario(){
+  const pls=scen.pline==="any"?Object.keys(PLINES):[scen.pline];
+  const pairs=pls.flatMap(pl=>linePairs(pl).map(p=>Object.assign({pl},p))).filter(p=>(scen.hero==="all"||p.hero===scen.hero)&&(!scen.vills.length||scen.vills.includes(p.vill)));
+  if(!pairs.length)return null;
+  const p=rnd(pairs),L=lineInfo(p.pl,p.hero,p.vill),hc=pickCombo(L.hr,[]),vc=pickCombo(L.vr,hc);
+  return vc?{L,hc,vc}:null;
+}
+/* After a preflop answer: which heads-up line does the hand continue on, and against which villain. */
+function contLine(s,act,heroCards){
+  let pl=null,vill=s.vill;
+  if(s.kind==="rfi"&&act==="R"){pl="open";const cand=tablePos().filter(v=>lineInfo("open",s.hero,v)&&(!scen.vills.length||scen.vills.includes(v)));if(!cand.length)return null;
+    vill=cand.includes("BB")&&Math.random()<.35?"BB":rnd(cand)}
+  else if(s.kind==="facing_rfi")pl=act==="C"?"callopen":act==="R"?"3bet":null;
+  else if(s.kind==="rfi_vs_3bet"&&act==="C")pl="call3bet";
+  if(!pl)return null;
+  const L=lineInfo(pl,s.hero,vill);if(!L)return null;
+  const vc=pickCombo(L.vr,heroCards);return vc?{L,hc:heroCards,vc}:null;
+}
+
+/* ===== RANGE READING: is this hand in his range? ===== */
+const RQ_ACTS=[["open","open"],["3bet","3bet"],["call","call ל-open"],["4bet","4bet"],["c3","call ל-3bet"]];
+function rqAction(){
+  /* With a scenario: questions about the villains you chose, against your position. */
+  const P=tablePos(),hero=scen.hero!=="all"?scen.hero:null,vs=scen.vills.length?scen.vills:null,c=[];
+  for(const s of SPOTS){if(!inTable(s))continue;
+    if(s.kind==="rfi"&&(!vs||vs.includes(s.hero)))c.push({k:"open",who:s.hero,sp:s,codes:["R","B"],t:`${s.hero} עושה open`});
+    if(s.kind==="facing_rfi"&&(!vs||vs.includes(s.hero))&&(!hero||s.vill===hero)){c.push({k:"3bet",who:s.hero,sp:s,codes:["R","B"],t:`${s.hero} עושה 3bet מול open מ-${s.vill}`});c.push({k:"call",who:s.hero,sp:s,codes:["C"],t:`${s.hero} עושה call ל-open מ-${s.vill}`})}
+    if(s.kind==="rfi_vs_3bet"&&(!vs||vs.includes(s.hero))&&(!hero||s.vill===hero)){c.push({k:"4bet",who:s.hero,sp:s,codes:["R","B"],t:`${s.hero} פתח, קיבל 3bet מ-${s.vill}, ועושה 4bet`,restr:true});c.push({k:"c3",who:s.hero,sp:s,codes:["C"],t:`${s.hero} פתח, קיבל 3bet מ-${s.vill}, ועושה call`,restr:true})}}
+  const ok=c.filter(a=>handsOf(a.sp,a.codes).length);return ok.length?rnd(ok):null;
+}
+function rqQuestion(){
+  const a=rqAction();if(!a)return null;const set=new Set(handsOf(a.sp,a.codes)),m=CHARTS[a.sp.cid].map;
+  const pool=a.restr?drawable(a.sp):ALL;
+  if(Math.random()<.25){const p=Math.round(combosOf([...set])/13.26),ds=uniq([p,Math.max(1,Math.round(p*.55)),Math.min(95,Math.round(p*1.6)),Math.max(1,p+(p<20?6:-12))]).slice(0,4);
+    const opts=shuffle(ds);return {a,type:"pct",q:`${a.t}. עם כמה אחוז מהידיים?`,opts:opts.map(x=>x+"%"),ans:opts.indexOf(p),set,m}}
+  const edge=pool.filter(h=>{const i=ALL.indexOf(h),r=Math.floor(i/13),c=i%13;return [[r+1,c],[r-1,c],[r,c+1],[r,c-1]].some(([x,y])=>x>=0&&y>=0&&x<13&&y<13&&set.has(ALL[x*13+y])!==set.has(h))});
+  const h=Math.random()<.7&&edge.length?rnd(edge):rnd(pool);
+  return {a,type:"in",h,q:`${a.t}. האם ${h} ב-range?`,opts:["כן","לא"],ans:set.has(h)?0:1,set,m};
+}
+function mountRangeQ(root,onDone){
+  const Q=rqQuestion();if(!Q){root.innerHTML=`<p class="small muted">${bidi("אין שאלות לתרחיש הזה. שנה עמדות.")}</p>`;return}
+  activePF=null;
+  root.innerHTML=`<div class="card-box rq"><span class="tag accent" style="justify-self:start">${bidi("קריאת טווחים")}</span><p class="q">${bidi(Q.q)}</p><div class="opts">${Q.opts.map((o,i)=>`<button class="opt" data-i="${i}">${bidi(o)}</button>`).join("")}</div><div class="explain" hidden></div><div class="row" hidden><button class="btn primary">הבא ←<kbd>Enter</kbd></button></div></div>`;
+  let done=false;
+  const ans=i=>{if(done)return;done=true;const ok=i===Q.ans,bs=root.querySelectorAll(".opt");bs[i].classList.add(ok?"right":"wrong");bs[Q.ans].classList.add("right");
+    const rq=stats.rq||(stats.rq={n:0,ok:0,by:{}}),k=Q.a.who+"|"+Q.a.k,x=rq.by[k]||{n:0,ok:0};rq.n++;x.n++;if(ok){rq.ok++;x.ok++}rq.by[k]=x;store.set("stats",stats);
+    const p=Math.round(combosOf([...Q.set])/13.26),code=Q.type==="in"?Q.m[Q.h]:null;
+    const why=Q.type==="in"?(Q.ans===0?`${Q.h} ב-range${code==="B"?" כ-bluff: blocker או playability טובה, ולא מספיק חזקה ל-call":code==="R"&&Q.a.codes.length>1?" ל-value":""}.`:`${Q.h} לא ב-range הזה${Q.m[Q.h]&&Q.m[Q.h]!=="F"&&Q.m[Q.h]!=="X"?`: כאן היא ${codeLabel(Q.a.sp,Q.m[Q.h])}`:""}.`):`ה-range: ${p}% מהידיים.`;
+    const e=root.querySelector(".explain");e.hidden=false;
+    e.innerHTML=`<p><b>${ok?"צדקת.":"טעית."}</b> ${bidi(why)}</p><p class="cc-sub">${bidi(`${Q.a.t}: ${p}% מהידיים לפי הטבלאות. הרבה שחקנים לא משחקים לפיהן, אז זו נקודת ייחוס.`)}</p><div class="gridwrap"></div><div class="legend">${bidi(`מסומן: ה-range של ${Q.a.who} בפעולה הזו`)}</div>`;
+    const gw=e.querySelector(".gridwrap"),g=document.createElement("div");g.className="rgrid";
+    for(const h of ALL){const b=document.createElement("button");b.type="button";if(Q.set.has(h))b.className="c-"+(Q.m[h]==="B"?"B":Q.a.codes.includes("C")?"C":"R");if(h===Q.h)b.classList.add("hl");b.textContent=h;g.appendChild(b)}
+    gw.appendChild(g);const r=root.querySelector(".row");r.hidden=false;const nx=r.querySelector("button");nx.focus({preventScroll:true});
+    const go=()=>{activePF=null;onDone(ok)};nx.onclick=go;activePF={answer:()=>{},next:go}};
+  root.querySelector(".opts").onclick=e=>{const b=e.target.closest(".opt");if(b)ans(+b.dataset.i)};
+  activePF={answer:k=>{const i={F:0,C:1,R:2}[k];if(i!=null&&i<Q.opts.length)ans(i)},next:()=>{}};
+}
+
+/* ===== PRACTICE TAB: stage, scenario builder, and the next hand ===== */
+function renderScenUI(){
+  pruneScen();
+  $("#d-stage").innerHTML=STAGES.map(([k,l])=>`<button type="button" data-st="${k}" aria-pressed="${scen.stage===k}">${bidi(l)}</button>`).join("");
+  const modes=scen.stage==="pre"?[["leaks","לפי הדליפות שלי"],["scen","🎯 "+scenTitle()],["miss","הטעויות שלי"]]:[["scen","🎯 "+scenTitle()]];
+  if(scen.stage!=="pre"&&scen.mode!=="scen")scen.mode="scen";
+  $("#d-modes").innerHTML=`<button class="chip" data-m="edit" aria-expanded="${!$("#d-scen").hidden}">✎ ${bidi("בנה תרחיש")}</button>`+modes.map(([k,l])=>`<button class="chip" data-m="${k}" aria-pressed="${scen.mode===k}">${bidi(l)}</button>`).join("");
+  const c=scenChoices(),chips=(name,list,on)=>list.map(([v,l])=>`<button class="chip" data-${name}="${v}" aria-pressed="${on(v)}">${bidi(l)}</button>`).join("");
+  const post=scen.stage==="post",showV=post||scen.stage==="full"||scen.kind!=="rfi";
+  $("#d-scen").innerHTML=`<div class="fld"><span>${bidi("שחקנים בשולחן")}</span><div class="chip-row">${chips("n",[3,4,5,6,7,8,9].map(n=>[n,String(n)]),v=>+v===settings.players)}</div></div>
+   <div class="fld"><span>${bidi(post?"מה קרה לפני ה-flop":"המצב")}</span><div class="chip-row">${post?chips("pl",[["any","הכל"]].concat(Object.entries(PLINES).map(([k,v])=>[k,v.t])),v=>v===scen.pline):chips("k",KIND_OPTS,v=>v===scen.kind)}</div></div>
+   <div class="fld"><span>${bidi("העמדה שלך")}</span><div class="chip-row">${chips("h",[["all","הכל"]].concat(c.heroes.map(p=>[p,p])),v=>v===scen.hero)}</div></div>
+   ${showV?`<div class="fld"><span>${bidi(scen.stage==="full"&&scen.kind==="rfi"?"מי עושה call (אפשר כמה)":"היריב (אפשר כמה)")}</span><div class="chip-row">${chips("v",[["all","כולם"]].concat(c.vills.map(p=>[p,p])),v=>v==="all"?!scen.vills.length:scen.vills.includes(v))}</div></div>`:""}
+   <p class="cc-sub">${bidi(post||scen.stage==="full"?"שאר השחקנים עשו fold. כל יד מוגרלת מול אחד מהיריבים שבחרת. מחוץ לטבלאות: אחרי ה-flop ההחלטות נבדקות מול מודל של שחקן ממוצע, לא solver.":"שאר השחקנים עשו fold. אם בחרת כמה יריבים, כל יד מוגרלת מול אחד מהם.")}</p>
+   <div class="row"><button class="btn primary" data-go="1">התחל ←</button>${presetsHTML()}</div>`;
+}
+const presetsHTML=()=>{const P=store.get("presets",[]);return `<button class="btn ghost" data-save="1">☆ שמור</button>`+P.map((p,i)=>`<button class="chip" data-pre="${i}">${bidi(p.t)}</button>`).join("")};
+$("#d-stage").onclick=e=>{const b=e.target.closest("[data-st]");if(!b)return;scen.stage=b.dataset.st;if(scen.stage!=="pre")scen.mode="scen";saveScen();renderScenUI();nextDrill()};
+$("#d-modes").onclick=e=>{const b=e.target.closest("[data-m]");if(!b)return;
+  if(b.dataset.m==="edit"){$("#d-scen").hidden=!$("#d-scen").hidden;renderScenUI();return}
+  scen.mode=b.dataset.m;saveScen();renderScenUI();nextDrill()};
+$("#d-scen").onclick=e=>{const b=e.target.closest("button");if(!b)return;const d=b.dataset;
+  if(d.n){settings.players=+d.n;saveSettings()}
+  if(d.k){scen.kind=d.k}
+  if(d.pl){scen.pline=d.pl}
+  if(d.h){scen.hero=d.h}
+  if(d.v){if(d.v==="all")scen.vills=[];else scen.vills=scen.vills.includes(d.v)?scen.vills.filter(x=>x!==d.v):scen.vills.concat(d.v)}
+  if(d.save){const P=store.get("presets",[]),t=STAGES.find(s=>s[0]===scen.stage)[1]+": "+scenTitle();if(!P.some(p=>p.t===t)){P.unshift({t,s:Object.assign({},scen,{mode:"scen"}),n:settings.players});store.set("presets",P.slice(0,8))}}
+  if(d.pre!=null){const p=store.get("presets",[])[+d.pre];if(p){scen=Object.assign({},SCEN_DEF,p.s);settings.players=p.n||settings.players;saveSettings()}}
+  scen.mode="scen";saveScen();
+  if(d.go||d.pre!=null){$("#d-scen").hidden=true;renderScenUI();nextDrill();return}
+  renderScenUI()};
+function scenAcc(){
+  if(scen.stage==="range"){const r=stats.rq;return r&&r.n?`קריאת טווחים: ${Math.round(r.ok/r.n*100)}% · ${r.n} שאלות`:""}
+  if(scen.stage==="post"||scen.stage==="full"){const p=stats.post;return p&&p.n?`החלטות אחרי ה-flop: ${Math.round(p.ok/p.n*100)}% · ${p.n}`+["Flop","Turn","River"].map((s,i)=>p.bySt[i]&&p.bySt[i].n?` · ${s} ${Math.round(p.bySt[i].ok/p.bySt[i].n*100)}%`:"").join(""):""}
+  if(scen.mode==="scen"){let n=0,ok=0;for(const s of prePool()){const x=(stats.byScen||{})[scenKey(s.kind,s.hero,s.vill)];if(x){n+=x.n;ok+=x.ok}}return n?`בתרחיש הזה: ${Math.round(ok/n*100)}% · ${n} ידיים`:"בתרחיש הזה: עוד אין ידיים"}
+  return accLine();
+}
+renderScenUI();
+window.__pf={get G(){return G},set G(v){G=v},PLINES,linePairs,lineInfo,pickCombo,postRange,reBucket,rangeEq,board,betProbs,ctxFor,handInfo,evalOpts,heroOpts,r1,cTxt,ip,rnd};
 
 /* ===== CHARTS VIEWER ===== */
 const cv={kind:"rfi",hero:"UTG",vill:null};
