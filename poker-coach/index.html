@@ -450,6 +450,8 @@ button .gl,.ans .gl,.chip .gl,.opt .gl,.choice .gl,h1 .gl,h2 .gl,.score-row .gl{
 .rgrid .hl{box-shadow:0 0 0 3px var(--accent);position:relative;z-index:1}
 .bubble{position:absolute;z-index:3;background:var(--fg);color:var(--bg);border-radius:12px;padding:7px 12px;font-size:.85rem;font-weight:600;white-space:nowrap;pointer-events:none;box-shadow:var(--shadow)}
 .legend{display:flex;gap:16px;flex-wrap:wrap;font-size:.82rem;color:var(--muted)}
+/* Game surfaces are not text: no selection, no iOS copy/translate bubble on long press. */
+#v-story,.ptable,.answers,.abtn,.chip,.cc-seg,.tools,.sto,nav.tabbar,.btn,.opt,.rgrid{-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent}
 .stage-seg{margin-bottom:-8px}
 .stage-seg button{font-size:.86rem;padding:9px 4px}
 .scen-box{gap:14px}
@@ -3045,6 +3047,7 @@ function renderChat(){
   c.turns.forEach(t=>addMsg(t.role==="user"?"me":"coach",t.text||t.content,t));
 }
 $("#conv-list").onclick=e=>{const d=e.target.closest("[data-del]");if(d){e.stopPropagation();convs=convs.filter(x=>x.id!==d.dataset.del);saveConvs();renderChat();return}const b=e.target.closest("[data-c]");if(b){curConv=b.dataset.c;renderChat();window.scrollTo(0,0)}};
+$("#v-story").addEventListener("contextmenu",e=>e.preventDefault());document.addEventListener("contextmenu",e=>{if(e.target.closest(".ptable"))e.preventDefault()});
 $("#conv-list").addEventListener("keydown",e=>{if(e.key==="Enter"&&e.target.dataset.c){curConv=e.target.dataset.c;renderChat()}});
 $("#conv-back").onclick=()=>{curConv=null;renderChat()};
 function errCopy(c){return ({not_granted:"המאמן לא אושר בדף הזה. אפשר לאשר מתפריט ההרשאות של הדף.",rate_limited:"יותר מדי בקשות. נסה שוב בעוד דקה.",session_expired:"צריך להתחבר מחדש ל-Claude.",refused:"המאמן לא ענה על זה. נסח אחרת.",sampling_disabled:"Claude לא זמין בחשבון הזה."})[c]||"התקשורת נכשלה. נסה שוב."}
